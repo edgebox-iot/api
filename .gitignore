@@ -1,7 +1,7 @@
-www/vendor/*
-www/composer.lock
-www/logs/*
-.idea
-!www/logs/.gitkeep 
-
-
+/.env
+/.vscode
+/config/*
+/data/*
+/logs/*
+/www/vendor/*
+.DS_Store
