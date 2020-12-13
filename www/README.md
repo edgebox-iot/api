@@ -1,4 +1,4 @@
-# Fat-Free Framework Boilerplate
+# Edgebox API project
 
 ### Installation
 

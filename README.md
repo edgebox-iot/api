@@ -1,20 +1,13 @@
-#  LAMP stack built with Docker Compose
+#  Edgebox API Module
 
-  
-
-![Landing Page](https://preview.ibb.co/gOTa0y/LAMP_STACK.png)
-
-  
-
-A basic LAMP stack environment built using Docker Compose. It consists of the following:
+An API built with PHP, running on a LAMP stack environment built using Docker Compose. It consists of the following:
 
 * PHP
 * Apache
 * MySQL
 * phpMyAdmin
-* Redis
 
-As of now, we have several different PHP versions. Use appropriate php version as needed:
+As of now, several PHP version can be setup. Use appropriate php version as needed:
 
 * 5.4.x
 * 5.6.x
@@ -24,28 +17,42 @@ As of now, we have several different PHP versions. Use appropriate php version a
 * 7.4.x
 * 8.0.x WIP waiting for dependencies to introduce php8 support
 
-> Please note that we simplified the project structure from several branches for each php version, to one centralized master branch. Please let us know if you encouter any problems. 
 ##  Installation
  
-* Clone this repository on your local computer
+* Clone this repository on your local computer, on your edgebox working folder (eg: ~/edgebox/)
 * configure .env as needed 
 * Run the `docker-compose up -d`.
 
 ```shell
-git clone https://github.com/sprintcube/docker-compose-lamp.git
-cd docker-compose-lamp/
+git clone https://github.com/edgebox-iot/api.git
+cd api/
 cp sample.env .env
 // modify sample.env as needed
 docker-compose up -d
 // visit localhost
 ```
 
-Your LAMP stack is now ready!! You can access it via `http://localhost`.
+Your API LAMP stack is now ready!! You can access it via `http://localhost`.
+
+To run it on the context of edgebox-iot/ws:
+* Clone this repository on your local computer, on your edgebox working folder (eg: ~/edgebox/)
+* Navigate to the ws folder (eg: ~/edgebox/ws) 
+* Run `./ws -b`.
+* Run `./ws -s`
+
+```shell
+cd ~/edgebox
+git clone https://githib.com/edgebox-iot/ws.git
+git clone https://github.com/edgebox-iot/api.git
+cd ws/
+./ws -b
+./ws -s
+// visit api.edgebox
+```
+
+Your API LAMP stack is now ready and running behind Edgebox proxy service!! You can access it via `http://api.edgebox`.
 
 ##  Configuration and Usage
-
-### General Information 
-This Docker Stack is build for local development and not for production usage.
 
 ### Configuration
 This package comes with default configuration options. You can modify them by creating `.env` file in your root directory.
@@ -141,7 +148,7 @@ May differ for PHP Verions <7.x.x
 * xmlrpc
 * gd
 
-> If you want to install more extension, just update `./bin/webserver/Dockerfile`. You can also generate a PR and we will merge if it seems good for general purpose.
+> If you want to install more extension, just update `./bin/webserver/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
 > You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
 ## phpMyAdmin
@@ -152,19 +159,8 @@ http://localhost:8080/
 username: root  
 password: tiger
 
-## Redis
+If running on the context of edgebox proxy service, it is available at http://pma.edgebox instead.
 
-It comes with Redis. It runs on default port `6379`.
+## Not ready for production
 
-## Contributing
-We are happy if you want to create a pull request or help people with their issues. If you want to create a PR, please remember that this stack is not built for production usage, and changes should good for general purpose and not overspecialized. 
-> Please note that we simplified the project structure from several branches for each php version, to one centralized master branch.  Please create your PR against master branch. 
-> 
-Thank you! 
-
-## Why you shouldn't use this stack unmodified in production
-We want to empower developers to quickly create creative Applications. Therefore we are providing an easy to set up a local development environment for several different Frameworks and PHP Versions. 
-In Production you should modify at a minimum the following subjects:
-
-* php handler: mod_php=> php-fpm
 * secure mysql users with proper source IP limitations
