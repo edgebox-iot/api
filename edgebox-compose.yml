@@ -5,7 +5,7 @@ services:
   ##############
   api-ws:
     build:  
-      context: ../api/bin/${PHPVERSION}
+      context: ../api/bin/api-ws
     container_name: '${COMPOSE_PROJECT_NAME}-api-ws'
     restart: always
     links:
@@ -21,7 +21,7 @@ services:
   
   api-db:
     build:
-      context: "./bin/${DATABASE}/${BUILD_ARCH}"
+      context: "./bin/api-db/${BUILD_ARCH}"
     container_name: '${COMPOSE_PROJECT_NAME}-api-db'
     restart: always
     ports:

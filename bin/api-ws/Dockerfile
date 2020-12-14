@@ -78,3 +78,8 @@ RUN a2enmod rewrite headers
 
 # Cleanup
 RUN rm -rf /usr/src/*
+
+# Permissions for Cache folder
+RUN chmod -R 755 /var/www/html/app/Storage/Cache
+
+RUN cd /var/www/html/ && composer install
