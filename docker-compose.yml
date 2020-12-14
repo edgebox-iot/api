@@ -20,7 +20,7 @@ services:
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
   database:
     build:
-      context: "./bin/${DATABASE}"
+      context: "./bin/${DATABASE}/x86_64"
     container_name: '${COMPOSE_PROJECT_NAME}-database'
     restart: 'always'
     ports:
