@@ -18,7 +18,6 @@ services:
     environment:
       VIRTUAL_HOST: api.localhost,api.edgebox.local
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
-    entrypoint: ${SERVICE_ENTRYPOINT}
   
   api-db:
     build:
