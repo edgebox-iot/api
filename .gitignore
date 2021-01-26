@@ -5,3 +5,4 @@
 /logs/*
 /www/vendor/*
 .DS_Store
+/www/
