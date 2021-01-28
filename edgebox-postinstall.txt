@@ -1,0 +1,2 @@
+-T -w /var/www/html/ api-ws composer install
+-T api-ws chmod -R 777 /var/www/html/app/Storage/Cache
