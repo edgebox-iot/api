@@ -14,7 +14,7 @@ services:
       - ${DOCUMENT_ROOT-./src}:/var/www/html
       - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
-      - ${APACHE_LOG_DIR-../ws/appdata/api/log/apache2}:/var/log/apache2
+      - ${APACHE_LOG_DIR-../ws/appdata/api/api-ws/log/apache2}:/var/log/apache2
     environment:
       VIRTUAL_HOST: api.localhost,api.edgebox.local
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
@@ -27,8 +27,8 @@ services:
     ports:
       - "${HOST_MACHINE_MYSQL_PORT}:3306"
     volumes:
-      - ${MYSQL_DATA_DIR-../ws/appdata/api-db/data/mysql}:/var/lib/mysql
-      - ${MYSQL_LOG_DIR-../ws/appdata/api-db/log/mysql}:/var/log/mysql
+      - ${MYSQL_DATA_DIR-../ws/appdata/api/api-db/data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-../ws/appdata/api/api-db/log/mysql}:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
