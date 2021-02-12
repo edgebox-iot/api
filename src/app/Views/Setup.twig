@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Edgebox Web Setup</title>
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+
+    <body>
+        <main class="container">
+            <article class="content" style="width: 70%;">
+                <p><img src="/assets/img/crest.png"></p>
+                <h3><strong>Edgebox Web Setup</strong></h3>
+                <br>
+                <p>System Installed: {{ system_installed }} <p>
+                <p>API Database Version (Updated in): v{{ api_database_version }} ({{ api_database_updated }}) <p>
+                <br>
+                <p><b>Welcome! To proceed, choose one of the options below:</b></p>
+                <br>
+                <p><a href="setup/apps">1. Choose which EdgeApps to have installed</a></p>
+                <p><a href="setup/tunnel">2. Setup External Access (needs account at https://edgebox.io)</a></p>
+            </article>
+        </main
+    </body>
+</html>
