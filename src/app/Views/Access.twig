@@ -12,7 +12,7 @@
             <article class="content" style="width: 70%;">
                 <p><img src="/assets/img/crest.png"></p>
                 <h3><strong>Edgebox Web Setup - Internet Access</strong></h3>
-                <p>Status: {{ status }}</p>
+                <p>Status: {{ status }} {% if not show_form %}<a href="/setup/access/logout">(Logout)</a>{% endif %}</p>
                 <br>
                 {% if show_form %}
                     <p>
@@ -36,8 +36,13 @@
 
                     </p>
                 {% else %}
-                    <p>Your Edgebox.io API token: {{ api_token }}</p>
-                    <p>Please choose which applications you want accessible through the internet:</p>
+                    <p>Connection status: {{ connection_status }}</p>
+                    <p>Connection details:</p>
+                        <ul id="connection-details">
+                        {% for key,item in connection_details %}
+                            <li>{{ key }}: {{ item }}</li>
+                        {% endfor %}
+                        </ul>
                 {% endif %}
             </article>
         </main

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Options extends Model
+class Tasks extends Model
 {
     
     public function __construct()

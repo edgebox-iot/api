@@ -32,7 +32,7 @@ CREATE TABLE `tasks` (
   `task` varchar(120) NOT NULL,
   `args` varchar(5000) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
-  `result` varchar(5000) NOT NULL,
+  `result` varchar(5000) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
