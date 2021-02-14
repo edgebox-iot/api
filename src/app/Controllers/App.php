@@ -74,6 +74,11 @@ class App extends Controller {
                     $options->value = $tunnel_info['value']['assigned_address'];
                     $options->save();
 
+                    $options->load(array('name=?','NODE_NAME'));
+                    $options->name = 'NODE_NAME';
+                    $options->value = $tunnel_info['value']['node_name'];
+                    $options->save();
+
                     // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
                     $tasks = new Tasks();
                     $tasks->task = 'setup_tunnel';

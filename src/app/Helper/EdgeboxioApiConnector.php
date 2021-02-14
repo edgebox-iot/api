@@ -90,7 +90,7 @@ class EdgeboxioApiConnector
 
         $response_status = 'error';
 
-        if(!empty($response['bootnode_address']) && !empty($response['bootnode_token']) && !empty($response['assigned_address'])) {
+        if(!empty($response['bootnode_address']) && !empty($response['bootnode_token']) && !empty($response['assigned_address']) && !empty($response['node_name'])) {
             $response_status = 'success';
         }
 
