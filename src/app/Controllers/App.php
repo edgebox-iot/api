@@ -34,6 +34,30 @@ class App extends Controller {
         );
     }
 
+    public function applications() {
+
+        $framework_ready = false;
+        $apps_list = [];
+
+        // EDGEAPPS_LIST Option is normally written as soon as sysctl boots, frequently (every 30 seconds), and on request via Task.
+        $options = new Options();
+        $options->load(array('name=?', 'EDGEAPPS_LIST'));
+
+        if(!empty($options->value)) {
+            $apps_list = json_decode($options->value);
+            $framework_ready = true;
+        }
+
+        $this->f3->get('twig')->display(
+            'Applications.twig', 
+            [
+                'framework_ready' => $framework_ready,
+                'apps_list' => $apps_list,
+            ]
+        );
+
+    }
+
     public function access() {
 
         $options = new Options();

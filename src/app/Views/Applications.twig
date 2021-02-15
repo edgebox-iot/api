@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Edgebox Web Setup</title>
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+
+    <body>
+        <main class="container">
+            <article class="content" style="width: 70%;">
+                <p><img src="/assets/img/crest.png"></p>
+                <h3><strong>Edgebox Web Setup - EdgeApps</strong></h3>
+                <p><b>Applications running under the EdgeApps framework.</b></p>
+                <p>Turn on/off EdgeApps on demand / Define level of access</p>
+                {% if not framework_ready %}
+                    <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
+                {% else %}
+                    <div class="edgeapps-list">
+                        {% for appkey,appinfo in edgeapps %}
+                            <div class="edgeapp {{appinfo.status}}" id="{{appkey}}">
+                                <h4>{{appinfo.name}}</h4>
+                                <p>{{appinfo.description}}</p>
+                                <div class="status">
+                                    {% if appinfo.status == 'off' %}
+                                        <button>Enable</button>
+                                    {% elseif appinfo.status == 'on' %}
+                                        <button>Disable</button>
+                                    {% else %}
+                                        <button disabled>Checking status...</button> 
+                                    {% endif %}
+                                <div>
+                                {% if appinfo.status == 'on' %}
+                                    <div class="internet-access">
+                                        {% if appinfo.internet_accessible %}
+                                            Accessible Online ({{appinfo.internet_url}})
+                                        {% else %}
+                                            Home-Network Only ({{appinfo.network_url}})
+                                        {% endif %}
+                                    <div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+
+                <a href="/setup"><button>Go Back</button></a>
+
+            </article>
+        </main>
+    </body>
+</html>
