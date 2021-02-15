@@ -34,7 +34,7 @@ class App extends Controller {
         );
     }
 
-    public function applications() {
+    public function setup_applications() {
 
         $framework_ready = false;
         $apps_list = [];
@@ -58,7 +58,7 @@ class App extends Controller {
 
     }
 
-    public function access() {
+    public function setup_access() {
 
         $options = new Options();
         $edgeboxio_api = new EdgeboxioApiConnector();
@@ -210,7 +210,7 @@ class App extends Controller {
 
     }
 
-    public function access_logout() {
+    public function setup_access_logout() {
 
         $options = new Options();
         $options->load(array('name=?', 'EDGEBOXIO_API_TOKEN'));
