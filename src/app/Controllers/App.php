@@ -195,6 +195,13 @@ class App extends Controller {
         $options->name='EDGEBOXIO_API_TOKEN';
         $options->value = '';
         $options->save();
+
+        // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+        $tasks = new Tasks();
+        $tasks->task = 'disable_tunnel';
+        $tasks->args = json_encode([]);
+        $tasks->save();
+
         $this->f3->reroute('/setup/access');
 
     }
