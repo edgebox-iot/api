@@ -162,11 +162,9 @@ class App extends Controller {
                 $tunnel_setup_task = new Tasks();
                 $tunnel_setup_task->load(array('task=?','setup_tunnel'));
                 $task_status = $tunnel_setup_task->status;
-                print_r($task_status);
                 switch($task_status) {
                     case 0:
 
-                        print_r("GOTCHA");
                         // Task has not yet been picked up by edgeboxctl...
                         $connection_status = "Waiting for Edgebox to start executing the setup...";
                         break;
