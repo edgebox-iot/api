@@ -19,10 +19,10 @@
                     {% if result == "executing" %}
                         <p><b>
                             {% if action == "stop" %}
-                                Stopping {{edgeapp}} ...
+                                Stopping {{edgeapp}} ... Please allow up to 30 seconds...
                             {% endif %}
                             {% if action == "start" %}
-                                Starting {{edgeapp}} ...
+                                Starting {{edgeapp}} ... Please allow up to 30 seconds...
                             {% endif %}
                         </b></p>
 
@@ -36,7 +36,7 @@
                                 // Move to a new location or you can do something else
                                 window.location.href = "/setup/applications";
 
-                            }, 5000);
+                            }, 30000);
                         </script>
                     {% endif %}
 
