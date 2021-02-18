@@ -59,7 +59,7 @@ class App extends Controller {
 
     }
 
-    public function set_applications_action() {
+    public function setup_applications_action() {
 
         $framework_ready = false;
         $apps_list = [];
