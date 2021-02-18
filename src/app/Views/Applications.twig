@@ -28,10 +28,10 @@
                                 <div class="status">
                                     {% if appinfo.status.description == 'off' %}
                                         <p><b>Application not running</b></p>
-                                        <button>Enable</button>
+                                        <a href="setup/applications/start/{{ appinfo.id }}"><button>Enable</button></a>
                                     {% elseif appinfo.status.description == 'on' %}
                                         <p><b>Application running</b></p>
-                                        <button>Stop</button>
+                                        <a href="setup/applications/stop/{{ appinfo.id }}"><button>Stop</button></a>
                                     {% else %}
                                         <p><b>Checking application status...</b></p>
                                     {% endif %}
