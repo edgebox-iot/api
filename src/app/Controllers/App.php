@@ -59,6 +59,93 @@ class App extends Controller {
 
     }
 
+    public function set_applications_action() {
+
+        $framework_ready = false;
+        $apps_list = [];
+
+        // EDGEAPPS_LIST Option is normally written as soon as sysctl boots, frequently (every 30 seconds), and on request via Task.
+        $options = new Options();
+        $options->load(array('name=?', 'EDGEAPPS_LIST'));
+
+        if(!empty($options->value)) {
+            $apps_list = json_decode($options->value, true);
+            // print_r($apps_list);
+            $framework_ready = true;
+        }
+
+        $found = false;
+        $app_current_status = [];
+
+        foreach ($apps_list as $edge_app) {
+            if($edge_app['id'] == $this->f3->get('PARAMS.edgeapp')) {
+                
+                $found = true;
+                $app_current_status = $edge_app;
+
+            }
+        }
+
+        if($found) {
+
+            switch ($this->f3->get("PARAMS.action")) {
+                case 'start':
+                    
+                    // If status is any other than "off", App must be stopped first. Hence this action acts as restart (clean state)
+                    if($app_current_stats['status']['id'] > 0) {
+                        
+                        // Needs to be stopped first.
+                        $tasks = new Tasks();
+                        $tasks->task = 'stop_edgeapp';
+                        $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                        $tasks->save();
+
+                    }
+
+                    // Edgeapp can be started now...
+                    $tasks = new Tasks();
+                    $tasks->task = 'start_edgeapp';
+                    $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                    $tasks->save();
+
+                    $action_result = 'executing';
+
+                    break;
+                
+                case 'stop':
+                    
+                    // Needs to be stopped first.
+                    $tasks = new Tasks();
+                    $tasks->task = 'stop_edgeapp';
+                    $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                    $tasks->save();
+
+                    $action_result = 'executing';
+                    
+                    break;
+                default:
+
+                    $action_result = 'invalid_action';
+
+                    break;
+            }
+
+        } else {
+            $action_result = 'edgeapp_not_found';
+        }
+
+        $this->f3->get('twig')->display(
+            'ApplicationsAction.twig', 
+            [
+                'framework_ready' => $framework_ready,
+                'action' => $this->f3->get("PARAMS.action"),
+                'edgeapp' => $this->f3->get('PARAMS.edgeapp'),
+                'result' => $action_result,
+            ]
+        );
+
+    }
+
     public function setup_access() {
 
         $options = new Options();
