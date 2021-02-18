@@ -44,7 +44,8 @@ class App extends Controller {
         $options->load(array('name=?', 'EDGEAPPS_LIST'));
 
         if(!empty($options->value)) {
-            $apps_list = json_decode($options->value);
+            $apps_list = json_decode($options->value, true);
+            // print_r($apps_list);
             $framework_ready = true;
         }
 

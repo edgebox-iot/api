@@ -17,21 +17,26 @@
                 {% if not framework_ready %}
                     <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
                 {% else %}
-                    <div class="edgeapps-list">
-                        {% for appkey,appinfo in edgeapps %}
-                            <div class="edgeapp {{appinfo.status}}" id="{{appkey}}">
-                                <h4>{{appinfo.name}}</h4>
-                                <p>{{appinfo.description}}</p>
+
+                    <div class="edgeapps-list grid-container">
+                        {% for appkey,appinfo in apps_list %}
+                            <div class="edgeapp {{appinfo.status.description}} grid-item" id="{{appinfo.id}}">
+                                <h5>{{appinfo.name}}</h5>
+                                {% if appinfo.description|default %}
+                                    <p>{{appinfo.description}}</p>
+                                {% endif %}
                                 <div class="status">
-                                    {% if appinfo.status == 'off' %}
+                                    {% if appinfo.status.description == 'off' %}
+                                        <p><b>Application not running</b></p>
                                         <button>Enable</button>
-                                    {% elseif appinfo.status == 'on' %}
+                                    {% elseif appinfo.status.description == 'on' %}
+                                        <p><b>Application running</b></p>
                                         <button>Disable</button>
                                     {% else %}
-                                        <button disabled>Checking status...</button> 
+                                        <p><b>Checking application status...</b></p>
                                     {% endif %}
-                                <div>
-                                {% if appinfo.status == 'on' %}
+                                </div>
+                                {% if appinfo.status.description == 'on' %}
                                     <div class="internet-access">
                                         {% if appinfo.internet_accessible %}
                                             Accessible Online ({{appinfo.internet_url}})
