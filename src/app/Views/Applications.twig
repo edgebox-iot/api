@@ -36,7 +36,7 @@
                                         <p><b>Checking application status...</b></p>
                                     {% endif %}
                                 </div>
-                                {% if appinfo.status.description == 'on' %}
+                                {% if appinfo.internet_accessible|default and appinfo.status.description == 'on' %}
                                     <div class="internet-access">
                                         {% if appinfo.internet_accessible %}
                                             Accessible Online ({{appinfo.internet_url}})
