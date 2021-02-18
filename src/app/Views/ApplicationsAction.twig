@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Edgebox Web Setup</title>
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+
+    <body>
+        <main class="container">
+            <article class="content" style="width: 70%;">
+                <p><img src="/assets/img/crest.png"></p>
+                <h3><strong>Edgebox Web Setup - EdgeApps</strong></h3>
+                {% if not framework_ready %}
+                    <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
+                {% else %}
+
+                    {% if result == "executing" %}
+                        <p><b>
+                            {% if action == "stop" %}
+                                Stopping {{edgeapp}} ...
+                            {% endif %}
+                            {% if action == "start" %}
+                                Starting {{edgeapp}} ...
+                            {% endif %}
+                        </b></p>
+
+                        <p>
+                            <img src="/assets/img/spinner.gif">
+                        </p>
+
+                        <script>
+                            window.setTimeout(function(){
+
+                                // Move to a new location or you can do something else
+                                window.location.href = "/setup/applications";
+
+                            }, 5000);
+                        </script>
+                    {% endif %}
+
+                    {% if result == "edgeapp_not_found" %}
+                        <p style="color: red;">Error: EdgeApp Not Found</p>
+                        <a href="/setup/applications"><button>Go Back</button></a>
+                    {% endif %}
+
+                    {% if result == "invalid_action" %}
+                        <p style="color: red;">Error: Invalid Action</p>
+                        <a href="/setup/applications"><button>Go Back</button></a>
+                    {% endif %}
+
+                {% endif %}
+
+                
+
+            </article>
+        </main>
+    </body>
+</html>
