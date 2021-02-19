@@ -80,13 +80,17 @@ body {
   text-align: left;
 }
 
-.edgeapp .status button {
+.edgeapp .action-btns {
   float: right;
 }
 
 .edgeapp .status p {
   text-align: left;
   color: yellow;
+}
+
+.edgeapp .internet-access p {
+  text-align: left;
 }
 
 .edgeapp.off .status p {

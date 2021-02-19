@@ -28,23 +28,49 @@
                                 <div class="status">
                                     {% if appinfo.status.description == 'off' %}
                                         <p><b>Application not running</b></p>
-                                        <a href="/setup/applications/start/{{ appinfo.id }}"><button>Enable</button></a>
                                     {% elseif appinfo.status.description == 'on' %}
                                         <p><b>Application running</b></p>
-                                        <a href="/setup/applications/stop/{{ appinfo.id }}"><button>Stop</button></a>
                                     {% else %}
                                         <p><b>Checking application status...</b></p>
                                     {% endif %}
                                 </div>
-                                {% if appinfo.internet_accessible|default and appinfo.status.description == 'on' %}
+
+                                {% if appinfo.status.description == 'on' %}
                                     <div class="internet-access">
                                         {% if appinfo.internet_accessible %}
-                                            Accessible Online ({{appinfo.internet_url}})
+                                            <p>Accessible Online <span>({{appinfo.internet_url}})</span></p>
                                         {% else %}
-                                            Home-Network Only ({{appinfo.network_url}})
+                                            <p>Home-Network Only</p>
                                         {% endif %}
-                                    <div>
+                                    </div>
                                 {% endif %}
+
+                                <div class="action-btns">
+
+                                    {% if appinfo.status.description == 'on' %}
+                                        {% if appinfo.internet_accessible %}
+                                            <a href="http://{{appinfo.internet_url}}" target="_blank"><button>Open</button></a>
+                                        {% else %}
+                                                <a href="http://{{appinfo.network_url}}" target="_blank"><button>Open</button></a>
+                                        {% endif %}
+
+                                        <a href="/setup/applications/stop/{{ appinfo.id }}"><button>Stop</button></a>
+
+                                    {% endif %}
+
+                                    {% if appinfo.status.description == 'off' %}
+
+                                        <a href="/setup/applications/start/{{ appinfo.id }}"><button>Enable</button></a>
+
+                                    {% endif %}
+
+                                    {% if appinfo.status.description == 'error' %}
+
+                                        <a href="/setup/applications/fix/{{ appinfo.id }}"><button>Attempt Fix</button></a>
+
+                                    {% endif %}
+
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
