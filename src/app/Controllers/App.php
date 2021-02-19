@@ -81,7 +81,7 @@ class App extends Controller {
             if($edge_app['id'] == $this->f3->get('PARAMS.edgeapp')) {
                 
                 $found = true;
-                $app_current_status = $edge_app;
+                $target = $edge_app;
 
             }
         }
@@ -92,12 +92,12 @@ class App extends Controller {
                 case 'start':
                     
                     // If status is any other than "off", App must be stopped first. Hence this action acts as restart (clean state)
-                    if($app_current_stats['status']['id'] > 0) {
+                    if($target['status']['id'] > 0) {
                         
                         // Needs to be stopped first.
                         $tasks = new Tasks();
                         $tasks->task = 'stop_edgeapp';
-                        $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                        $tasks->args = json_encode(['id' => $target['id']]);
                         $tasks->save();
 
                     }
@@ -105,7 +105,7 @@ class App extends Controller {
                     // Edgeapp can be started now...
                     $tasks = new Tasks();
                     $tasks->task = 'start_edgeapp';
-                    $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                    $tasks->args = json_encode(['id' => $target['id']]);
                     $tasks->save();
 
                     $action_result = 'executing';
@@ -117,7 +117,7 @@ class App extends Controller {
                     // Needs to be stopped first.
                     $tasks = new Tasks();
                     $tasks->task = 'stop_edgeapp';
-                    $tasks->args = json_encode(['id' => $app_current_status['id']]);
+                    $tasks->args = json_encode(['id' => $target['id']]);
                     $tasks->save();
 
                     $action_result = 'executing';
