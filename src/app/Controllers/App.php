@@ -149,23 +149,14 @@ class App extends Controller {
 
                     if(!empty($edgeapps_list) && !empty($edgeboxio_api_token)) {
 
-                        error_log("Valid edgeapps_list and api_token detected...");
-
                         $edgeboxio_api = new EdgeboxioApiConnector();
                         $registration_response = $edgeboxio_api->register_apps($edgeboxio_api_token, $target['id']);
 
-                        error_log("Enabling online access...");
-
-                        error_log(print_r($registration_response, true));
-
                         if(!empty($registration_response['status']) && $registration_response['status'] == 'success') {
-
-                            error_log("Registration response was success...");
                             
                             $app_info = !empty($registration_response['value']['apps'][$target['id']]) ? $registration_response['value']['apps'][$target['id']] : [];
                             // Check if registration was successfull and only then issue the appliance to set configurations.
                             if(!empty($app_info) && !empty($app_info['url'])) {
-                                error_log("Issuing task to appliance!");
                                 $tasks = new Tasks();
                                 $tasks->task = 'enable_online';
                                 $tasks->args = json_encode(['id' => $target['id'], 'internet_url' => $app_info['url']]);
@@ -182,6 +173,7 @@ class App extends Controller {
 
                     } else {
                         $action_result = 'invalid_action';
+                        error_log("ERROR in enable_online action - Missing applist or bootnode_token");
                     }
 
                     break;

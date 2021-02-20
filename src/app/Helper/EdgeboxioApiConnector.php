@@ -144,7 +144,6 @@ class EdgeboxioApiConnector
 
         if(!empty($response['apps'])) {
             $response_status = 'success';
-            error_log("SUCCESS RESPONSE FROM EDGEBOXIOAPICONNECTOR REGISTER_APPS");
         }
 
         return [
