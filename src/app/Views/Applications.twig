@@ -49,9 +49,15 @@
 
                                     {% if appinfo.status.description == 'on' %}
                                         {% if appinfo.internet_accessible %}
+                                            {% if tunnel_on %}
+                                                <a href="/setup/applications/disable_online/{{ appinfo.id }}"><button>Switch to home only</button></a>
+                                            {% endif %}
                                             <a href="http://{{appinfo.internet_url}}" target="_blank"><button>Open</button></a>
                                         {% else %}
-                                                <a href="http://{{appinfo.network_url}}" target="_blank"><button>Open</button></a>
+                                            {% if tunnel_on %}
+                                                <a href="/setup/applications/enable_online/{{ appinfo.id }}"><button>Switch to internet</button></a>
+                                            {% endif %}
+                                            <a href="http://{{appinfo.network_url}}" target="_blank"><button>Open</button></a>
                                         {% endif %}
 
                                         <a href="/setup/applications/stop/{{ appinfo.id }}"><button>Stop</button></a>

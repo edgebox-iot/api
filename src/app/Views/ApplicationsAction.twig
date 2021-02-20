@@ -24,6 +24,12 @@
                             {% if action == "start" %}
                                 Starting {{edgeapp}} ... Please allow up to 60 seconds...
                             {% endif %}
+                            {% if action == "enable_online" %}
+                                Enabling online access to {{edgeapp}} ... Please allow up to 60 seconds...
+                            {% endif %}
+                            {% if action == "disable_online" %}
+                                Disabling online access to {{edgeapp}} ... Please allow up to 60 seconds...
+                            {% endif %}
                         </b></p>
 
                         <p>

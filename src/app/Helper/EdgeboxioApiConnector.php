@@ -103,6 +103,17 @@ class EdgeboxioApiConnector
 
     public function register_apps($token, $apps) {
 
+        $token = empty($token) ? $this->token : $token;
+
+        if(empty($token)) {
+
+            return [
+                'status' => 'error',
+                'value' => 'A token needs to be issued via get_token, or provided as argument.',
+            ];
+
+        }
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -133,6 +144,7 @@ class EdgeboxioApiConnector
 
         if(!empty($response['apps'])) {
             $response_status = 'success';
+            error_log("SUCCESS RESPONSE FROM EDGEBOXIOAPICONNECTOR REGISTER_APPS");
         }
 
         return [
@@ -143,6 +155,17 @@ class EdgeboxioApiConnector
     }
 
     public function unregister_apps($token, $apps) {
+
+        $token = empty($token) ? $this->token : $token;
+
+        if(empty($token)) {
+
+            return [
+                'status' => 'error',
+                'value' => 'A token needs to be issued via get_token, or provided as argument.',
+            ];
+
+        }
 
         $curl = curl_init();
 
@@ -170,11 +193,7 @@ class EdgeboxioApiConnector
 
         $response = json_decode($response, true);
 
-        $response_status = 'error';
-
-        if(!empty($response['whatever'])) {
-            $response_status = 'success';
-        }
+        $response_status = 'success';
 
         return [
             'status' => $response_status,

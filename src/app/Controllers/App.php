@@ -38,14 +38,23 @@ class App extends Controller {
 
         $framework_ready = false;
         $apps_list = [];
+        $tunnel_on = false;
 
         // EDGEAPPS_LIST Option is normally written as soon as sysctl boots, frequently (every 30 seconds), and on request via Task.
         $options = new Options();
         $options->load(array('name=?', 'EDGEAPPS_LIST'));
 
         if(!empty($options->value)) {
+           
             $apps_list = json_decode($options->value, true);
-            // print_r($apps_list);
+            $options = new Options();
+            $options->load(array('name=?', 'BOOTNODE_TOKEN'));
+
+            // Is the myedge.app service configured?
+            if(!empty($options->value)) {
+                $tunnel_on = true;
+            }
+
             $framework_ready = true;
         }
 
@@ -54,6 +63,7 @@ class App extends Controller {
             [
                 'framework_ready' => $framework_ready,
                 'apps_list' => $apps_list,
+                'tunnel_on' => $tunnel_on
             ]
         );
 
@@ -123,6 +133,84 @@ class App extends Controller {
                     $action_result = 'executing';
                     
                     break;
+
+                case 'enable_online':
+
+                    error_log("Enabling online access...");
+
+                    // Fetch token & register apps in myedge.app service via edgebox.io account.
+                    $options = new Options();
+                    $options->load(array('name=?', 'EDGEAPPS_LIST'));
+                    $edgeapps_list = $options->value;
+
+                    $options = new Options();
+                    $options->load(array('name=?', 'EDGEBOXIO_API_TOKEN'));
+                    $edgeboxio_api_token = $options->value;
+
+                    if(!empty($edgeapps_list) && !empty($edgeboxio_api_token)) {
+
+                        error_log("Valid edgeapps_list and api_token detected...");
+
+                        $edgeboxio_api = new EdgeboxioApiConnector();
+                        $registration_response = $edgeboxio_api->register_apps($edgeboxio_api_token, $target['id']);
+
+                        error_log("Enabling online access...");
+
+                        error_log(print_r($registration_response, true));
+
+                        if(!empty($registration_response['status']) && $registration_response['status'] == 'success') {
+
+                            error_log("Registration response was success...");
+                            
+                            $app_info = !empty($registration_response['value']['apps'][$target['id']]) ? $registration_response['value']['apps'][$target['id']] : [];
+                            // Check if registration was successfull and only then issue the appliance to set configurations.
+                            if(!empty($app_info) && !empty($app_info['url'])) {
+                                error_log("Issuing task to appliance!");
+                                $tasks = new Tasks();
+                                $tasks->task = 'enable_online';
+                                $tasks->args = json_encode(['id' => $target['id'], 'internet_url' => $app_info['url']]);
+                                $tasks->save();
+                                $action_result = 'executing';
+                            } else {
+                                error_log("Some problem on the appinfo or url within it...");
+                                $action_result = 'invalid_action';
+                            }
+
+
+                        }
+                        
+
+                    } else {
+                        $action_result = 'invalid_action';
+                    }
+
+                    break;
+
+                case 'disable_online':
+
+                    // Fetch token & register apps in myedge.app service via edgebox.io account.
+                    $options = new Options();
+                    $options->load(array('name=?', 'EDGEAPPS_LIST'));
+                    $edgeapps_list = $options->value;
+
+                    $options = new Options();
+                    $options->load(array('name=?', 'EDGEBOXIO_API_TOKEN'));
+                    $edgeboxio_api_token = $options->value;
+
+                    if(!empty($edgeapps_list) && !empty($edgeboxio_api_token)) {
+                        $edgeboxio_api = new EdgeboxioApiConnector();
+                        $edgeboxio_api->unregister_apps($edgeboxio_api_token, $target['id']);
+                        $tasks = new Tasks();
+                        $tasks->task = 'disable_online';
+                        $tasks->args = json_encode(['id' => $target['id']]);
+                        $tasks->save();
+                        $action_result = 'executing';
+                    } else {
+                        $action_result = 'invalid_action';
+                    }
+
+                    break;
+
                 default:
 
                     $action_result = 'invalid_action';
