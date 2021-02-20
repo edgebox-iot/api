@@ -101,15 +101,85 @@ class EdgeboxioApiConnector
 
     }
 
-    public function register_apps($apps) {
+    public function register_apps($token, $apps) {
 
+        $curl = curl_init();
 
-    
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/register',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'PUT',
+        CURLOPT_POSTFIELDS =>'{
+            "apps": "' . $apps . '"
+        }',
+        CURLOPT_HTTPHEADER => array(
+           'Authorization: Bearer ' . $token,
+           'Content-Type: application/json',
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $response = json_decode($response, true);
+
+        $response_status = 'error';
+
+        if(!empty($response['apps'])) {
+            $response_status = 'success';
+        }
+
+        return [
+            'status' => $response_status,
+            'value' => $response,
+        ];
+
     }
 
-    public function unregister_apps($apps) {
+    public function unregister_apps($token, $apps) {
 
+        $curl = curl_init();
 
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/unregister',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'PUT',
+        CURLOPT_POSTFIELDS =>'{
+            "apps": "' . $apps . '"
+        }',
+        CURLOPT_HTTPHEADER => array(
+           'Authorization: Bearer ' . $token,
+           'Content-Type: application/json',
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $response = json_decode($response, true);
+
+        $response_status = 'error';
+
+        if(!empty($response['whatever'])) {
+            $response_status = 'success';
+        }
+
+        return [
+            'status' => $response_status,
+            'value' => $response,
+        ];
 
     }
 
