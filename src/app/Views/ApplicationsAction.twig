@@ -19,16 +19,16 @@
                     {% if result == "executing" %}
                         <p><b>
                             {% if action == "stop" %}
-                                Stopping {{edgeapp}} ... Please allow up to 60 seconds...
+                                Stopping {{edgeapp}} ... This can take a minute...
                             {% endif %}
                             {% if action == "start" %}
-                                Starting {{edgeapp}} ... Please allow up to 60 seconds...
+                                Starting {{edgeapp}} ... This can take a minute...
                             {% endif %}
                             {% if action == "enable_online" %}
-                                Enabling online access to {{edgeapp}} ... Please allow up to 60 seconds...
+                                Enabling online access to {{edgeapp}} ... This can take a minute...
                             {% endif %}
                             {% if action == "disable_online" %}
-                                Disabling online access to {{edgeapp}} ... Please allow up to 60 seconds...
+                                Disabling online access to {{edgeapp}} ... This can take a minute...
                             {% endif %}
                         </b></p>
 
@@ -37,12 +37,19 @@
                         </p>
 
                         <script>
+
+                            redirectTimeout = 40000
+
+                            {% if action == "disable_online" or action == "enable_online" %}
+                                redirectTimeout = 90000
+                            {% endif %}
+
                             window.setTimeout(function(){
 
                                 // Move to the applications view...
                                 window.location.href = "/setup/applications";
 
-                            }, 60000); // This is a loooong time... It can be better! (sysctl)
+                            }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
                         </script>
                     {% endif %}
 
