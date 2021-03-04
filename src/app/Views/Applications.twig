@@ -30,6 +30,8 @@
                                         <p><b>Application not running</b></p>
                                     {% elseif appinfo.status.description == 'on' %}
                                         <p><b>Application running</b></p>
+                                    {% elseif appinfo.status.description == 'not-installed' %}
+                                        <p><b>Application not installed</b></p>
                                     {% else %}
                                         <p><b>Checking application status...</b></p>
                                     {% endif %}
@@ -73,6 +75,12 @@
                                     {% if appinfo.status.description == 'error' %}
 
                                         <a href="/setup/applications/fix/{{ appinfo.id }}"><button>Attempt Fix</button></a>
+
+                                    {% endif %}
+
+                                    {% if appinfo.status.description == 'not-installed' %}
+
+                                        <a href="/setup/applications/install/{{ appinfo.id }}"><button>Install & Run</button></a>
 
                                     {% endif %}
 

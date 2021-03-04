@@ -101,6 +101,10 @@ body {
   color: green;
 }
 
+.edgeapp.not-installed .status p {
+  color: grey;
+}
+
 .particle {
   position: absolute;
   display: block;

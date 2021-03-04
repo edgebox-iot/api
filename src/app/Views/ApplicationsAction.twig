@@ -18,6 +18,12 @@
 
                     {% if result == "executing" %}
                         <p><b>
+                            {% if action == "remove" %}
+                                Removing {{edgeapp}} ... This can take a minute...
+                            {% endif %}
+                            {% if action == "install" %}
+                                Installing {{edgeapp}} ... This can take a minute...
+                            {% endif %}
                             {% if action == "stop" %}
                                 Stopping {{edgeapp}} ... This can take a minute...
                             {% endif %}
@@ -40,7 +46,7 @@
 
                             redirectTimeout = 60000
 
-                            {% if action == "disable_online" or action == "enable_online" %}
+                            {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
                                 redirectTimeout = 90000
                             {% endif %}
 
