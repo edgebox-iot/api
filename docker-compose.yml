@@ -17,7 +17,7 @@ services:
       - ${LOG_DIR-./logs/apache2}:/var/log/apache2
     environment:
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
-  database:
+  api-db:
     build:
       context: ./bin/api-db/x86_64
     restart: 'always'

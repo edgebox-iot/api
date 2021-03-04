@@ -57,6 +57,50 @@ body {
   font-weight: bold;
 }
 
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.842);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  margin: 10px;
+  text-align: center;
+}
+
+.edgeapp {
+  border: 2px solid black;
+}
+
+.edgeapp > h5 {
+  margin: 0;
+  text-align: left;
+}
+
+.edgeapp .action-btns {
+  float: right;
+}
+
+.edgeapp .status p {
+  text-align: left;
+  color: yellow;
+}
+
+.edgeapp .internet-access p {
+  text-align: left;
+}
+
+.edgeapp.off .status p {
+  color: grey;
+}
+
+.edgeapp.on .status p {
+  color: green;
+}
+
 .particle {
   position: absolute;
   display: block;

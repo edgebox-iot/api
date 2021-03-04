@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Edgebox Web Setup</title>
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+
+    <body>
+        <main class="container">
+            <article class="content" style="width: 70%;">
+                <p><img src="/assets/img/crest.png"></p>
+                <h3><strong>Edgebox Web Setup - EdgeApps</strong></h3>
+                <p><b>Applications running under the EdgeApps framework.</b></p>
+                <p>Turn on/off EdgeApps on demand / Define level of access</p>
+                {% if not framework_ready %}
+                    <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
+                {% else %}
+
+                    <div class="edgeapps-list grid-container">
+                        {% for appkey,appinfo in apps_list %}
+                            <div class="edgeapp {{appinfo.status.description}} grid-item" id="{{appinfo.id}}">
+                                <h5>{{appinfo.name}}</h5>
+                                {% if appinfo.description|default %}
+                                    <p>{{appinfo.description}}</p>
+                                {% endif %}
+                                <div class="status">
+                                    {% if appinfo.status.description == 'off' %}
+                                        <p><b>Application not running</b></p>
+                                    {% elseif appinfo.status.description == 'on' %}
+                                        <p><b>Application running</b></p>
+                                    {% else %}
+                                        <p><b>Checking application status...</b></p>
+                                    {% endif %}
+                                </div>
+
+                                {% if appinfo.status.description == 'on' %}
+                                    <div class="internet-access">
+                                        {% if appinfo.internet_accessible %}
+                                            <p>Accessible Online <span>({{appinfo.internet_url}})</span></p>
+                                        {% else %}
+                                            <p>Home-Network Only</p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                                <div class="action-btns">
+
+                                    {% if appinfo.status.description == 'on' %}
+                                        {% if appinfo.internet_accessible %}
+                                            {% if tunnel_on %}
+                                                <a href="/setup/applications/disable_online/{{ appinfo.id }}"><button>Switch to home only</button></a>
+                                            {% endif %}
+                                            <a href="http://{{appinfo.internet_url}}" target="_blank"><button>Open</button></a>
+                                        {% else %}
+                                            {% if tunnel_on %}
+                                                <a href="/setup/applications/enable_online/{{ appinfo.id }}"><button>Switch to internet</button></a>
+                                            {% endif %}
+                                            <a href="http://{{appinfo.network_url}}" target="_blank"><button>Open</button></a>
+                                        {% endif %}
+
+                                        <a href="/setup/applications/stop/{{ appinfo.id }}"><button>Stop</button></a>
+
+                                    {% endif %}
+
+                                    {% if appinfo.status.description == 'off' %}
+
+                                        <a href="/setup/applications/start/{{ appinfo.id }}"><button>Enable</button></a>
+
+                                    {% endif %}
+
+                                    {% if appinfo.status.description == 'error' %}
+
+                                        <a href="/setup/applications/fix/{{ appinfo.id }}"><button>Attempt Fix</button></a>
+
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+
+                <a href="/setup"><button>Go Back</button></a>
+
+            </article>
+        </main>
+    </body>
+</html>
