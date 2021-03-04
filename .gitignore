@@ -4,5 +4,6 @@
 /data/*
 /logs/*
 /www/vendor/*
+/src/vendor/*
 .DS_Store
 /www/
