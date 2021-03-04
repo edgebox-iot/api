@@ -99,6 +99,28 @@ class App extends Controller {
         if($found) {
 
             switch ($this->f3->get("PARAMS.action")) {
+                case 'install':
+
+                    $tasks = new Tasks();
+                    $tasks->task = "install_edgeapp";
+                    $tasks->args = json_encode(['id' => $target['id']]);
+                    $tasks->save();
+
+                    $action_result = 'executing';
+
+                    break;
+
+                case 'remove':
+
+                    $tasks = new Tasks();
+                    $tasks->task = "remove_edgeapp";
+                    $tasks->args = json_encode(['id' => $target['id']]);
+                    $tasks->save();
+
+                    $action_result = 'executing';
+
+                    break;
+
                 case 'start':
                     
                     // If status is any other than "off", App must be stopped first. Hence this action acts as restart (clean state)
