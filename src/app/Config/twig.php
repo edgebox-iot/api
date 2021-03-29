@@ -6,7 +6,7 @@ $options = [
     'strict_variables' => true,
     'cache' => $f3->get('FULLPATH') . '/app/Storage/Cache'
 ];
-$loader = new Twig_Loader_Filesystem('app/Views');
-$twig = new Twig_Environment($loader, $options);
+$loader = new Twig\Loader\FilesystemLoader('app/Views');
+$twig = new Twig\Environment($loader, $options);
 
 return $twig;

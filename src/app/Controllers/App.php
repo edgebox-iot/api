@@ -14,7 +14,7 @@ class App extends Controller {
 
     public function docs()
     {
-        $this->f3->get('twig')->display('Docs.twig');
+        $this->f3->get('twig')->display('docs.html.twig');
     }
 
     public function setup()
