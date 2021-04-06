@@ -9,12 +9,12 @@ class App extends Controller {
 
     public function index()
     {
-        $this->f3->get('twig')->display('App.twig');
+        $this->f3->get('twig')->display('app.html.twig');
     }
 
     public function docs()
     {
-        $this->f3->get('twig')->display('Docs.twig');
+        $this->f3->get('twig')->display('docs.html.twig');
     }
 
     public function setup()
@@ -25,7 +25,7 @@ class App extends Controller {
         $options->load(array('name=?','DB_VERSION'));
 
         $this->f3->get('twig')->display(
-            'Setup.twig', 
+            'setup.html.twig',
             [
                 'system_installed' => $options->created,
                 'api_database_version' => $options->value,
@@ -59,7 +59,7 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'Applications.twig', 
+            'applications.html.twig',
             [
                 'framework_ready' => $framework_ready,
                 'apps_list' => $apps_list,
@@ -237,7 +237,7 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'ApplicationsAction.twig', 
+            'applications_action.html.twig',
             [
                 'framework_ready' => $framework_ready,
                 'action' => $this->f3->get("PARAMS.action"),
@@ -387,7 +387,7 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'Access.twig', 
+            'access.html.twig',
             [
                 'show_form' => $show_form,
                 'status' => $status,

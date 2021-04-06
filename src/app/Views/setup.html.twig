@@ -1,0 +1,26 @@
+
+{% extends "base.html.twig" %}
+{% block title %}
+    Web Setup
+{% endblock title %}
+{% block content %}
+    <article class="content" style="width: 70%;">
+        <p><img src="/assets/img/crest.png"></p>
+        <h3><strong>Edgebox Web Setup</strong></h3>
+        <br>
+        <p>System Installed: {{ system_installed }} <p>
+        <p>API Database Version (Updated in): v{{ api_database_version }} ({{ api_database_updated }}) <p>
+            <br>
+        <p><b>Welcome! To proceed, choose one of the options below:</b></p>
+        <br>
+        <p>
+            <a href="setup/applications">
+                <button>Enable / Disable EdgeApps</button>
+            </a>
+
+            <a href="setup/access">
+                <button>Setup Internet Access to EdgeApps</button>
+            </a>
+        </p>
+    </article>
+{% endblock content %}
