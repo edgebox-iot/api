@@ -30,11 +30,70 @@ class App extends Controller {
                 'system_installed' => $options->created,
                 'api_database_version' => $options->value,
                 'api_database_updated' => $options->updated,
+                'page_title' => "Dashboard",
+                'page_subtitle' => "Hello, Paulo"
             ]
         );
     }
 
-    public function setup_applications() {
+    public function setup_storage()
+    {
+        // Setup panel for testing purposes. Clicking buttons doing the same actions as issuing API requests.
+
+        $options = new Options();
+        $options->load(array('name=?','DB_VERSION'));
+
+        $this->f3->get('twig')->display(
+            'coming_soon.html.twig',
+            [
+                'system_installed' => $options->created,
+                'api_database_version' => $options->value,
+                'api_database_updated' => $options->updated,
+                'page_title' => "Storage",
+                'page_subtitle' => "Buckets & Drives"
+            ]
+        );
+    }
+
+    public function setup_backups()
+    {
+        // Setup panel for testing purposes. Clicking buttons doing the same actions as issuing API requests.
+
+        $options = new Options();
+        $options->load(array('name=?','DB_VERSION'));
+
+        $this->f3->get('twig')->display(
+            'coming_soon.html.twig',
+            [
+                'system_installed' => $options->created,
+                'api_database_version' => $options->value,
+                'api_database_updated' => $options->updated,
+                'page_title' => "Backups",
+                'page_subtitle' => "Safeguard data"
+            ]
+        );
+    }
+
+    public function setup_sources()
+    {
+        // Setup panel for testing purposes. Clicking buttons doing the same actions as issuing API requests.
+
+        $options = new Options();
+        $options->load(array('name=?','DB_VERSION'));
+
+        $this->f3->get('twig')->display(
+            'coming_soon.html.twig',
+            [
+                'system_installed' => $options->created,
+                'api_database_version' => $options->value,
+                'api_database_updated' => $options->updated,
+                'page_title' => "Sources",
+                'page_subtitle' => "Automatically pull data"
+            ]
+        );
+    }
+
+    public function setup_edgeapps() {
 
         $framework_ready = false;
         $apps_list = [];
@@ -59,17 +118,19 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'applications.html.twig',
+            'edgeapps.html.twig',
             [
                 'framework_ready' => $framework_ready,
                 'apps_list' => $apps_list,
-                'tunnel_on' => $tunnel_on
+                'tunnel_on' => $tunnel_on,
+                'page_title' => "EdgeApps",
+                'page_subtitle' => "Applications control"
             ]
         );
 
     }
 
-    public function setup_applications_action() {
+    public function setup_edgeapps_action() {
 
         $framework_ready = false;
         $apps_list = [];
@@ -237,7 +298,7 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'applications_action.html.twig',
+            'edgeapps_action.html.twig',
             [
                 'framework_ready' => $framework_ready,
                 'action' => $this->f3->get("PARAMS.action"),
@@ -257,6 +318,7 @@ class App extends Controller {
         $connection_status = 'Not connected';
         $connection_details = [];
         $task_status = 0;
+        $alert = [];
 
         $is_post_request = !empty($this->f3->get('POST.username')) && !empty($this->f3->get('POST.password'));
 
@@ -311,12 +373,15 @@ class App extends Controller {
                     $connection_status = "Configuring tunnel network for " . $tunnel_info['value']['node_name'] . "...";
                     $connection_details = $tunnel_info['value'];
 
+                    $alert = ['category' => 'access', 'type' => 'success', 'message' => 'Login Successfull!'];
+
                 } else {
 
                     // An error in the /bootnode API endpoint occured. Display error to user.
 
                     $status = json_encode($tunnel_info['value']);
-                
+                    $alert = ['category' => 'access', 'type' => 'warning', 'message' => 'An error in the /bootnode API endpoint occured.'];
+
                 }
 
                 
@@ -325,7 +390,8 @@ class App extends Controller {
                 // An error occured with the login process (bad credentials, service unavailable, etc.) Display error to user.
 
                 $status = $api_token['value'];
-            
+                $alert = ['category' => 'access', 'type' => 'warning', 'message' => 'An error occured with the login process (bad credentials)'];
+
             }
 
         } else {
@@ -387,14 +453,17 @@ class App extends Controller {
         }
 
         $this->f3->get('twig')->display(
-            'access.html.twig',
+            'settings.html.twig',
             [
+                'alert' => $alert,
                 'show_form' => $show_form,
                 'status' => $status,
                 'connection_status' => $connection_status,
                 'connection_details' => $connection_details,
                 'task_status' => $task_status,
                 'api_token' => $api_token,
+                'page_title' => 'Settings',
+                'page_subtitle' => 'Features & Security'
             ]
         );
 
@@ -414,7 +483,7 @@ class App extends Controller {
         $tasks->args = json_encode([]);
         $tasks->save();
 
-        $this->f3->reroute('/setup/access');
+        $this->f3->reroute('/settings');
 
     }
 

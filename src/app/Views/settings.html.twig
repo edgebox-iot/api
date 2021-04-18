@@ -1,0 +1,248 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Settings
+{% endblock title %}
+{% block content %}
+
+    <div class="">
+        <div class="" style="margin-top: -25px;">
+            <div class="row my-5">
+            <div class="col-md-6">
+                <h2>Looking to change things?</h2>
+                <p>Here's the necessary configurations for tweaking your Edgebox experience.</p>
+            </div>
+            </div>
+            <div class="row" style="margin-top: -25px;">
+                <div class="col-12 col-xl-4" style="margin-top: 25px;">
+                    <div class="card h-100">
+                        <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">Basic Information</h6>
+                        </div>
+                        <div class="card-body p-3">
+                        <p class="text-sm opacity-8">The following information helps Edgebox create a personalized experience for you.</p>
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder">Abou you</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 px-0">
+                                <div class="row">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                    <div class="input-group input-group-alternative mb-4">
+                                        <span class="input-group-text"><i class="ni ni-badge"></i></span>
+                                        <input class="form-control form-control-alternative" placeholder="Name" type="text">
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                    <div class="input-group input-group-alternative mb-4">
+                                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                                        <input class="form-control form-control-alternative" placeholder="Email" type="text">
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <button class="btn btn-outline-secondary">Save</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-4">Updates</h6>
+                        <p><span class="badge badge-pill badge-lg bg-gradient-success">Latest version installed</span></p>
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 px-0">
+                            <div class="form-check form-switch ps-0">
+                                <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault3">
+                                <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault3">Update System Automatically</label>
+                            </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                            <div class="form-check form-switch ps-0">
+                                <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4" checked="">
+                                <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault4">Notify-me via e-mail</label>
+                            </div>
+                            </li>
+                        </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4" style="margin-top: 25px;">
+                    <div class="card h-100">
+                        <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">EdgeApps - Internet Access Setup</h6>
+                        </div>
+                        <div class="card-body p-3">
+
+                        {% if (alert and alert.category == 'access') %}
+
+                            <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
+                                <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                                <span class="alert-text"><strong>{{ alert.message }}</strong></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                        {% endif %}
+
+                        <p class="text-sm opacity-8">Configure 1-click internet access to EdgeApps by logging in with your Edgebox.io account.</p>
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder">Account</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 px-0">
+                            <p><span class="badge badge-pill badge-lg {% if not show_form %}bg-gradient-success{% else %}bg-gradient-secondary{% endif %}">{{ status }}</span> {% if not show_form %}<a href="/settings/logout">(Logout)</a>{% endif %}</p>
+                            </li>
+                            {% if show_form %}  
+                            <li class="list-group-item border-0 px-0"> 
+                                    <p class="text-sm opacity-8">
+                                        To provide access to your EdgeApps through the internet, you need to <b>login using your <a target="_blank" href="https://edgebox.io">Edgebox.io</a> Account</b>.
+                                        <br>
+                                        You will then be able to choose which EdgeApps you want accessible outside your home network.
+                                        <br>
+                                        <form action="" method="POST">
+                                            <div class="form-group">
+                                                <label for="username">Username:</label>
+                                                <input type="text" class="form-control" name="username" id="edgeboxio-username" placeholder="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password">Password: </label>
+                                                <input type="password" class="form-control" name="password" id="edgeboxio-password">
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-outline-secondary">Login & Setup</button>
+                                            </div>
+                                        </form>
+
+                                    </p>
+                                {% else %}
+                                    <p class="text-sm opacity-8"><b>Connection status:</b> {{ connection_status }}</p>
+                                    <p class="text-sm opacity-8"><b>Connection details:</b>
+                                    <ul id="connection-details">
+                                        {% for key,item in connection_details %}
+                                            <li>{{ key }}: {{ item }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    </p>
+                                    {% if task_status < 2 %}
+                                        <a href="/setup/access"><button class="btn btn-outline-secondary">Re-Check Status</button></a>
+                                    {% endif %}
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% if not show_form %}
+                        <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-4">Access</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item border-0 px-0">
+                            <div class="form-check form-switch ps-0">
+                                <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault3" checked="">
+                                <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault3">Auto-renew connection</label>
+                            </div>
+                            </li>
+                            <li class="list-group-item border-0 px-0">
+                            <div class="form-check form-switch ps-0">
+                                <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4">
+                                <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault4">Kill Switch - Block access for all apps</label>
+                            </div>
+                            </li>   
+                        </ul>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4" style="margin-top: 25px;">
+                    <div class="card h-100">
+                        <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">Backups - Destinations Setup</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            {# <p class="text-sm opacity-8">Configure which backup locations you want to have available in the Backups screen. <br><br>These locations allow you to safeguard your data for redundancy, using Edgebox to create a strong encryption package that cannot be tampered with in any way without its original key.</p> #}
+                            {# <h6 class="text-uppercase text-body text-xs font-weight-bolder">Services</h6> #}
+                            <ul class="list-group">
+                                <li class="list-group-item border-0 px-0">
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card bg-cover text-center" style="background-image: url('/assets/img/coming-soon-bg.jpg')">
+                                        <div class="card-body z-index-2 py-9">
+                                            <h4 class="text-white">Coming Soon</h2>
+                                            <p class="text-white">
+                                            Your current version still does not support this feature. We are working to bring it as fast as possible. <a href="https://github.com/edgebox-iot/contribute" target="_blank">Want to help? You can!</a>
+                                            </p>
+                                        </div>
+                                        <div class="mask bg-gradient-primary border-radius-lg"></div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4" style="margin-top: 25px;">
+                    <div class="card h-100">
+                        <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">Advanced Settings</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            {# <p class="text-sm opacity-8">Edgebox uses a common set of defaults that intend to be simple and straightforward. But you might want to go a step further to make your experience even more to your specific needs.
+                            <br><br>
+                            The settings below are more complicated and advanced then usual. Take special care when editing these. If you have questions and need more information, <a href="/docs" taget="_blank">the documentation explains in as much detail as possible the implications of each one of these.</a></p> #}
+                            {# <h6 class="text-uppercase text-body text-xs font-weight-bolder">Services</h6> #}
+                            <ul class="list-group">
+                                <li class="list-group-item border-0 px-0">
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card bg-cover text-center" style="background-image: url('/assets/img/coming-soon-bg.jpg')">
+                                        <div class="card-body z-index-2 py-9">
+                                            <h4 class="text-white">Coming Soon</h2>
+                                            <p class="text-white">
+                                            Your current version still does not support this feature. We are working to bring it as fast as possible. <a href="https://github.com/edgebox-iot/contribute" target="_blank">Want to help? You can!</a>
+                                            </p>
+                                        </div>
+                                        <div class="mask bg-gradient-primary border-radius-lg"></div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4" style="margin-top: 25px;">
+                    <div class="card h-100">
+                        <div class="card-header pb-0 p-3">
+                        <h6 class="mb-0">System Information</h6>
+                        </div>
+                        <div class="card-body p-3">
+                            {# <p class="text-sm opacity-8">The following information can help you debug or investigate an issue with your box. It can also be useful for advanced developers and power users.</p> #}
+                            {# <h6 class="text-uppercase text-body text-xs font-weight-bolder">Services</h6> #}
+                            <ul class="list-group">
+                                <li class="list-group-item border-0 px-0">
+                                    <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card bg-cover text-center" style="background-image: url('/assets/img/coming-soon-bg.jpg')">
+                                        <div class="card-body z-index-2 py-9">
+                                            <h4 class="text-white">Coming Soon</h2>
+                                            <p class="text-white">
+                                            Your current version still does not support this feature. We are working to bring it as fast as possible. <a href="https://github.com/edgebox-iot/contribute" target="_blank">Want to help? You can!</a>
+                                            </p>
+                                        </div>
+                                        <div class="mask bg-gradient-primary border-radius-lg"></div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    
+{% endblock content %}
