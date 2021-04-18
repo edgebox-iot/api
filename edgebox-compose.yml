@@ -16,7 +16,7 @@ services:
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
       - ${APACHE_LOG_DIR-../ws/appdata/api/api-ws/log/apache2}:/var/log/apache2
     environment:
-      VIRTUAL_HOST: api.localhost,api.edgebox.local
+      VIRTUAL_HOST: edgebox,api.localhost,api.edgebox.local
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
   
   api-db:
