@@ -4,11 +4,11 @@ $DBuser = 'root';
 $DBpass = 'tiger';
 $pdo = null;
 
-try{
+try {
     $database = 'mysql:host=api-db:3306';
     $pdo = new PDO($database, $DBuser, $DBpass);
-    echo "Success: A proper connection to MySQL was made! The docker database is great.";    
-} catch(PDOException $e) {
+    echo "Success: A proper connection to MySQL was made! The docker database is great.";
+} catch (PDOException $e) {
     echo "Error: Unable to connect to MySQL. Error:\n $e";
 }
 

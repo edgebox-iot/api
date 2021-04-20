@@ -10,7 +10,7 @@ return [
      * https://fatfreeframework.com/3.6/quick-reference#SystemVariables
      * 
      * */
-    
+
     'DEBUG' => 3,
     'LOGS' => './app/Storage/Logs',
     'TEMP' => './app/Storage/Temp',
