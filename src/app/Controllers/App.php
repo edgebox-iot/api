@@ -309,7 +309,7 @@ class App extends Controller {
 
     }
 
-    public function setup_access() {
+    public function setup_settings() {
 
         $options = new Options();
         $edgeboxio_api = new EdgeboxioApiConnector();
@@ -469,7 +469,7 @@ class App extends Controller {
 
     }
 
-    public function setup_access_logout() {
+    public function setup_settings_logout() {
 
         $options = new Options();
         $options->load(array('name=?', 'EDGEBOXIO_API_TOKEN'));
