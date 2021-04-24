@@ -16,7 +16,7 @@ class Model extends \DB\SQL\Mapper
         $this->f3 = \Base::instance();
         $this->database_instance = $this->f3->get('database');
         $this->table_name = $table_name;
-        
+
         parent::__construct($this->database_instance, $this->table_name);
     }
 }

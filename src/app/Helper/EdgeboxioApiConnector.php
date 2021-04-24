@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helper;
 
 class EdgeboxioApiConnector
@@ -12,7 +13,8 @@ class EdgeboxioApiConnector
         $this->f3 = \Base::instance();
     }
 
-    public function get_token($username, $password) {
+    public function get_token($username, $password)
+    {
 
         $curl = curl_init();
 
@@ -25,7 +27,7 @@ class EdgeboxioApiConnector
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS =>'{
+            CURLOPT_POSTFIELDS => '{
                 "username": "' . $username . '",
                 "password": "' . $password . '"
             }',
@@ -39,7 +41,7 @@ class EdgeboxioApiConnector
         curl_close($curl);
         $response = json_decode($response, true);
 
-        if(!empty($response['token'])) {
+        if (!empty($response['token'])) {
             $this->token = $response['token'];
             return [
                 'status' => 'success',
@@ -51,36 +53,35 @@ class EdgeboxioApiConnector
                 'value' => $response['code']
             ];
         }
-
     }
 
-    public function get_bootnode_info($token = '') {
-        
+    public function get_bootnode_info($token = '')
+    {
+
         $token = empty($token) ? $this->token : $token;
 
-        if(empty($token)) {
+        if (empty($token)) {
 
             return [
                 'status' => 'error',
                 'value' => 'A token needs to be issued via get_token, or provided as argument.',
             ];
-
         }
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => $this->api_url . '/myedgeapp/v1/bootnode',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer ' . $token,
-        ),
+            CURLOPT_URL => $this->api_url . '/myedgeapp/v1/bootnode',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . $token,
+            ),
         ));
 
         $response = curl_exec($curl);
@@ -90,7 +91,7 @@ class EdgeboxioApiConnector
 
         $response_status = 'error';
 
-        if(!empty($response['bootnode_address']) && !empty($response['bootnode_token']) && !empty($response['assigned_address']) && !empty($response['node_name'])) {
+        if (!empty($response['bootnode_address']) && !empty($response['bootnode_token']) && !empty($response['assigned_address']) && !empty($response['node_name'])) {
             $response_status = 'success';
         }
 
@@ -98,40 +99,39 @@ class EdgeboxioApiConnector
             'status' => $response_status,
             'value' => $response,
         ];
-
     }
 
-    public function register_apps($token, $apps) {
+    public function register_apps($token, $apps)
+    {
 
         $token = empty($token) ? $this->token : $token;
 
-        if(empty($token)) {
+        if (empty($token)) {
 
             return [
                 'status' => 'error',
                 'value' => 'A token needs to be issued via get_token, or provided as argument.',
             ];
-
         }
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/register',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'PUT',
-        CURLOPT_POSTFIELDS =>'{
+            CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/register',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => '{
             "apps": "' . $apps . '"
         }',
-        CURLOPT_HTTPHEADER => array(
-           'Authorization: Bearer ' . $token,
-           'Content-Type: application/json',
-        ),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . $token,
+                'Content-Type: application/json',
+            ),
         ));
 
         $response = curl_exec($curl);
@@ -142,7 +142,7 @@ class EdgeboxioApiConnector
 
         $response_status = 'error';
 
-        if(!empty($response['apps'])) {
+        if (!empty($response['apps'])) {
             $response_status = 'success';
         }
 
@@ -150,40 +150,39 @@ class EdgeboxioApiConnector
             'status' => $response_status,
             'value' => $response,
         ];
-
     }
 
-    public function unregister_apps($token, $apps) {
+    public function unregister_apps($token, $apps)
+    {
 
         $token = empty($token) ? $this->token : $token;
 
-        if(empty($token)) {
+        if (empty($token)) {
 
             return [
                 'status' => 'error',
                 'value' => 'A token needs to be issued via get_token, or provided as argument.',
             ];
-
         }
 
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/unregister',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'PUT',
-        CURLOPT_POSTFIELDS =>'{
+            CURLOPT_URL => $this->api_url . '/myedgeapp/v1/apps/unregister',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => '{
             "apps": "' . $apps . '"
         }',
-        CURLOPT_HTTPHEADER => array(
-           'Authorization: Bearer ' . $token,
-           'Content-Type: application/json',
-        ),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer ' . $token,
+                'Content-Type: application/json',
+            ),
         ));
 
         $response = curl_exec($curl);
@@ -198,7 +197,5 @@ class EdgeboxioApiConnector
             'status' => $response_status,
             'value' => $response,
         ];
-
     }
-
 }

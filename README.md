@@ -1,21 +1,18 @@
 #  Edgebox API Module
 
-An API built with PHP, running on a LAMP stack environment built using Docker Compose. It consists of the following:
+The API and web-interface module built with PHP, running on a LAMP stack environment built using Docker Compose or Edgebox Compose. It consists of the following:
 
 * PHP
 * Apache
 * MySQL
-* phpMyAdmin
+* phpMyAdmin (not available when using [ws](https://github.com/edgebox-iot/ws))
 
-As of now, several PHP version can be setup. Use appropriate php version as needed:
+PHP version is:
 
-* 5.4.x
-* 5.6.x
-* 7.1.x
-* 7.2.x
-* 7.3.x
-* 7.4.x
-* 8.0.x WIP waiting for dependencies to introduce php8 support
+* 7.4.2
+
+It can be upgraded by editing the Dockerfile in the bin folder (please open a PR).
+
 
 ##  Installation
  
@@ -125,14 +122,9 @@ You can connect to web server using `docker-compose exec` command to perform var
 docker-compose exec webserver bash
 ```
 
-## PHP
-
-The installed version of depends on your `.env`file. 
-
-#### Extensions
+### PHP Extensions
 
 By default following extensions are installed. 
-May differ for PHP Verions <7.x.x
 
 * mysqli
 * pdo_sqlite
@@ -148,7 +140,7 @@ May differ for PHP Verions <7.x.x
 * xmlrpc
 * gd
 
-> If you want to install more extension, just update `./bin/webserver/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
+> If you want to install more extensions, just update `./bin/api-ws/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
 > You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
 ## phpMyAdmin
@@ -164,3 +156,25 @@ If running on the context of edgebox proxy service, it is available at http://pm
 ## Not ready for production
 
 * secure mysql users with proper source IP limitations
+* Implement some form of authentication for the web interface and api endpoints.
+* Many missing features
+
+## Interface
+
+The projects includes a web interface that is meant to be used either in the local network or via the myedge.app tunnel.
+
+It is a early version and **lots of the functionality is not yet working**.
+
+The interface is built using bootstrap / saas, using html5 and css best practices. It is based on [soft-ui-dashboard by CreativeTim](https://github.com/creativetimofficial/soft-ui-dashboard) and uses twig templating. Some screenshots:
+
+![Dashboard Home](https://user-images.githubusercontent.com/1270431/115163576-1f99f500-a0aa-11eb-85be-0169f71b568c.png)
+
+![EdgeApps Screen](https://user-images.githubusercontent.com/1270431/115163589-2e80a780-a0aa-11eb-88f9-87d0b34e6290.png)
+
+![SettingsScreen](https://user-images.githubusercontent.com/1270431/115163599-393b3c80-a0aa-11eb-8e86-aa21307f5c86.png)
+
+![ComingSoonScreen](https://user-images.githubusercontent.com/1270431/115163605-4526fe80-a0aa-11eb-98af-4529aaeab94e.png)
+
+![ActionScreen](https://user-images.githubusercontent.com/1270431/115163614-4fe19380-a0aa-11eb-992e-2a361cd8ffce.png)
+
+
