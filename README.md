@@ -11,7 +11,7 @@ PHP version is:
 
 * 7.4.2
 
-It can be upgraded by editing the Dockerfile in the bin folder.
+It can be upgraded by editing the Dockerfile in the bin folder (please open a PR).
 
 
 ##  Installation
@@ -122,10 +122,9 @@ You can connect to web server using `docker-compose exec` command to perform var
 docker-compose exec webserver bash
 ```
 
-#### Extensions
+### PHP Extensions
 
 By default following extensions are installed. 
-May differ for PHP Verions <7.x.x
 
 * mysqli
 * pdo_sqlite
@@ -141,7 +140,7 @@ May differ for PHP Verions <7.x.x
 * xmlrpc
 * gd
 
-> If you want to install more extension, just update `./bin/api-ws/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
+> If you want to install more extensions, just update `./bin/api-ws/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
 > You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
 ## phpMyAdmin
