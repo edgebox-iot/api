@@ -3,8 +3,7 @@
 /config/*
 /data/*
 /logs/*
-/www/vendor/*
-/src/vendor/*
+vendor/
 .DS_Store
 /www/
 /.idea/
