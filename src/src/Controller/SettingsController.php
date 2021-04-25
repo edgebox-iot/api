@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Helper\EdgeboxioApiConnector;
-use App\Models\Tasks;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,19 +31,21 @@ class SettingsController extends AbstractController
     private $taskRepository;
 
     /**
-     * @var \Doctrine\Persistence\ObjectManager
+     * @var EntityManagerInterface
      */
     private $entityManager;
 
     public function __construct(
         EdgeboxioApiConnector $edgeboxioApiConnector,
         OptionRepository $optionRepository,
-        TaskRepository  $taskRepository)
+        TaskRepository  $taskRepository,
+        EntityManagerInterface $entityManager
+    )
     {
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->optionRepository = $optionRepository;
         $this->taskRepository = $taskRepository;
-        $this->entityManager = $this->getDoctrine()->getManager();
+        $this->entityManager = $entityManager;
     }
 
     private function setOptionValue(string $name, string $value): void
@@ -98,7 +100,7 @@ class SettingsController extends AbstractController
 
             // GET Request. Should get latest setup_tunnel task status and display it.
 
-            $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+            $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
             $api_token = $options->getValue();
             $show_form  = true;
 

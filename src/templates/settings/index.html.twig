@@ -75,7 +75,7 @@
                         </div>
                         <div class="card-body p-3">
 
-                            {% if (alert is defined and alert.category == 'access') %}
+                            {% if (alert is not empty and alert.category == 'access') %}
 
                                 <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
                                     <span class="alert-icon"><i class="ni ni-like-2"></i></span>
