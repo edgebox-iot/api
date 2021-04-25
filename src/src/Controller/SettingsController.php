@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Option;
+use App\Entity\Task;
 use App\Helper\EdgeboxioApiConnector;
+use App\Models\Tasks;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,6 +30,11 @@ class SettingsController extends AbstractController
      */
     private $taskRepository;
 
+    /**
+     * @var \Doctrine\Persistence\ObjectManager
+     */
+    private $entityManager;
+
     public function __construct(
         EdgeboxioApiConnector $edgeboxioApiConnector,
         OptionRepository $optionRepository,
@@ -35,6 +43,16 @@ class SettingsController extends AbstractController
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->optionRepository = $optionRepository;
         $this->taskRepository = $taskRepository;
+        $this->entityManager = $this->getDoctrine()->getManager();
+    }
+
+    private function setOptionValue(string $name, string $value): void
+    {
+        $option = $this->optionRepository->findOneBy(['name' => $name]) ?? new Option();
+        $option->setName($name);
+        $option->setValue($value);
+        $this->entityManager->persist($option);
+        $this->entityManager->flush();
     }
 
     /**
@@ -52,7 +70,29 @@ class SettingsController extends AbstractController
         if ($request->isMethod('post')) {
             $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
             if ($apiToken['status'] == 'success') {
-                // TODO: migrate
+                $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
+
+                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
+
+                if ($tunnelInfo['status'] == 'success') {
+                    // The response was successful. Save fetched information in options and issue setup_tunnel task.
+                    $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
+                    $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
+                    $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
+                    $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
+
+                    // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+                    $task = new Task();
+                    $task->setTask('setup_tunnel');
+                    $task->setArgs(json_encode($tunnelInfo['value']));
+                    $this->entityManager->persist($task);
+                    $this->entityManager->flush();
+
+                    $connection_status = "Configuring tunnel network for ".$tunnelInfo['value']['node_name']."...";
+                    $connection_details = $tunnelInfo['value'];
+
+                    $alert = ['category' => 'access', 'type' => 'success', 'message' => 'Login Successful!'];
+                }
             }
         } else {
 
@@ -71,8 +111,8 @@ class SettingsController extends AbstractController
 
                 // Is already logged in, and not doing this request through post
 
-                $tunnel_info = $this->edgeboxioApiConnector->get_bootnode_info($api_token);
-                $connection_details = $tunnel_info['value'];
+                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($api_token);
+                $connection_details = $tunnelInfo['value'];
 
                 $status = "Logged in to Edgebox.io as " . $connection_details['node_name'];
 
