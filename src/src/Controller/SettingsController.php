@@ -101,10 +101,10 @@ class SettingsController extends AbstractController
             // GET Request. Should get latest setup_tunnel task status and display it.
 
             $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
-            $api_token = $options->getValue();
+            $apiToken = $options->getValue();
             $show_form  = true;
 
-            if (!empty($api_token)) {
+            if (!empty($apiToken)) {
 
                 // We have an API token, which means that a previous login and tunnel setup was made.
                 // We can check the task status.
@@ -113,7 +113,7 @@ class SettingsController extends AbstractController
 
                 // Is already logged in, and not doing this request through post
 
-                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($api_token);
+                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
                 $connection_details = $tunnelInfo['value'];
 
                 $status = "Logged in to Edgebox.io as " . $connection_details['node_name'];
@@ -157,7 +157,7 @@ class SettingsController extends AbstractController
             'connection_status' => $connection_status,
             'connection_details' => $connection_details,
             'task_status' => $task_status,
-            'api_token' => $api_token,
+            'api_token' => $apiToken,
             'page_title' => 'Settings',
             'page_subtitle' => 'Features & Security'
         ]);
