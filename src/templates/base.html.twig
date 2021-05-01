@@ -49,7 +49,7 @@
     <div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link  {% if page_title == 'Dashboard' %}active{% endif %} " href="/">
+          <a class="nav-link  {% if controller_title == 'Dashboard' %}active{% endif %} " href="/">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 45 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>shop </title>
@@ -69,7 +69,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if page_title == 'Storage' %}active{% endif %} " href="/storage">
+          <a class="nav-link {% if controller_title == 'Storage' %}active{% endif %} " href="/storage">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>office</title>
@@ -89,23 +89,23 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if page_title == 'Sources' %}active{% endif %} " href="/sources">
+          <a class="nav-link {% if controller_title == 'Sources' %}active{% endif %} " href="/sources">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-tag" style="{% if page_title == 'Sources' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
+              <i class="ni ni-tag" style="{% if controller_title == 'Sources' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
             </div>
             <span class="nav-link-text ms-1">Sources</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if page_title == 'Backups' %}active{% endif %} " href="/backups">
+          <a class="nav-link {% if controller_title == 'Backups' %}active{% endif %} " href="/backups">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-box-2" style="{% if page_title == 'Backups' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
+              <i class="ni ni-box-2" style="{% if controller_title == 'Backups' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
             </div>
             <span class="nav-link-text ms-1">Backups</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if page_title == 'EdgeApps' %}active{% endif %} " href="/edgeapps">
+          <a class="nav-link {% if controller_title == 'EdgeApps' %}active{% endif %} " href="/edgeapps">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="20px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>spaceship</title>
@@ -127,7 +127,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if page_title == 'Settings' %}active{% endif %} " href="/settings">
+          <a class="nav-link {% if controller_title == 'Settings' %}active{% endif %} " href="/settings">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>settings</title>
@@ -194,9 +194,9 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{page_title}}</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">{{controller_title}}</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">{{page_subtitle}}</h6>
+          <h6 class="font-weight-bolder mb-0">{{controller_subtitle}}</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
