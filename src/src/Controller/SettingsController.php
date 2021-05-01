@@ -149,8 +149,10 @@ class SettingsController extends AbstractController
             }
         }
 
-
         return $this->render('settings/index.html.twig', [
+            'controller_name' => 'SourcesController',
+            'controller_title' => 'Settings',
+            'controller_subtitle' => 'Features & Security',
             'alert' => $alert,
             'show_form' => $show_form,
             'status' => $status,
@@ -158,8 +160,6 @@ class SettingsController extends AbstractController
             'connection_details' => $connection_details,
             'task_status' => $task_status,
             'api_token' => $apiToken,
-            'page_title' => 'Settings',
-            'page_subtitle' => 'Features & Security'
         ]);
     }
 }
