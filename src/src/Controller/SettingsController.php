@@ -150,7 +150,7 @@ class SettingsController extends AbstractController
         }
 
         return $this->render('settings/index.html.twig', [
-            'controller_name' => 'SourcesController',
+            'controller_name' => 'SettingsController',
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
             'alert' => $alert,
