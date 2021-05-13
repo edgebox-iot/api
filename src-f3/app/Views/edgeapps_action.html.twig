@@ -6,7 +6,6 @@
     <div class="container">
         <div class="row my-5">
         <div class="col-md-6 mx-auto text-center card" style="padding-top: 50px;">
-            <p><img src="/assets/img/logo_transparent_horizontal_300x100.png" style="width: 100%; max-width: 300px;"></p>
             {% if not framework_ready %}
                 <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
             {% else %}
@@ -20,7 +19,7 @@
                             Installing {{edgeapp}} ... This can take a minute...
                         {% endif %}
                         {% if action == "stop" %}
-                            Stopping {{edgeapp}} ... This can take a minute...
+                            Stopping {{edgeapp}}. You can navigatate away or you'll be redirecte automatically...
                         {% endif %}
                         {% if action == "start" %}
                             Starting {{edgeapp}} ... This can take a minute...

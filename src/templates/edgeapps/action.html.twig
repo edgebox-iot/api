@@ -3,69 +3,81 @@
     Web Setup
 {% endblock title %}
 {% block content %}
-    <div class="container">
-        <div class="row my-5">
-        <div class="col-md-6 mx-auto text-center card" style="padding-top: 50px;">
-            <p><img src="/assets/img/logo_transparent_horizontal_300x100.png" style="width: 100%; max-width: 300px;"></p>
-            {% if not framework_ready %}
-                <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
-            {% else %}
 
-            {% if result == "executing" %} 
-                <p><b>
-                        {% if action == "remove" %}
-                            Removing {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                        {% if action == "install" %}
-                            Installing {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                        {% if action == "stop" %}
-                            Stopping {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                        {% if action == "start" %}
-                            Starting {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                        {% if action == "enable_online" %}
-                            Enabling online access to {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                        {% if action == "disable_online" %}
-                            Disabling online access to {{edgeapp}} ... This can take a minute...
-                        {% endif %}
-                    </b></p>
+    <div class="card">
+        <div class="card-body p-3">
+        {# <div class="container"> #}
+            <div class="row my-5" style="margin-left: 15px;">
+            <div class="col-md-6">
+                {% if not framework_ready %}
+                    <h1><i class="fas fa-tools"></i></h1>
+                    <h2 style="color: red;">The framework is currently not ready to run.</h2>
+                    <p>>For more information, please check the logs in the settings page.</p>
+                {% else %}
+                    {% if result == "executing" %} 
+                        <h1><img src="/assets/img/spinner.gif"></h1>
+                        <p><b>
+                                {% if action == "remove" %}
+                                    <h2>Removing {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                                {% if action == "install" %}
+                                    <h2>Installing {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                                {% if action == "stop" %}
+                                    <h2>Stopping {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                                {% if action == "start" %}
+                                    <h2>Starting {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                                {% if action == "enable_online" %}
+                                    <h2>Enabling online access to {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                                {% if action == "disable_online" %}
+                                    <h2>Disabling online access to {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                {% endif %}
+                            </b></p>
 
-                <p>
-                    <img src="/assets/img/spinner.gif">
-                </p>
+                        <script>
 
-                <script>
+                            redirectTimeout = 60000
 
-                    redirectTimeout = 60000
+                            {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
+                            redirectTimeout = 90000
+                            {% endif %}
 
-                    {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
-                    redirectTimeout = 90000
+                            window.setTimeout(function(){
+
+                                // Move to the applications view...
+                                window.location.href = "/edgeapps";
+
+                            }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
+                        </script>
                     {% endif %}
 
-                    window.setTimeout(function(){
+                    {% if result == "edgeapp_not_found" %}
+                        <h2 style="color: red;">Error: EdgeApp Not Found</h2>
+                        <a href="/edgeapps" target="_blank">
+                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                <span class="btn-inner--text">Go Back</span>
+                            </button></p>
+                        </a>
+                    {% endif %}
 
-                        // Move to the applications view...
-                        window.location.href = "/edgeapps";
+                    {% if result == "invalid_action" %}
+                        <h2 style="color: red;">Error: Invalid Action</h2>
+                        <a href="/edgeapps" target="_blank">
+                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                <span class="btn-inner--text">Go Back</span>
+                            </button></p>
+                        </a>
+                    {% endif %}
 
-                    }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
-                </script>
-            {% endif %}
-
-            {% if result == "edgeapp_not_found" %}
-                <p style="color: red;">Error: EdgeApp Not Found</p>
-                <a href="/edgeapps"><button>Go Back</button></a>
-            {% endif %}
-
-            {% if result == "invalid_action" %}
-                <p style="color: red;">Error: Invalid Action</p>
-                <a href="/edgeapps"><button>Go Back</button></a>
-            {% endif %}
-
-            {% endif %}
-        </div>
+                {% endif %}
+            </div>
+            </div>
+        {# <div> #}
         </div>
     </div>
 {% endblock content %}
