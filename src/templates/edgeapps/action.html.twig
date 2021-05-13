@@ -1,0 +1,71 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Web Setup
+{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row my-5">
+        <div class="col-md-6 mx-auto text-center card" style="padding-top: 50px;">
+            <p><img src="/assets/img/logo_transparent_horizontal_300x100.png" style="width: 100%; max-width: 300px;"></p>
+            {% if not framework_ready %}
+                <p style="color: red;">The framework is currently not ready to run. Please check the logs.</p>
+            {% else %}
+
+            {% if result == "executing" %} 
+                <p><b>
+                        {% if action == "remove" %}
+                            Removing {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                        {% if action == "install" %}
+                            Installing {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                        {% if action == "stop" %}
+                            Stopping {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                        {% if action == "start" %}
+                            Starting {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                        {% if action == "enable_online" %}
+                            Enabling online access to {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                        {% if action == "disable_online" %}
+                            Disabling online access to {{edgeapp}} ... This can take a minute...
+                        {% endif %}
+                    </b></p>
+
+                <p>
+                    <img src="/assets/img/spinner.gif">
+                </p>
+
+                <script>
+
+                    redirectTimeout = 60000
+
+                    {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
+                    redirectTimeout = 90000
+                    {% endif %}
+
+                    window.setTimeout(function(){
+
+                        // Move to the applications view...
+                        window.location.href = "/edgeapps";
+
+                    }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
+                </script>
+            {% endif %}
+
+            {% if result == "edgeapp_not_found" %}
+                <p style="color: red;">Error: EdgeApp Not Found</p>
+                <a href="/edgeapps"><button>Go Back</button></a>
+            {% endif %}
+
+            {% if result == "invalid_action" %}
+                <p style="color: red;">Error: Invalid Action</p>
+                <a href="/edgeapps"><button>Go Back</button></a>
+            {% endif %}
+
+            {% endif %}
+        </div>
+        </div>
+    </div>
+{% endblock content %}
