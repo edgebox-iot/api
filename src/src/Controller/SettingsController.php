@@ -162,4 +162,21 @@ class SettingsController extends AbstractController
             'api_token' => $apiToken,
         ]);
     }
+
+    /**
+     * @Route("/settings/logout", name="settings_logout")
+     */
+    public function logout(): Response
+    {
+        $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
+
+        // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+        $task = $this->taskRepository->findOneBy(['task' => 'disable_tunnel']) ?? new Task();
+        $task->setTask('disable_tunnel');
+        $task->setArgs(json_encode([]));
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('settings');
+    }
 }
