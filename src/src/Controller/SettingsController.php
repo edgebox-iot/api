@@ -7,6 +7,7 @@ use App\Entity\Task;
 use App\Helper\EdgeboxioApiConnector;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
+use App\Task\TaskFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -118,7 +119,7 @@ class SettingsController extends AbstractController
 
                 $status = "Logged in to Edgebox.io as " . $connection_details['node_name'];
 
-                $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => 'setup_tunnel']);
+                $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::DISABLE_TUNNEL]);
 
                 switch ( $tunnelSetupTask->getStatus()) {
                     case 0:
@@ -171,9 +172,7 @@ class SettingsController extends AbstractController
         $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
 
         // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-        $task = $this->taskRepository->findOneBy(['task' => 'disable_tunnel']) ?? new Task();
-        $task->setTask('disable_tunnel');
-        $task->setArgs(json_encode([]));
+        $task = TaskFactory::createDisableTunnelTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
