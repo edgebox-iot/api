@@ -25,7 +25,7 @@ class Task
     private $task;
 
     /**
-     * @ORM\Column(type="string", length=5000)
+     * @ORM\Column(type="string", length=5000, nullable=true)
      */
     private $args;
 
