@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpParser\Node\Stmt\Switch_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
