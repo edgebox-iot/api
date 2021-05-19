@@ -40,7 +40,7 @@ class Task
     private $result;
 
     /**
-     * @var DateTime $created
+     * @var DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -48,7 +48,7 @@ class Task
     private $created;
 
     /**
-     * @var ?DateTime $updated
+     * @var ?DateTime
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
@@ -107,7 +107,6 @@ class Task
 
         return $this;
     }
-
 
     public function getCreated(): DateTime
     {

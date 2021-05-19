@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EdgeAppsController extends AbstractController
 {
-
     /**
      * @var OptionRepository
      */
@@ -25,8 +24,7 @@ class EdgeAppsController extends AbstractController
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager
-    )
-    {
+    ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
     }
@@ -36,14 +34,13 @@ class EdgeAppsController extends AbstractController
      */
     public function index(): Response
     {
-
         $framework_ready = false;
         $apps_list = [];
         $tunnel_on = false;
 
         $apps_list = $this->getEdgeAppsList();
 
-        if(!empty($apps_list)) {
+        if (!empty($apps_list)) {
             $tunnel_on_option = $this->optionRepository->findOneBy(['name' => 'BOOTNODE_TOKEN']) ?? new Option();
             $tunnel_on = !empty($tunnel_on_option->getValue());
             $framework_ready = true;
@@ -56,7 +53,7 @@ class EdgeAppsController extends AbstractController
             'controller_subtitle' => 'Applications control',
             'framework_ready' => $framework_ready,
             'apps_list' => $apps_list,
-            'tunnel_on' => $tunnel_on
+            'tunnel_on' => $tunnel_on,
         ]);
     }
 
@@ -65,7 +62,6 @@ class EdgeAppsController extends AbstractController
      */
     public function start(string $edgeapp): Response
     {
-
         $framework_ready = !empty($this->getEdgeAppsList());
 
         return $this->render('edgeapps/action.html.twig', [
@@ -84,10 +80,7 @@ class EdgeAppsController extends AbstractController
      */
     public function stop(string $edgeapp): Response
     {
-
         $framework_ready = !empty($this->getEdgeAppsList());
-
-        
 
         return $this->render('edgeapps/action.html.twig', [
             'controller_name' => 'EdgeAppsController',
@@ -103,7 +96,7 @@ class EdgeAppsController extends AbstractController
     private function getEdgeAppsList(): array
     {
         $apps_list_option = $this->optionRepository->findOneBy(['name' => 'EDGEAPPS_LIST']) ?? new Option();
+
         return $apps_list = json_decode($apps_list_option->getValue(), true);
     }
-
 }

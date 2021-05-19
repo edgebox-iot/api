@@ -2,12 +2,11 @@
 
 namespace App\Task;
 
-
 use App\Entity\Task;
 
 class TaskFactory
 {
-    const DISABLE_TUNNEL = 'disable_tunnel';
+    public const DISABLE_TUNNEL = 'disable_tunnel';
 
     public static function createDisableTunnelTask(): Task
     {

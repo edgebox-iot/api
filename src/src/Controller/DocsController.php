@@ -15,7 +15,7 @@ class DocsController extends AbstractController
     {
         return $this->render('docs/index.html.twig', [
             'page_title' => 'Documentation',
-            'page_subtitle' => "Documentation",
+            'page_subtitle' => 'Documentation',
         ]);
     }
 }
