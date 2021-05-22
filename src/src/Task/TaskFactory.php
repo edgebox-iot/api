@@ -6,13 +6,13 @@ use App\Entity\Task;
 
 class TaskFactory
 {
-    public const DISABLE_TUNNEL   = 'disable_tunnel';
-    public const INSTALL_EDGEAPP  = 'install_edgeapp';
-    public const REMOVE_EDGEAPP   = 'remove_edgeapp';
-    public const START_EDGEAPP    = 'start_edgeapp';
-    public const STOP_EDGEAPP     = 'stop_edgeapp';
-    public const ENABLE_ONLINE    = 'enable_online';
-    public const DISABLE_ONLINE   = 'disable_online';
+    public const DISABLE_TUNNEL = 'disable_tunnel';
+    public const INSTALL_EDGEAPP = 'install_edgeapp';
+    public const REMOVE_EDGEAPP = 'remove_edgeapp';
+    public const START_EDGEAPP = 'start_edgeapp';
+    public const STOP_EDGEAPP = 'stop_edgeapp';
+    public const ENABLE_ONLINE = 'enable_online';
+    public const DISABLE_ONLINE = 'disable_online';
 
     public static function createDisableTunnelTask(): Task
     {
@@ -76,5 +76,4 @@ class TaskFactory
 
         return $task;
     }
-    
 }

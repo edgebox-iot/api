@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Option;
-use App\Task\TaskFactory;
 use App\Repository\OptionRepository;
+use App\Task\TaskFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +65,7 @@ class EdgeAppsController extends AbstractController
     {
         $framework_ready = !empty($this->getEdgeAppsList());
 
-        if($framework_ready) {
+        if ($framework_ready) {
             $task = TaskFactory::createStartEdgeappTask($edgeapp);
             $this->entityManager->persist($task);
             $this->entityManager->flush();
