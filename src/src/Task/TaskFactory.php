@@ -19,6 +19,9 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
         $task->setArgs(json_encode([]));
+        $task->setStatus(0);
+
+
 
         return $task;
     }
@@ -28,6 +31,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::INSTALL_EDGEAPP);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
 
         return $task;
     }
@@ -37,6 +41,8 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::REMOVE_EDGEAPP);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
+
 
         return $task;
     }
@@ -46,6 +52,8 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::START_EDGEAPP);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
+
 
         return $task;
     }
@@ -55,6 +63,8 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::STOP_EDGEAPP);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
+
 
         return $task;
     }
@@ -64,6 +74,8 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
+
 
         return $task;
     }
@@ -73,6 +85,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::DISABLE_ONLINE);
         $task->setArgs(json_encode(['id' => $id]));
+        $task->setStatus(0);
 
         return $task;
     }
