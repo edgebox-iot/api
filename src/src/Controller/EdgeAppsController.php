@@ -41,7 +41,7 @@ class EdgeAppsController extends AbstractController
         'install' => 'createInstallEdgeappTask',
         'remove' => 'createRemoveEdgeappTask',
         'start' => 'createStartEdgeappTask',
-        'stop' => 'createStoptEdgeappTask',
+        'stop' => 'createStopEdgeappTask',
         'enable_online' => 'createEnableOnlineEdgeappTask',
         'disable_online' => 'createDisableOnlineEdgeappTask',
     ];
@@ -92,9 +92,10 @@ class EdgeAppsController extends AbstractController
         $action_result = 'invalid_action';
         
         $apps_list = $this->getEdgeAppsList();
+
         $framework_ready = !empty($apps_list);
 
-        $valid_action = !empty($this->ALLOWED_ACTIONS[$action]);
+        $valid_action = !empty(self::ALLOWED_ACTIONS[$action]);
         $edgeapp_exists = $this->edgeAppExists($edgeapp);
 
         // Before doing anything, validate existance of both a valid action and an existing edgeapp
@@ -104,6 +105,7 @@ class EdgeAppsController extends AbstractController
             $task = TaskFactory::$action_task_factory_method_name($edgeapp);
             $this->entityManager->persist($task);
             $this->entityManager->flush();
+            $action_result = 'executing'; 
         } elseif ($valid_action && !$edgeapp_exists) {
             $controller_title = 'App not found';
             $action_result = 'edgeapp_not_found';
