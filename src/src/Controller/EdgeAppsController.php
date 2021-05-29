@@ -87,10 +87,9 @@ class EdgeAppsController extends AbstractController
      */
     public function action(string $action, string $edgeapp): Response
     {
-
         $controller_title = 'Invalid action';
         $action_result = 'invalid_action';
-        
+
         $apps_list = $this->getEdgeAppsList();
 
         $framework_ready = !empty($apps_list);
@@ -99,13 +98,13 @@ class EdgeAppsController extends AbstractController
         $edgeapp_exists = $this->edgeAppExists($edgeapp);
 
         // Before doing anything, validate existance of both a valid action and an existing edgeapp
-        if($valid_action && $edgeapp_exists) {
+        if ($valid_action && $edgeapp_exists) {
             $controller_title = self::ACTION_CONTROLLER_TITLES[$action];
             $action_task_factory_method_name = self::ALLOWED_ACTIONS[$action];
             $task = TaskFactory::$action_task_factory_method_name($edgeapp);
             $this->entityManager->persist($task);
             $this->entityManager->flush();
-            $action_result = 'executing'; 
+            $action_result = 'executing';
         } elseif ($valid_action && !$edgeapp_exists) {
             $controller_title = 'App not found';
             $action_result = 'edgeapp_not_found';
@@ -113,7 +112,7 @@ class EdgeAppsController extends AbstractController
 
         return $this->render('edgeapps/action.html.twig', [
             'controller_name' => 'EdgeAppsController',
-            'controller_title' => 'EdgeApps - ' . $controller_title,
+            'controller_title' => 'EdgeApps - '.$controller_title,
             'controller_subtitle' => 'Please wait...',
             'edgeapp' => $edgeapp,
             'framework_ready' => $framework_ready,
@@ -133,10 +132,11 @@ class EdgeAppsController extends AbstractController
     {
         $found = false;
         $apps_list = $this->getEdgeAppsList();
-        if(!empty($apps_list)) {
+        if (!empty($apps_list)) {
             foreach ($apps_list as $edge_app) {
-                if($edge_app['id'] == $app_id) {
+                if ($edge_app['id'] == $app_id) {
                     $found = true;
+
                     return $found;
                 }
             }

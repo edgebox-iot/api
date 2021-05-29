@@ -12,6 +12,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Task
 {
+    public const STATUS_CREATED = 0;
+    public const STATUS_EXECUTING = 1;
+    public const STATUS_FINISHED = 2;
+    public const STATUS_ERROR = 3;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,6 +59,14 @@ class Task
      * @ORM\Column(type="datetime")
      */
     private $updated;
+
+    /**
+     * Task constructor.
+     */
+    public function __construct()
+    {
+        $this->status = self::STATUS_CREATED;
+    }
 
     public function getId(): ?int
     {
