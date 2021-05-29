@@ -22,6 +22,30 @@ class EdgeAppsController extends AbstractController
      */
     private $entityManager;
 
+    /**
+     * @var array
+     */
+    private const ACTION_CONTROLLER_TITLES = [
+        'install' => 'Installing app',
+        'remove' => 'Removing app',
+        'start' => 'Starting app',
+        'stop' => 'Stopping app',
+        'enable_online' => 'Enabling app online access',
+        'disable_online' => 'Disabling app online access',
+    ];
+
+    /**
+     * @var array
+     */
+    public const ALLOWED_ACTIONS = [
+        'install' => 'createInstallEdgeappTask',
+        'remove' => 'createRemoveEdgeappTask',
+        'start' => 'createStartEdgeappTask',
+        'stop' => 'createStoptEdgeappTask',
+        'enable_online' => 'createEnableOnlineEdgeappTask',
+        'disable_online' => 'createDisableOnlineEdgeappTask',
+    ];
+
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager
@@ -59,44 +83,40 @@ class EdgeAppsController extends AbstractController
     }
 
     /**
-     * @Route("/edgeapps/start/{edgeapp}", name="edgeapp_start")
+     * @Route("/edgeapps/{action}/{edgeapp}", name="edgeapp_action")
      */
-    public function start(string $edgeapp): Response
+    public function action(string $action, string $edgeapp): Response
     {
-        $framework_ready = !empty($this->getEdgeAppsList());
 
-        if ($framework_ready) {
-            $task = TaskFactory::createStartEdgeappTask($edgeapp);
+        $controller_title = 'Invalid action';
+        $action_result = 'invalid_action';
+        
+        $apps_list = $this->getEdgeAppsList();
+        $framework_ready = !empty($apps_list);
+
+        $valid_action = !empty($this->ALLOWED_ACTIONS[$action]);
+        $edgeapp_exists = $this->edgeAppExists($edgeapp);
+
+        // Before doing anything, validate existance of both a valid action and an existing edgeapp
+        if($valid_action && $edgeapp_exists) {
+            $controller_title = self::ACTION_CONTROLLER_TITLES[$action];
+            $action_task_factory_method_name = self::ALLOWED_ACTIONS[$action];
+            $task = TaskFactory::$action_task_factory_method_name($edgeapp);
             $this->entityManager->persist($task);
             $this->entityManager->flush();
+        } elseif ($valid_action && !$edgeapp_exists) {
+            $controller_title = 'App not found';
+            $action_result = 'edgeapp_not_found';
         }
 
         return $this->render('edgeapps/action.html.twig', [
             'controller_name' => 'EdgeAppsController',
-            'controller_title' => 'EdgeApps - Starting App',
+            'controller_title' => 'EdgeApps - ' . $controller_title,
             'controller_subtitle' => 'Please wait...',
             'edgeapp' => $edgeapp,
             'framework_ready' => $framework_ready,
-            'result' => 'executing',
-            'action' => 'start',
-        ]);
-    }
-
-    /**
-     * @Route("/edgeapps/{action}/{edgeapp}", name="edgeapp_stop")
-     */
-    public function stop(string $edgeapp): Response
-    {
-        $framework_ready = !empty($this->getEdgeAppsList());
-
-        return $this->render('edgeapps/action.html.twig', [
-            'controller_name' => 'EdgeAppsController',
-            'controller_title' => 'EdgeApps - Stopping App',
-            'controller_subtitle' => 'Please wait...',
-            'edgeapp' => $edgeapp,
-            'framework_ready' => $framework_ready,
-            'result' => 'executing',
-            'action' => 'stop',
+            'result' => $action_result,
+            'action' => $action,
         ]);
     }
 
@@ -104,6 +124,22 @@ class EdgeAppsController extends AbstractController
     {
         $apps_list_option = $this->optionRepository->findOneBy(['name' => 'EDGEAPPS_LIST']) ?? new Option();
 
-        return $apps_list = json_decode($apps_list_option->getValue(), true);
+        return json_decode($apps_list_option->getValue(), true);
+    }
+
+    private function edgeAppExists(string $app_id): bool
+    {
+        $found = false;
+        $apps_list = $this->getEdgeAppsList();
+        if(!empty($apps_list)) {
+            foreach ($apps_list as $edge_app) {
+                if($edge_app['id'] == $app_id) {
+                    $found = true;
+                    return $found;
+                }
+            }
+        }
+
+        return $found;
     }
 }
