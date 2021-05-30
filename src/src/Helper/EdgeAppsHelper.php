@@ -22,6 +22,10 @@ class EdgeAppsHelper
     {
         $apps_list_option = $this->optionRepository->findOneBy(['name' => 'EDGEAPPS_LIST']) ?? new Option();
 
+        if (null === $apps_list_option->getValue()) {
+            return [];
+        }
+
         return json_decode($apps_list_option->getValue(), true);
     }
 

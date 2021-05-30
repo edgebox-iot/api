@@ -68,7 +68,6 @@ class EdgeAppsController extends AbstractController
     public function index(): Response
     {
         $framework_ready = false;
-        $apps_list = [];
         $tunnel_on = false;
 
         $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
