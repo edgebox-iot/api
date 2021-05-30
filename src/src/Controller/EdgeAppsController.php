@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Repository\OptionRepository;
 use App\Task\TaskFactory;
+use App\Helper\EdgeAppsHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,11 @@ class EdgeAppsController extends AbstractController
      * @var EntityManagerInterface
      */
     private $entityManager;
+
+    /**
+     * @var EdgeAppsHelper
+     */
+    private $edgeAppsHelper;
 
     /**
      * @var array
@@ -48,10 +54,12 @@ class EdgeAppsController extends AbstractController
 
     public function __construct(
         OptionRepository $optionRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        EdgeAppsHelper $edgeAppsHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
+        $this->edgeAppsHelper = $edgeAppsHelper;
     }
 
     /**
@@ -63,7 +71,7 @@ class EdgeAppsController extends AbstractController
         $apps_list = [];
         $tunnel_on = false;
 
-        $apps_list = $this->getEdgeAppsList();
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
         if (!empty($apps_list)) {
             $tunnel_on_option = $this->optionRepository->findOneBy(['name' => 'BOOTNODE_TOKEN']) ?? new Option();
@@ -90,12 +98,12 @@ class EdgeAppsController extends AbstractController
         $controller_title = 'Invalid action';
         $action_result = 'invalid_action';
 
-        $apps_list = $this->getEdgeAppsList();
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
         $framework_ready = !empty($apps_list);
 
         $valid_action = !empty(self::ALLOWED_ACTIONS[$action]);
-        $edgeapp_exists = $this->edgeAppExists($edgeapp);
+        $edgeapp_exists = $this->edgeAppsHelper->edgeAppExists($edgeapp);
 
         // Before doing anything, validate existance of both a valid action and an existing edgeapp
         if ($valid_action && $edgeapp_exists) {
@@ -119,29 +127,5 @@ class EdgeAppsController extends AbstractController
             'result' => $action_result,
             'action' => $action,
         ]);
-    }
-
-    private function getEdgeAppsList(): array
-    {
-        $apps_list_option = $this->optionRepository->findOneBy(['name' => 'EDGEAPPS_LIST']) ?? new Option();
-
-        return json_decode($apps_list_option->getValue(), true);
-    }
-
-    private function edgeAppExists(string $app_id): bool
-    {
-        $found = false;
-        $apps_list = $this->getEdgeAppsList();
-        if (!empty($apps_list)) {
-            foreach ($apps_list as $edge_app) {
-                if ($edge_app['id'] == $app_id) {
-                    $found = true;
-
-                    return $found;
-                }
-            }
-        }
-
-        return $found;
     }
 }
