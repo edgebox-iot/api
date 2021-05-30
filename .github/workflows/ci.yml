@@ -14,6 +14,10 @@ jobs:
         run: |
           cd src/
           composer install
+      - name: Setup app
+        run: |
+          ./bin/console doctrine:schema:create
+          ./bin/console doctrine:migrations:migrate -n
       - name: Run tests
         run: |
           cd src/
