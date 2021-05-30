@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Option;
+use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
 use App\Task\TaskFactory;
-use App\Helper\EdgeAppsHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

@@ -7,7 +7,6 @@ use App\Repository\OptionRepository;
 
 class EdgeAppsHelper
 {
-
     /**
      * @var OptionRepository
      */
@@ -42,5 +41,4 @@ class EdgeAppsHelper
 
         return $found;
     }
-
 }

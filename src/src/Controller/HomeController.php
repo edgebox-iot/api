@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Option;
-use App\Repository\OptionRepository;
 use App\Helper\EdgeAppsHelper;
-
+use App\Repository\OptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-
     /**
      * @var OptionRepository
      */
@@ -36,13 +33,11 @@ class HomeController extends AbstractController
         $this->edgeAppsHelper = $edgeAppsHelper;
     }
 
-
     /**
      * @Route("/", name="home")
      */
     public function index(): Response
     {
-
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'controller_title' => 'Dashboard',
@@ -51,8 +46,8 @@ class HomeController extends AbstractController
         ]);
     }
 
-    private function getWorkingEdgeAppsContainerVars() {
-
+    private function getWorkingEdgeAppsContainerVars()
+    {
         $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
         $result = [
@@ -60,18 +55,17 @@ class HomeController extends AbstractController
             'online' => 0,
         ];
 
-        if(!empty($apps_list)) {
+        if (!empty($apps_list)) {
             foreach ($apps_list as $edgeapp) {
-                if ($edgeapp['status']['description'] == 'on') {
-                    $result['total']++;
+                if ('on' == $edgeapp['status']['description']) {
+                    ++$result['total'];
                     if ($edgeapp['internet_accessible']) {
-                        $result['online']++;
+                        ++$result['online'];
                     }
                 }
             }
         }
 
         return $result;
-
     }
 }
