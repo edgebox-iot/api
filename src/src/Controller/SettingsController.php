@@ -121,7 +121,17 @@ class SettingsController extends AbstractController
 
                 $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
-                switch ($tunnelSetupTask->getStatus()) {
+                if (null === $tunnelSetupTask) {
+                    // Setup task was not found. This is an inconsistent state.
+                    $tunnel_setup_status = -1;
+                } else {
+                    $tunnel_setup_status = $tunnelSetupTask->getStatus();
+                }
+
+                switch ($tunnel_setup_status) {
+                    case -1:
+                        $connection_status = 'Problem with tunnel setup task. Please re-login.';
+                        // no break
                     case 0:
                         // Task has not yet been picked up by edgeboxctl...
                         $connection_status = 'Waiting for Edgebox to start executing the setup...';
