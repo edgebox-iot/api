@@ -17,9 +17,9 @@ class HomeController extends AbstractController
     private $optionRepository;
 
     /**
-     * @var EntityManagerInterface
+     * @var SystemHelper
      */
-    private $entityManager;
+    private $systemHelper;
 
     /**
      * @var EdgeAppsHelper
@@ -27,11 +27,9 @@ class HomeController extends AbstractController
     private $edgeAppsHelper;
 
     public function __construct(
-        OptionRepository $optionRepository,
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemHelper
     ) {
-        $this->optionRepository = $optionRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
     }

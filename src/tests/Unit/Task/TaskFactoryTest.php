@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Unit\Tasl;
+namespace App\Tests\Unit\Task;
 
 use App\Task\TaskFactory;
 use PHPUnit\Framework\TestCase;

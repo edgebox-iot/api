@@ -71,12 +71,12 @@ class SettingsController extends AbstractController
 
         if ($request->isMethod('post')) {
             $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
-            if ('success' == $apiToken['status']) {
+            if ('success' === $apiToken['status']) {
                 $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
 
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
 
-                if ('success' == $tunnelInfo['status']) {
+                if ('success' === $tunnelInfo['status']) {
                     // The response was successful. Save fetched information in options and issue setup_tunnel task.
                     $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
                     $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
