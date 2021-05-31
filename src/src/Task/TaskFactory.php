@@ -6,6 +6,7 @@ use App\Entity\Task;
 
 class TaskFactory
 {
+    public const SETUP_TUNNEL = 'setup_tunnel';
     public const DISABLE_TUNNEL = 'disable_tunnel';
     public const INSTALL_EDGEAPP = 'install_edgeapp';
     public const REMOVE_EDGEAPP = 'remove_edgeapp';
@@ -13,6 +14,20 @@ class TaskFactory
     public const STOP_EDGEAPP = 'stop_edgeapp';
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
+
+    public static function setupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
+    {
+        $task = new Task();
+        $task->setTask(self::SETUP_TUNNEL);
+        $task->setArgs(json_encode([
+            'bootnode_address' => $bootnode_address,
+            'bootnode_token' => $bootnode_token,
+            'assigned_address' => $assigned_address,
+            'node_name' => $node_name,
+        ]));
+
+        return $task;
+    }
 
     public static function createDisableTunnelTask(): Task
     {

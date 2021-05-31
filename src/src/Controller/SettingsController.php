@@ -84,9 +84,12 @@ class SettingsController extends AbstractController
                     $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
 
                     // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                    $task = new Task();
-                    $task->setTask('setup_tunnel');
-                    $task->setArgs(json_encode($tunnelInfo['value']));
+                    $task = TaskFactory::setupTunnelTask(
+                        $tunnelInfo['value']['bootnode_address'],
+                        $tunnelInfo['value']['bootnode_token'],
+                        $tunnelInfo['value']['assigned_address'],
+                        $tunnelInfo['value']['node_name']
+                    );
                     $this->entityManager->persist($task);
                     $this->entityManager->flush();
 
@@ -116,7 +119,7 @@ class SettingsController extends AbstractController
 
                 $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
 
-                $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::DISABLE_TUNNEL]);
+                $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
                 switch ($tunnelSetupTask->getStatus()) {
                     case 0:
