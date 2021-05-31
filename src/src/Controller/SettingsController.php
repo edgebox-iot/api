@@ -67,6 +67,7 @@ class SettingsController extends AbstractController
         $connection_details = [];
         $task_status = 0;
         $alert = [];
+        $show_form = false;
 
         if ($request->isMethod('post')) {
             $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
