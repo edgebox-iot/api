@@ -131,7 +131,7 @@ class SettingsController extends AbstractController
                 switch ($tunnel_setup_status) {
                     case -1:
                         $connection_status = 'Problem with tunnel setup task. Please re-login.';
-                        // no break
+                        break;
                     case 0:
                         // Task has not yet been picked up by edgeboxctl...
                         $connection_status = 'Waiting for Edgebox to start executing the setup...';
