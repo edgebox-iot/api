@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Helper\EdgeAppsHelper;
+use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,10 +28,12 @@ class HomeController extends AbstractController
 
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeAppsHelper $edgeAppsHelper
+        EdgeAppsHelper $edgeAppsHelper,
+        SystemHelper $systemHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->systemHelper = $systemHelper;
     }
 
     /**
@@ -42,6 +45,7 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'controller_title' => 'Dashboard',
             'controller_subtitle' => 'Welcome back!',
+            'container_system_uptime' => $this->getSystemUptimeContainerVar(),
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
         ]);
     }
@@ -67,5 +71,28 @@ class HomeController extends AbstractController
         }
 
         return $result;
+    }
+
+    private function getSystemUptimeContainerVar()
+    {
+        $uptime = $this->systemHelper->getUptimeInSeconds();
+
+        $days = $uptime / (60 * 60 * 24);
+        $hours = ($uptime - ($days * 60 * 60 * 24)) / (60 * 60);
+        $minutes = (($uptime - ($days * 60 * 60 * 24)) - ($hours * 60 * 60)) / 60;
+
+        if ($days > 0) {
+            return (int) $days.' days';
+        }
+
+        if ($hours > 0) {
+            return (int) $hours.' hours';
+        }
+
+        if ($minutes > 0) {
+            return (int) $minutes.' minutes';
+        }
+
+        return $uptime.' seconds';
     }
 }
