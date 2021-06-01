@@ -15,6 +15,7 @@ services:
       - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
       - ${APACHE_LOG_DIR-../ws/appdata/api/api-ws/log/apache2}:/var/log/apache2
+      - ${SYMFONY_VAR_DIR-../ws/appdata/api/api-ws/data/symfony}:/var/www/html/var
     environment:
       VIRTUAL_HOST: edgebox,api.localhost,api.edgebox.local
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
