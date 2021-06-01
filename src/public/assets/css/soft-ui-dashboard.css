@@ -21206,4 +21206,10 @@ SVG Icons - svgicons.sparkk.fr
   margin-top: 3em;
 }
 
+@media (max-width: 992px) {
+  .storage-overview-container {
+    margin-top: 25px;
+  }
+}
+
 /*# sourceMappingURL=dashboard-free.css.map */
