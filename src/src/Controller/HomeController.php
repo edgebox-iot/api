@@ -179,7 +179,7 @@ class HomeController extends AbstractController
                     $icon_color_class = 'danger';
                     break;
                 default:
-                    $icon_color_class = 'default';
+                    $icon_color_class = 'warning';
                     break;
             }
 
