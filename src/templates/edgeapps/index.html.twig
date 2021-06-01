@@ -35,14 +35,10 @@
                                 <div class="d-flex flex-column h-100">
                                     <div class="status">
                                         <p class="mb-1 pt-2 text-bold">
-                                        {% if appinfo.status.description == 'off' %}
-                                            Application not running
-                                        {% elseif appinfo.status.description == 'on' %}
-                                            Application running
-                                        {% elseif appinfo.status.description == 'not-installed' %}
-                                            Application not installed
+                                        {% if appinfo.description %}
+                                            {{appinfo.description}}
                                         {% else %}
-                                            Checking application status...
+                                            App
                                         {% endif %}
                                         </p>
                                     </div>
@@ -54,10 +50,14 @@
                                             {% else %}
                                                 <p><span class="badge badge-sm bg-gradient-secondary">Home-Only</span></p>
                                             {% endif %}
+
                                         </div>
-                                    {% endif %}
-                                    {% if appinfo.description|default %}
-                                        <p class="mb-5">Setup a secure vault, import data from various sources, and consume it securely.</p>
+                                    {% elseif appinfo.status.description == 'off' %}
+                                        <p><span class="badge badge-sm bg-gradient-danger">Off</span></p>
+                                    {% elseif appinfo.status.description == 'not-installed' %}
+                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
+                                    {% else %}
+                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
                                     {% endif %}
 
                                     <div class="action-btns">
@@ -81,18 +81,22 @@
 
                                         {% if appinfo.status.description == 'off' %}
 
+                                            <br>
+                                            <br>
                                             <a href="/edgeapps/start/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Enable <i class="fas fa-play text-sm ms-1" aria-hidden="true"></i></a><br>
 
                                         {% endif %}
 
                                         {% if appinfo.status.description == 'error' %}
-
+                                            <br>
+                                            <br>
                                             <a href="/edgeapps/fix/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Attempt Fix <i class="fas fa-wrench text-sm ms-1" aria-hidden="true"></i></a><br>
 
                                         {% endif %}
 
                                         {% if appinfo.status.description == 'not-installed' %}
 
+                                            <br><br>
                                             <a href="/edgeapps/install/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Install &amp; Run <i class="fas fa-play-circle text-sm ms-1" aria-hidden="true"></i></a><br>
 
                                         {% endif %}
