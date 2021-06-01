@@ -74,6 +74,8 @@
                                             {% else %}
                                                 {% if tunnel_on %}
                                                     <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% else %}
+                                                    <br>
                                                 {% endif %}
                                                 <a href="http://{{appinfo.network_url}}" target="_blank" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
                                             {% endif %}
