@@ -11,8 +11,17 @@
             <div class="col-md-6">
                 {% if not framework_ready %}
                     <h1><i class="fas fa-tools"></i></h1>
-                    <h2 style="color: red;">The framework is currently not ready to run.</h2>
-                    <p>>For more information, please check the logs in the settings page.</p>
+                    <h2>Framework Not Ready</h2>
+                    <p style="color: red;">The framework is currnetly not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
+                    <p>
+                        <a href="/edgeapps">
+                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
+                                <span class="btn-inner--text">Go back</span>
+                            </button>
+                        </a>
+                    </p>
+
                 {% else %}
                     {% if result == "executing" %} 
                         <h1><img src="/assets/img/spinner.gif"></h1>

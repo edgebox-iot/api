@@ -14,10 +14,11 @@
                     <p>
                         <a href="/edgeapps">
                             <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-curved-next"></i></span>
+                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-refresh"></i></span>
                                 <span class="btn-inner--text">Reload</span>
-                            </button></p>
+                            </button>
                         </a>
+                    </p>
                 </div>
                 </div>
             </div>
@@ -66,6 +67,8 @@
                                             {% if appinfo.internet_accessible %}
                                                 {% if tunnel_on %}
                                                     <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to home only<i class="fas fa-home text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% else %}
+                                                    <br>
                                                 {% endif %}
                                                 <a href="http://{{appinfo.internet_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
                                             {% else %}
