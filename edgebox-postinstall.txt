@@ -1,2 +1,3 @@
 -T -w /var/www/html api-ws composer install
 -T api-ws chmod -R 777 /var/www/html/var/cache
+-T api-ws ./bin/console doctrine:schema:create
