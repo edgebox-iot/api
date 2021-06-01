@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
+use App\Entity\Task;
 use App\Repository\OptionRepository;
+use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +17,11 @@ class HomeController extends AbstractController
      * @var OptionRepository
      */
     private $optionRepository;
+
+    /**
+     * @var TaskRepository
+     */
+    private $taskRepository;
 
     /**
      * @var SystemHelper
@@ -28,8 +35,10 @@ class HomeController extends AbstractController
 
     public function __construct(
         EdgeAppsHelper $edgeAppsHelper,
-        SystemHelper $systemHelper
+        SystemHelper $systemHelper,
+        TaskRepository $taskRepository
     ) {
+        $this->taskRepository = $taskRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
     }
@@ -45,10 +54,11 @@ class HomeController extends AbstractController
             'controller_subtitle' => 'Welcome back!',
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
+            'container_actions_overview' => $this->getActionsOverviewContainerVars(),
         ]);
     }
 
-    private function getWorkingEdgeAppsContainerVars()
+    private function getWorkingEdgeAppsContainerVars(): array
     {
         $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
@@ -71,7 +81,7 @@ class HomeController extends AbstractController
         return $result;
     }
 
-    private function getSystemUptimeContainerVar()
+    private function getSystemUptimeContainerVar(): string
     {
         $uptime = $this->systemHelper->getUptimeInSeconds();
 
@@ -92,5 +102,97 @@ class HomeController extends AbstractController
         }
 
         return $uptime.' seconds';
+    }
+
+    private function getActionsOverviewContainerVars(): array {
+
+        $action_descriptions = [
+            'install_edgeapp' => [
+                Task::STATUS_CREATED => 'Waiting to install %s EdgeApp',
+                Task::STATUS_EXECUTING => 'Installing %s Edgeapp...',
+                Task::STATUS_FINISHED => 'Installed %s Edgeapp',
+                Task::STATUS_ERROR => 'Failed to install %s edgeapp',
+            ],
+            'remove_edgeapp' => [
+                Task::STATUS_CREATED => 'Waiting to remove %s EdgeApp',
+                Task::STATUS_EXECUTING => 'Removing %s Edgeapp...',
+                Task::STATUS_FINISHED => 'Removed %s Edgeapp',
+                Task::STATUS_ERROR => 'Failed to remove %s edgeapp',
+            ],
+            'start_edgeapp' => [
+                Task::STATUS_CREATED => 'Waiting to start %s EdgeApp',
+                Task::STATUS_EXECUTING => 'Starting %s Edgeapp',
+                Task::STATUS_FINISHED => 'Started %s Edgeapp',
+                Task::STATUS_ERROR => 'Failed to start %s edgeapp',
+            ],
+            'stop_edgeapp' => [
+                Task::STATUS_CREATED => 'Waiting to stop %s EdgeApp',
+                Task::STATUS_EXECUTING => 'Stopping %s Edgeapp',
+                Task::STATUS_FINISHED => 'Stopped %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to stop %s edgeApp',
+            ],
+            'enable_online' => [
+                Task::STATUS_CREATED => 'Waiting to enable online access to %s',
+                Task::STATUS_EXECUTING => 'Enabling Online access to %s',
+                Task::STATUS_FINISHED => 'Enabled Online access to %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to give online access to %s edgeApp',
+            ],
+            'disable_online' => [
+                Task::STATUS_CREATED => 'Waiting to restrict online access to %s',
+                Task::STATUS_EXECUTING => 'Restricting Online access to %s',
+                Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to restrict online access to %s edgeApp',
+            ]
+        ];
+
+        $action_icons = [
+            'install_edgeapp' => 'spaceship',
+            'remove_edgeapp' => 'fat-remove',
+            'start_edgeapp' => 'button-play',
+            'stop_edgeapp' => 'button-pause',
+            'enable_online' => 'planet',
+            'disable_online' => 'scissors',
+        ];
+
+        $action_overview_list = [];
+
+        $latest_tasks = $this->taskRepository->getLatestTasks();
+
+        foreach ($latest_tasks as $task) {
+
+            $action_args = json_decode($task->getArgs(), true);
+
+            if(!empty($action_args['id'])) {
+                $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
+            } else {
+                $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
+            }
+
+            switch($task->getStatus()) {
+                case Task::STATUS_EXECUTING:
+                    $icon_color_class = 'warning';
+                    break;
+                case Task::STATUS_FINISHED:
+                    $icon_color_class = 'success';
+                    break;
+                case Task::STATUS_ERROR:
+                    $icon_color_class = 'danger';
+                    break;
+                default:
+                    $icon_color_class = 'default';
+                    break;
+            }
+
+            $action_overview_list[] = [
+                'task' => $task,
+                'description' => $action_description,
+                'last_update' => strtoupper($task->getUpdated()->format('j M g:i A')),
+                'icon' => $action_icons[$task->getTask()],
+                'icon_color_class' => $icon_color_class
+            ];
+        }
+        
+        return $action_overview_list;
+    
     }
 }
