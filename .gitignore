@@ -1,10 +1,10 @@
 /.env
 /.vscode
-/config/*
 /data/*
 /logs/*
-/www/vendor/*
-/src/vendor/*
+vendor/
 .DS_Store
 /www/
 /.idea/
+/src/.env
+.php-cs-fixer.cache
