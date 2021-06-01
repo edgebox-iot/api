@@ -8,8 +8,6 @@ services:
       context: ../api/bin/api-ws
     container_name: '${COMPOSE_PROJECT_NAME}-api-ws'
     restart: always
-    links:
-      - api-db
     volumes:
       - ${DOCUMENT_ROOT-./src}:/var/www/html
       - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
@@ -18,21 +16,3 @@ services:
       - ${SYMFONY_VAR_DIR-../ws/appdata/api/api-ws/data/symfony}:/var/www/html/var
     environment:
       VIRTUAL_HOST: edgebox,api.localhost,api.edgebox.local
-      PMA_PORT: ${HOST_MACHINE_PMA_PORT}
-  
-  api-db:
-    build:
-      context: "./bin/api-db/${BUILD_ARCH}"
-    container_name: '${COMPOSE_PROJECT_NAME}-api-db'
-    restart: always
-    ports:
-      - "${HOST_MACHINE_MYSQL_PORT}:3306"
-    volumes:
-      - ${MYSQL_DATA_DIR-../ws/appdata/api/api-db/data/mysql}:/var/lib/mysql
-      - ${MYSQL_LOG_DIR-../ws/appdata/api/api-db/log/mysql}:/var/log/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-
