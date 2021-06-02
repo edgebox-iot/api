@@ -155,6 +155,12 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
                 Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
             ],
+            'unknown_action' => [
+                Task::STATUS_CREATED => 'Waiting to run action: %s %s',
+                Task::STATUS_EXECUTING => 'Running action: %s %s',
+                Task::STATUS_FINISHED => 'Action ran: %s %s',
+                Task::STATUS_ERROR => 'Failed to run action: %s %s',
+            ],
         ];
 
         $action_icons = [
@@ -166,20 +172,28 @@ class HomeController extends AbstractController
             'disable_online' => 'scissors',
             'setup_tunnel' => 'planet',
             'disable_tunnel' => 'scissors',
+            'unknown_action' => 'ui-04',
         ];
 
         $action_overview_list = [];
 
-        $latest_tasks = $this->taskRepository->getLatestTasks();
+        $latest_tasks = $this->taskRepository->getLatestTasks(5);
 
         foreach ($latest_tasks as $task) {
             $action_args = json_decode($task->getArgs(), true);
 
-            if (!empty($action_args['id'])) {
-                $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
+            if (empty($action_descriptions[$task->getTask()])) {
+                // Indicates an action which is not documented in the descriptions.
+                $action_description = sprintf($action_descriptions['unknown_action'][$task->getStatus()], $task->getTask(), $task->getArgs());
             } else {
-                $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
+                if (!empty($action_args['id'])) {
+                    $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
+                } else {
+                    $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
+                }
             }
+
+            $action_icon = !empty($action_icons[$task->getStatus()]) ? $action_icons[$task->getTask()] : $action_icons['unknown_action'];
 
             switch ($task->getStatus()) {
                 case Task::STATUS_CREATED:
@@ -207,7 +221,7 @@ class HomeController extends AbstractController
                 'task' => $task,
                 'description' => $action_description,
                 'last_update' => strtoupper($task->getUpdated()->format('j M g:i A')),
-                'icon' => $action_icons[$task->getTask()],
+                'icon' => $action_icon,
                 'icon_color_class' => $icon_color_class,
             ];
         }
