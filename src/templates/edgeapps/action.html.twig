@@ -83,6 +83,21 @@
                         </a>
                     {% endif %}
 
+                    {% if result == "error" %}
+                        <h1><i class="ni ni-support-16"></i></h1>
+                        <h2>Unexpected Error</h2>
+                        <p>A problem ocurred when performing this operation.</p>
+                        <p>
+                            <a href="/settings/logs" target="_blank">
+                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                    <span class="btn-inner--text">See Detailed Logs</span>
+                                </button>
+                            </a>
+                        </p>
+                        
+                    {% endif %}
+
                 {% endif %}
             </div>
             </div>
