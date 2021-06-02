@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Option;
+use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
 use App\Task\TaskFactory;
@@ -48,8 +49,8 @@ class EdgeAppsController extends AbstractController
         'remove' => 'createRemoveEdgeappTask',
         'start' => 'createStartEdgeappTask',
         'stop' => 'createStopEdgeappTask',
-        'enable_online' => 'createEnableOnlineEdgeappTask',
-        'disable_online' => 'createDisableOnlineEdgeappTask',
+        'enable_online' => 'createEnableOnlineTask',
+        'disable_online' => 'createDisableOnlineTask',
     ];
 
     public function __construct(
@@ -108,10 +109,31 @@ class EdgeAppsController extends AbstractController
         if ($valid_action && $edgeapp_exists) {
             $controller_title = self::ACTION_CONTROLLER_TITLES[$action];
             $action_task_factory_method_name = self::ALLOWED_ACTIONS[$action];
-            $task = TaskFactory::$action_task_factory_method_name($edgeapp);
+
+            $action_result = 'executing';
+
+            // Using this switch statement, handle cases where the factory method needs different arguments than just edgeapp id
+            switch ($action) {
+                case 'enable_online':
+
+                    $internet_url = $this->edgeAppsHelper->getInternetUrl($edgeapp);
+
+                    if($internet_url != null) {
+                        $task = TaskFactory::createEnableOnlineTask($edgeapp, $internet_url);
+                    } else {
+                        $task = TaskFactory::createErrorTask(TaskFactory::ENABLE_ONLINE, "Error communicating with the tunnel service", $edgeapp);
+                        $action_result = 'error';
+                    }
+                    break;
+                
+                default:
+                    $task = TaskFactory::$action_task_factory_method_name($edgeapp);
+                    break;
+            }
+
             $this->entityManager->persist($task);
             $this->entityManager->flush();
-            $action_result = 'executing';
+
         } elseif ($valid_action && !$edgeapp_exists) {
             $controller_title = 'App not found';
             $action_result = 'edgeapp_not_found';
