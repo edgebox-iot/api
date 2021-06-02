@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
-use App\Entity\Task;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,30 +104,30 @@ class HomeController extends AbstractController
         return $uptime.' seconds';
     }
 
-    private function getActionsOverviewContainerVars(): array {
-
+    private function getActionsOverviewContainerVars(): array
+    {
         $action_descriptions = [
             'install_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to install %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Installing %s Edgeapp...',
-                Task::STATUS_FINISHED => 'Installed %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to install %s edgeapp',
+                Task::STATUS_EXECUTING => 'Installing %s EdgeApp...',
+                Task::STATUS_FINISHED => 'Installed %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to install %s EdgeApp',
             ],
             'remove_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to remove %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Removing %s Edgeapp...',
-                Task::STATUS_FINISHED => 'Removed %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to remove %s edgeapp',
+                Task::STATUS_EXECUTING => 'Removing %s EdgeApp...',
+                Task::STATUS_FINISHED => 'Removed %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to remove %s EdgeApp',
             ],
             'start_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to start %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Starting %s Edgeapp',
-                Task::STATUS_FINISHED => 'Started %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to start %s edgeapp',
+                Task::STATUS_EXECUTING => 'Starting %s EdgeApp',
+                Task::STATUS_FINISHED => 'Started %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to start %s EdgeApp',
             ],
             'stop_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to stop %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Stopping %s Edgeapp',
+                Task::STATUS_EXECUTING => 'Stopping %s EdgeApp',
                 Task::STATUS_FINISHED => 'Stopped %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to stop %s edgeApp',
             ],
@@ -135,14 +135,14 @@ class HomeController extends AbstractController
                 Task::STATUS_CREATED => 'Waiting to enable online access to %s',
                 Task::STATUS_EXECUTING => 'Enabling Online access to %s',
                 Task::STATUS_FINISHED => 'Enabled Online access to %s EdgeApp',
-                Task::STATUS_ERROR => 'Failed to give online access to %s edgeApp',
+                Task::STATUS_ERROR => 'Failed to give online access to %s EdgeApp',
             ],
             'disable_online' => [
                 Task::STATUS_CREATED => 'Waiting to restrict online access to %s',
                 Task::STATUS_EXECUTING => 'Restricting Online access to %s',
                 Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
-                Task::STATUS_ERROR => 'Failed to restrict online access to %s edgeApp',
-            ]
+                Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
+            ],
         ];
 
         $action_icons = [
@@ -159,16 +159,22 @@ class HomeController extends AbstractController
         $latest_tasks = $this->taskRepository->getLatestTasks();
 
         foreach ($latest_tasks as $task) {
-
             $action_args = json_decode($task->getArgs(), true);
 
-            if(!empty($action_args['id'])) {
+            if (!empty($action_args['id'])) {
                 $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
             } else {
                 $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
             }
 
-            switch($task->getStatus()) {
+            switch ($task->getStatus()) {
+                case Task::STATUS_CREATED:
+                    /*
+                        The color css class "warning" will have the task icon be shwon in orange, which is a better mood indicator that something is happening.
+                        See https://github.com/edgebox-iot/api/pull/15#discussion_r643806656
+                    */
+                    $icon_color_class = 'warning';
+                    break;
                 case Task::STATUS_EXECUTING:
                     $icon_color_class = 'warning';
                     break;
@@ -179,7 +185,7 @@ class HomeController extends AbstractController
                     $icon_color_class = 'danger';
                     break;
                 default:
-                    $icon_color_class = 'default';
+                    $icon_color_class = 'dark';
                     break;
             }
 
@@ -188,11 +194,10 @@ class HomeController extends AbstractController
                 'description' => $action_description,
                 'last_update' => strtoupper($task->getUpdated()->format('j M g:i A')),
                 'icon' => $action_icons[$task->getTask()],
-                'icon_color_class' => $icon_color_class
+                'icon_color_class' => $icon_color_class,
             ];
         }
-        
+
         return $action_overview_list;
-    
     }
 }
