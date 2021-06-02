@@ -143,6 +143,18 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ],
+            'setup_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to configure external access to EdgeApps',
+                Task::STATUS_EXECUTING => 'Configuring Online access to EdgeApps',
+                Task::STATUS_FINISHED => 'Configured Online access for EdgeApps',
+                Task::STATUS_ERROR => 'Failed to configure online access for EdgeApps',
+            ],
+            'disable_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to disable external access to EdgeApps',
+                Task::STATUS_EXECUTING => 'Disabling Online access to EdgeApps',
+                Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
+                Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
+            ]
         ];
 
         $action_icons = [
@@ -152,6 +164,8 @@ class HomeController extends AbstractController
             'stop_edgeapp' => 'button-pause',
             'enable_online' => 'planet',
             'disable_online' => 'scissors',
+            'setup_tunnel' => 'planet',
+            'disable_tunnel' => 'scissors',
         ];
 
         $action_overview_list = [];
