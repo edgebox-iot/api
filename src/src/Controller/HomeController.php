@@ -193,7 +193,7 @@ class HomeController extends AbstractController
                 }
             }
 
-            $action_icon = !empty($action_icons[$task->getStatus()]) ? $action_icons[$task->getTask()] : $action_icons['unknown_action'];
+            $action_icon = !empty($action_icons[$task->getTask()]) ? $action_icons[$task->getTask()] : $action_icons['unknown_action'];
 
             switch ($task->getStatus()) {
                 case Task::STATUS_CREATED:
