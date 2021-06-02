@@ -15,10 +15,11 @@ class TaskFactory
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
 
-    public static function createErrorTask(string $task_name, string $error_message, string $target = "") {
+    public static function createErrorTask(string $task_name, string $error_message, string $target = '')
+    {
         $task = new Task();
         $task->setTask($task_name);
-        if(!empty($target)) {
+        if (!empty($target)) {
             $task->setArgs(json_encode(['id' => $target]));
         }
         $task->setStatus(3);
@@ -88,7 +89,6 @@ class TaskFactory
 
     public static function createEnableOnlineTask(string $id, string $internet_url): Task
     {
-
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
         $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));

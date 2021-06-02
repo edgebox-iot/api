@@ -154,7 +154,7 @@ class HomeController extends AbstractController
                 Task::STATUS_EXECUTING => 'Disabling Online access to EdgeApps',
                 Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
                 Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
-            ]
+            ],
         ];
 
         $action_icons = [

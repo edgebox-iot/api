@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Option;
-use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
 use App\Task\TaskFactory;
@@ -115,17 +114,16 @@ class EdgeAppsController extends AbstractController
             // Using this switch statement, handle cases where the factory method needs different arguments than just edgeapp id
             switch ($action) {
                 case 'enable_online':
-
                     $internet_url = $this->edgeAppsHelper->getInternetUrl($edgeapp);
 
-                    if($internet_url != null) {
+                    if (null != $internet_url) {
                         $task = TaskFactory::createEnableOnlineTask($edgeapp, $internet_url);
                     } else {
-                        $task = TaskFactory::createErrorTask(TaskFactory::ENABLE_ONLINE, "Error communicating with the tunnel service", $edgeapp);
+                        $task = TaskFactory::createErrorTask(TaskFactory::ENABLE_ONLINE, 'Error communicating with the tunnel service', $edgeapp);
                         $action_result = 'error';
                     }
                     break;
-                
+
                 default:
                     $task = TaskFactory::$action_task_factory_method_name($edgeapp);
                     break;
@@ -133,7 +131,6 @@ class EdgeAppsController extends AbstractController
 
             $this->entityManager->persist($task);
             $this->entityManager->flush();
-
         } elseif ($valid_action && !$edgeapp_exists) {
             $controller_title = 'App not found';
             $action_result = 'edgeapp_not_found';
