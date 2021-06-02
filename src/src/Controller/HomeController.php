@@ -169,6 +169,13 @@ class HomeController extends AbstractController
             }
 
             switch($task->getStatus()) {
+                case Task::STATUS_CREATED:
+                    /*
+                        The color css class "warning" will have the task icon be shwon in orange, which is a better mood indicator that something is happening. 
+                        See https://github.com/edgebox-iot/api/pull/15#discussion_r643806656
+                    */
+                    $icon_color_class = 'warning';
+                    break;
                 case Task::STATUS_EXECUTING:
                     $icon_color_class = 'warning';
                     break;
@@ -179,7 +186,7 @@ class HomeController extends AbstractController
                     $icon_color_class = 'danger';
                     break;
                 default:
-                    $icon_color_class = 'warning';
+                    $icon_color_class = 'dark';
                     break;
             }
 
