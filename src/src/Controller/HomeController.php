@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
-use App\Entity\Task;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,8 +104,8 @@ class HomeController extends AbstractController
         return $uptime.' seconds';
     }
 
-    private function getActionsOverviewContainerVars(): array {
-
+    private function getActionsOverviewContainerVars(): array
+    {
         $action_descriptions = [
             'install_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to install %s EdgeApp',
@@ -142,7 +142,7 @@ class HomeController extends AbstractController
                 Task::STATUS_EXECUTING => 'Restricting Online access to %s',
                 Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
-            ]
+            ],
         ];
 
         $action_icons = [
@@ -159,19 +159,18 @@ class HomeController extends AbstractController
         $latest_tasks = $this->taskRepository->getLatestTasks();
 
         foreach ($latest_tasks as $task) {
-
             $action_args = json_decode($task->getArgs(), true);
 
-            if(!empty($action_args['id'])) {
+            if (!empty($action_args['id'])) {
                 $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
             } else {
                 $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
             }
 
-            switch($task->getStatus()) {
+            switch ($task->getStatus()) {
                 case Task::STATUS_CREATED:
                     /*
-                        The color css class "warning" will have the task icon be shwon in orange, which is a better mood indicator that something is happening. 
+                        The color css class "warning" will have the task icon be shwon in orange, which is a better mood indicator that something is happening.
                         See https://github.com/edgebox-iot/api/pull/15#discussion_r643806656
                     */
                     $icon_color_class = 'warning';
@@ -195,11 +194,10 @@ class HomeController extends AbstractController
                 'description' => $action_description,
                 'last_update' => strtoupper($task->getUpdated()->format('j M g:i A')),
                 'icon' => $action_icons[$task->getTask()],
-                'icon_color_class' => $icon_color_class
+                'icon_color_class' => $icon_color_class,
             ];
         }
-        
+
         return $action_overview_list;
-    
     }
 }
