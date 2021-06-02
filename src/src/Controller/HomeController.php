@@ -109,25 +109,25 @@ class HomeController extends AbstractController
         $action_descriptions = [
             'install_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to install %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Installing %s Edgeapp...',
-                Task::STATUS_FINISHED => 'Installed %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to install %s edgeapp',
+                Task::STATUS_EXECUTING => 'Installing %s EdgeApp...',
+                Task::STATUS_FINISHED => 'Installed %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to install %s EdgeApp',
             ],
             'remove_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to remove %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Removing %s Edgeapp...',
-                Task::STATUS_FINISHED => 'Removed %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to remove %s edgeapp',
+                Task::STATUS_EXECUTING => 'Removing %s EdgeApp...',
+                Task::STATUS_FINISHED => 'Removed %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to remove %s EdgeApp',
             ],
             'start_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to start %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Starting %s Edgeapp',
-                Task::STATUS_FINISHED => 'Started %s Edgeapp',
-                Task::STATUS_ERROR => 'Failed to start %s edgeapp',
+                Task::STATUS_EXECUTING => 'Starting %s EdgeApp',
+                Task::STATUS_FINISHED => 'Started %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to start %s EdgeApp',
             ],
             'stop_edgeapp' => [
                 Task::STATUS_CREATED => 'Waiting to stop %s EdgeApp',
-                Task::STATUS_EXECUTING => 'Stopping %s Edgeapp',
+                Task::STATUS_EXECUTING => 'Stopping %s EdgeApp',
                 Task::STATUS_FINISHED => 'Stopped %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to stop %s edgeApp',
             ],
@@ -135,13 +135,13 @@ class HomeController extends AbstractController
                 Task::STATUS_CREATED => 'Waiting to enable online access to %s',
                 Task::STATUS_EXECUTING => 'Enabling Online access to %s',
                 Task::STATUS_FINISHED => 'Enabled Online access to %s EdgeApp',
-                Task::STATUS_ERROR => 'Failed to give online access to %s edgeApp',
+                Task::STATUS_ERROR => 'Failed to give online access to %s EdgeApp',
             ],
             'disable_online' => [
                 Task::STATUS_CREATED => 'Waiting to restrict online access to %s',
                 Task::STATUS_EXECUTING => 'Restricting Online access to %s',
                 Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
-                Task::STATUS_ERROR => 'Failed to restrict online access to %s edgeApp',
+                Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ]
         ];
 
