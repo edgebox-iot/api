@@ -47,7 +47,7 @@ class EdgeAppsHelper
         return $found;
     }
 
-    public static function getInternetUrl(?string $api_token, string $app_id): ?string
+    public function getInternetUrl(?string $api_token, string $app_id): ?string
     {
         $url = null;
 
@@ -55,7 +55,7 @@ class EdgeAppsHelper
             return $url;
         }
 
-        $url_registration_response = $this->edgeboxioApiConnector->register_apps($token_option->getValue(), $app_id);
+        $url_registration_response = $this->edgeboxioApiConnector->register_apps($api_token, $app_id);
 
         if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
             $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
