@@ -42,7 +42,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function get_bootnode_info($token = '')
+    public function get_bootnode_info(string $token = '')
     {
         $token = empty($token) ? $this->token : $token;
 
@@ -74,7 +74,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function register_apps($token, $apps)
+    public function register_apps(string $token, string $apps)
     {
         $token = empty($token) ? $this->token : $token;
 
@@ -109,7 +109,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function unregister_apps($token, $apps)
+    public function unregister_apps(string $token, string $apps)
     {
         $token = empty($token) ? $this->token : $token;
 
