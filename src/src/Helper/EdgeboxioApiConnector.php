@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
 class EdgeboxioApiConnector
