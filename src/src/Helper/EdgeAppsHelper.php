@@ -7,15 +7,16 @@ use App\Repository\OptionRepository;
 
 class EdgeAppsHelper
 {
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
+    private OptionRepository $optionRepository;
+
+    private EdgeboxioApiConnector $edgeboxioApiConnector;
 
     public function __construct(
-        OptionRepository $optionRepository
+        OptionRepository $optionRepository,
+        EdgeboxioApiConnector $edgeboxioApiConnector
     ) {
         $this->optionRepository = $optionRepository;
+        $this->edgeboxioApiConnector = $edgeboxioApiConnector;
     }
 
     public function getEdgeAppsList(): array
@@ -54,8 +55,7 @@ class EdgeAppsHelper
             return $url;
         }
 
-        $edgeboxio_api = new EdgeboxioApiConnector();
-        $url_registration_response = $edgeboxio_api->register_apps($api_token, $app_id);
+        $url_registration_response = $this->edgeboxioApiConnector->register_apps($token_option->getValue(), $app_id);
 
         if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
             $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
