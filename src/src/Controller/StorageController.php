@@ -13,7 +13,7 @@ class StorageController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('not_available.html.twig', [
+        return $this->render('storage/index.html.twig', [
             'controller_name' => 'StorageController',
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Buckets & Drives',
