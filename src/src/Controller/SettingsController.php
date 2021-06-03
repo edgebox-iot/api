@@ -32,6 +32,11 @@ class SettingsController extends AbstractController
     private $taskRepository;
 
     /**
+     * @var TaskFactory
+     */
+    private $taskFactory;
+
+    /**
      * @var EntityManagerInterface
      */
     private $entityManager;

@@ -29,6 +29,11 @@ class EdgeAppsController extends AbstractController
     private $edgeAppsHelper;
 
     /**
+     * @var TaskFactory
+     */
+    private $taskFactory;
+
+    /**
      * @var array
      */
     private const ACTION_CONTROLLER_TITLES = [
