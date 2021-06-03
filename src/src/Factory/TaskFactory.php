@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
+use App\Repository\OptionRepository;
 
 class TaskFactory
 {
@@ -15,6 +16,17 @@ class TaskFactory
     public const STOP_EDGEAPP = 'stop_edgeapp';
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
+
+    private OptionRepository $optionRepository;
+    private EdgeAppsHelper $edgeboxioApiConnector;
+
+    public function __construct(
+        OptionRepository $optionRepository,
+        EdgeAppsHelper $edgeAppsHelper,
+    ) {
+        $this->optionRepository = $optionRepository;
+        $this->edgeAppsHelper = $edgeAppsHelper;
+    }
 
     public function createErrorTask(string $task_name, string $error_message, string $target = '')
     {
@@ -88,9 +100,12 @@ class TaskFactory
         return $task;
     }
 
-    public function createEnableOnlineTask(string $id, ?string $api_token): Task
+    public function createEnableOnlineTask(string $id): Task
     {
-        $internet_url = $this->edgeAppsHelper->getInternetUrl($api_token, $id);
+
+        $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+
+        $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id) : null;
 
         if (null != $internet_url) {
             $task = new Task();

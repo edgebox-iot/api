@@ -55,11 +55,13 @@ class EdgeAppsController extends AbstractController
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
-        EdgeAppsHelper $edgeAppsHelper
+        EdgeAppsHelper $edgeAppsHelper,
+        TaskFactory $taskFactory
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->taskFactory = $taskFactory;
     }
 
     /**
@@ -111,18 +113,7 @@ class EdgeAppsController extends AbstractController
 
             $action_result = 'executing';
 
-            // Using this switch statement, handle cases where the factory method needs different arguments than just edgeapp id
-            switch ($action) {
-                case 'enable_online':
-                    $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
-                    $task = TaskFactory::createEnableOnlineTask($edgeapp, $token_option->getValue());
-
-                    break;
-
-                default:
-                    $task = TaskFactory::$action_task_factory_method_name($edgeapp);
-                    break;
-            }
+            $task = $this->taskFactory->$action_task_factory_method_name($edgeapp);
 
             if (3 == $task->getStatus()) {
                 $action_result = 'error';
