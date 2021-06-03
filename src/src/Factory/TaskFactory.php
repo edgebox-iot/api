@@ -22,7 +22,7 @@ class TaskFactory
 
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeAppsHelper $edgeAppsHelper,
+        EdgeAppsHelper $edgeAppsHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
