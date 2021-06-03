@@ -18,7 +18,7 @@ class TaskFactory
     public const DISABLE_ONLINE = 'disable_online';
 
     private OptionRepository $optionRepository;
-    private EdgeAppsHelper $edgeboxioApiConnector;
+    private EdgeAppsHelper $edgeAppsHelper;
 
     public function __construct(
         OptionRepository $optionRepository,
