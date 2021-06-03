@@ -2,38 +2,31 @@
 
 namespace App\Helper;
 
+use Guzzle\Http\Client;
+use GuzzleHttp\RequestOptions;
+
 class EdgeboxioApiConnector
 {
-    protected $token;
-    public $api_url = 'https://edgebox.io/wp-json';
+    private string $api_url = 'https://edgebox.io/wp-json';
+    private Client $client;
+    private string $token;
 
-    public function get_token($username, $password)
+    public function __construct(?Client $client = null)
     {
-        $curl = curl_init();
+        $this->client = $client ?? new Client();
+    }
 
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->api_url.'/jwt-auth/v1/token',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{
-                "username": "'.$username.'",
-                "password": "'.$password.'"
-            }',
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
+    public function get_token(string $username, string $password)
+    {
+        $url = $this->api_url.'/jwt-auth/v1/token';
+        $response = $this->client->post($url, [
+            RequestOptions::JSON => [
+                'username' => $username,
+                'password' => $password,
             ],
         ]);
 
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        $response = json_decode($response, true);
-
+        $response = json_decode($response->getBody(), true);
         if (!empty($response['token'])) {
             $this->token = $response['token'];
 
@@ -41,12 +34,12 @@ class EdgeboxioApiConnector
                 'status' => 'success',
                 'value' => $response['token'],
             ];
-        } else {
-            return [
-                'status' => 'error',
-                'value' => $response['code'],
-            ];
         }
+
+        return [
+            'status' => 'error',
+            'value' => $response['code'],
+        ];
     }
 
     public function get_bootnode_info($token = '')
@@ -60,26 +53,14 @@ class EdgeboxioApiConnector
             ];
         }
 
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->api_url.'/myedgeapp/v1/bootnode',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.$token,
+        $url = $this->api_url.'/myedgeapp/v1/bootnode';
+        $response = $this->client->get($url, [
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $token),
             ],
         ]);
 
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        $response = json_decode($response, true);
+        $response = json_decode($response->getBody(), true);
 
         $response_status = 'error';
 
@@ -104,31 +85,17 @@ class EdgeboxioApiConnector
             ];
         }
 
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->api_url.'/myedgeapp/v1/apps/register',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_POSTFIELDS => '{
-            "apps": "'.$apps.'"
-        }',
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.$token,
-                'Content-Type: application/json',
+        $url = $this->api_url.'/myedgeapp/v1/apps/register';
+        $response = $this->client->put($url, [
+            RequestOptions::JSON => [
+                'apps' => $apps,
+            ],
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $token),
             ],
         ]);
 
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        $response = json_decode($response, true);
+        $response = json_decode($response->getBody(), true);
 
         $response_status = 'error';
 
@@ -153,31 +120,17 @@ class EdgeboxioApiConnector
             ];
         }
 
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $this->api_url.'/myedgeapp/v1/apps/unregister',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_POSTFIELDS => '{
-            "apps": "'.$apps.'"
-        }',
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer '.$token,
-                'Content-Type: application/json',
+        $url = $this->api_url.'/myedgeapp/v1/apps/unregister';
+        $response = $this->client->put($url, [
+            RequestOptions::JSON => [
+                'apps' => $apps,
+            ],
+            RequestOptions::HEADERS => [
+                'Authorization' => sprintf('Bearer %s', $token),
             ],
         ]);
 
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-        $response = json_decode($response, true);
+        $response = json_decode($response->getBody(), true);
 
         $response_status = 'success';
 
