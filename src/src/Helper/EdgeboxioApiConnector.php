@@ -11,9 +11,9 @@ class EdgeboxioApiConnector
     private Client $client;
     private string $token;
 
-    public function __construct(?Client $client = null)
+    public function __construct(Client $client)
     {
-        $this->client = $client ?? new Client();
+        $this->client = $client;
     }
 
     public function get_token(string $username, string $password)
