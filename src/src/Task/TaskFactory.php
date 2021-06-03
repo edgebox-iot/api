@@ -28,7 +28,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function setupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
+    public static function createSetupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
     {
         $task = new Task();
         $task->setTask(self::SETUP_TUNNEL);
