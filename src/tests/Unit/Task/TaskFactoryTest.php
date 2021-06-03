@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Task;
 
-use App\Task\TaskFactory;
+use App\Factory\TaskFactory;
 use PHPUnit\Framework\TestCase;
 
 class TaskFactoryTest extends TestCase
