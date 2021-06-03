@@ -114,19 +114,18 @@ class EdgeAppsController extends AbstractController
             // Using this switch statement, handle cases where the factory method needs different arguments than just edgeapp id
             switch ($action) {
                 case 'enable_online':
-                    $internet_url = $this->edgeAppsHelper->getInternetUrl($edgeapp);
+                    $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
+                    $task = TaskFactory::createEnableOnlineTask($edgeapp, $token_option->getValue());
 
-                    if (null != $internet_url) {
-                        $task = TaskFactory::createEnableOnlineTask($edgeapp, $internet_url);
-                    } else {
-                        $task = TaskFactory::createErrorTask(TaskFactory::ENABLE_ONLINE, 'Error communicating with the tunnel service', $edgeapp);
-                        $action_result = 'error';
-                    }
                     break;
 
                 default:
                     $task = TaskFactory::$action_task_factory_method_name($edgeapp);
                     break;
+            }
+
+            if (3 == $task->getStatus()) {
+                $action_result = 'error';
             }
 
             $this->entityManager->persist($task);

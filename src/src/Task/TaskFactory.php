@@ -3,6 +3,7 @@
 namespace App\Task;
 
 use App\Entity\Task;
+use App\Helper\EdgeAppsHelper;
 
 class TaskFactory
 {
@@ -87,10 +88,17 @@ class TaskFactory
         return $task;
     }
 
-    public static function createEnableOnlineTask(string $id, string $internet_url): Task
+    public static function createEnableOnlineTask(string $id, ?string $api_token): Task
     {
-        $task = new Task();
-        $task->setTask(self::ENABLE_ONLINE);
+        $internet_url = EdgeAppsHelper::getInternetUrl($api_token, $id);
+
+        if (null != $internet_url) {
+            $task = new Task();
+            $task->setTask(self::ENABLE_ONLINE);
+        } else {
+            $task = TaskFactory::createErrorTask(self::ENABLE_ONLINE, 'Error communicating with the tunnel service.', $id);
+        }
+
         $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));
 
         return $task;
