@@ -96,7 +96,7 @@ class TaskFactory
             $task = new Task();
             $task->setTask(self::ENABLE_ONLINE);
         } else {
-            $task = TaskFactory::createErrorTask(self::ENABLE_ONLINE, 'Error communicating with the tunnel service.', $id);
+            $task = self::createErrorTask(self::ENABLE_ONLINE, 'Error communicating with the tunnel service.', $id);
         }
 
         $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));
