@@ -13,7 +13,6 @@ class TaskFactoryTest extends TestCase
         $optionRepositoryMock->method('findOneBy')->will($this->returnValue(null));
 
         $edgeAppsHelperMock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
-        $edgeAppsHelperMock->method('getInternetUrl')->will($this->returnValue(null));
 
         $factory = new TaskFactory($optionRepositoryMock, $edgeAppsHelperMock);
         $task = $factory->createEnableOnlineTask('test');
