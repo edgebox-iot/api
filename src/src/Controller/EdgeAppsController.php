@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Option;
+use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
 use App\Factory\TaskFactory;
