@@ -3,32 +3,70 @@
 namespace App\Tests\Unit\Task;
 
 use \App\Factory\TaskFactory;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class TaskFactoryTest extends TestCase
 {
 
-    public function testCreateEnableOnlineTask(): void
+    public function testCreateEnableOnlineTaskWithoutApiToken(): void
     {
-        $factory_mock = $this->getTaskFactoryMock();
-        $task = $factory_mock->createEnableOnlineTask('test');
 
-        self::assertEquals('enable_online', $task->getTask());
-        self::assertEquals(json_encode(['id' => 'test', 'internet_url' => null]), $task->getArgs());
-        self::assertEquals(3, $task->getStatus());
-    }
 
-    private function getTaskFactoryMock(): TaskFactory
-    {
         $optionRepositoryMock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
         $optionRepositoryMock->method('findOneBy')->will($this->returnValue(null));
 
         $edgeAppsHelperMock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
         $edgeAppsHelperMock->method('getInternetUrl')->will($this->returnValue(null));
 
-        // A mock of TaskFactory without modified methods should have done the job (acoording to what I researched), but it does not work.
-        // return $this->getMockBuilder(\App\Factory\TaskFactory::class)->setConstructorArgs([$optionRepositoryMock, $edgeAppsHelperMock])->getMock();
-        return new TaskFactory($optionRepositoryMock, $edgeAppsHelperMock); // Minor inconvenience... types MockObject don't match TaskFactory constructor but it works!
+        $factory = new TaskFactory($optionRepositoryMock, $edgeAppsHelperMock);
+        $task = $factory->createEnableOnlineTask('test');
+
+        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test', 'internet_url' => null]), $task->getArgs());
+        self::assertEquals($task::STATUS_ERROR, $task->getStatus());
     }
+
+    public function testCreateEnableOnlineTaskWithUrlFetchFailure(): void
+    {
+
+        $optionMock = $this->getMockBuilder(\App\Entity\Option::class)->disableOriginalConstructor()->getMock();
+        $optionMock->method('getValue')->will($this->returnValue('test'));
+
+        $optionRepositoryMock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $optionRepositoryMock->method('findOneBy')->will($this->returnValue($optionMock));
+
+        $edgeAppsHelperMock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+        $edgeAppsHelperMock->method('getInternetUrl')->will($this->returnValue(null));
+
+        $factory = new TaskFactory($optionRepositoryMock, $edgeAppsHelperMock);
+        $task = $factory->createEnableOnlineTask('test');
+
+        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test', 'internet_url' => null]), $task->getArgs());
+        self::assertEquals($task::STATUS_ERROR, $task->getStatus());
+
+    }
+
+    public function testCreateEnableOnlineTaskWithValidData(): void
+    {
+
+        $optionMock = $this->getMockBuilder(\App\Entity\Option::class)->disableOriginalConstructor()->getMock();
+        $optionMock->method('getValue')->will($this->returnValue('test'));
+
+        $optionRepositoryMock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $optionRepositoryMock->method('findOneBy')->will($this->returnValue($optionMock));
+
+        $edgeAppsHelperMock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+        $edgeAppsHelperMock->method('getInternetUrl')->will($this->returnValue('https://edgebox.io'));
+
+        $factory = new TaskFactory($optionRepositoryMock, $edgeAppsHelperMock);
+        $task = $factory->createEnableOnlineTask('test');
+
+        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test', 'internet_url' => 'https://edgebox.io']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+
+    }
+
 }
