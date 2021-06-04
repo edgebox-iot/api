@@ -6,14 +6,7 @@
 
     <div class="">
         <div class="" style="margin-top: -25px;">
-            <div class="row my-5">
-                <div class="col-md-6">
-                    <h2>Storage Buckets</h2>
-                    <br>
-                    <p><button type="button" class="btn btn-outline-dark">Create Bucket</button><button type="button" class="btn btn-outline-dark" style="margin-left: 15px;">Move Bucket</button></p>
-                    <p></p>
-                </div>
-            </div>
+            {{ include('partials/_row_title_block.html.twig', {main_title: 'Your Storage Buckets', button_title: 'Create Bucket', button_link: '/storage/bucket/create', new_tab: true})}}
             <div class="row" style="margin-top: -25px;">
                 <div class="col-md-12">
                     <div class="row edgeapps-list" style="margin-top: -25px;">
@@ -75,14 +68,7 @@
                     </div>
                 </div>
             </div>
-             <div class="row my-5">
-                <div class="col-md-6">
-                    <h2>Connected Storage Drives</h2>
-                    <br>
-                    <p><button type="button" class="btn btn-outline-dark">Add Storage</button></p>
-                    <p></p>
-                </div>
-            </div>
+            {{ include('partials/_row_title_block.html.twig', {main_title: 'Your Storage Devices', button_title: 'Add Device', button_link: '/storage/device/add', new_tab: true})}}
             <div class="row" style="margin-top: -25px;">
                 <div class="col-md-12">
                     <div class="row edgeapps-list" style="margin-top: -25px;">
