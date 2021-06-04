@@ -106,7 +106,7 @@ class EdgeAppsController extends AbstractController
 
             $task = $this->taskFactory->$action_task_factory_method_name($edgeapp);
 
-            if (3 == $task->getStatus()) {
+            if (Task::STATUS_ERROR == $task->getStatus()) {
                 $action_result = 'error';
             }
 
