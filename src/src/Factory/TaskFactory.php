@@ -97,7 +97,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
 
-        if (null != $internet_url) {
+        if (null === $internet_url) {
             $task->setStatus(Task::STATUS_ERROR);
             $task->setResult("Error comunicating with the Edgebox.io API");
         }
