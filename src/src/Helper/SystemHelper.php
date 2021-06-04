@@ -7,10 +7,7 @@ use App\Repository\OptionRepository;
 
 class SystemHelper
 {
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
+    private OptionRepository $optionRepository;
 
     public function __construct(
         OptionRepository $optionRepository

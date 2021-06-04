@@ -8,7 +8,6 @@ use App\Repository\OptionRepository;
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
-
     private EdgeboxioApiConnector $edgeboxioApiConnector;
 
     public function __construct(
@@ -47,17 +46,15 @@ class EdgeAppsHelper
         return $found;
     }
 
-    public function getInternetUrl(string $app_id): ?string
+    public function getInternetUrl(?string $api_token, string $app_id): ?string
     {
         $url = null;
 
-        $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
-
-        if (null === $token_option->getValue()) {
+        if (null === $api_token) {
             return $url;
         }
 
-        $url_registration_response = $this->edgeboxioApiConnector->register_apps($token_option->getValue(), $app_id);
+        $url_registration_response = $this->edgeboxioApiConnector->register_apps($api_token, $app_id);
 
         if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
             $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
