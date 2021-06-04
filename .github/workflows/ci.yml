@@ -17,8 +17,8 @@ jobs:
       - name: Setup app
         run: |
           cd src/
-          ./bin/console doctrine:database:create
-          ./bin/console doctrine:migrations:migrate -n
+          ./bin/console doctrine:database:create -e test
+          ./bin/console doctrine:migrations:migrate -n  -e test
       - name: Run tests
         run: |
           cd src/
