@@ -136,6 +136,9 @@
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
     },
+    "phpro/grumphp-shim": {
+        "version": "v1.3.3"
+    },
     "phpspec/prophecy": {
         "version": "1.13.0"
     },
