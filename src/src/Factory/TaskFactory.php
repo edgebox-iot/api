@@ -89,7 +89,6 @@ class TaskFactory
 
     public function createEnableOnlineTask(string $id): Task
     {
-
         $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
 
         $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id) : null;
@@ -99,7 +98,7 @@ class TaskFactory
 
         if (null === $internet_url) {
             $task->setStatus(Task::STATUS_ERROR);
-            $task->setResult("Error comunicating with the Edgebox.io API");
+            $task->setResult('Error comunicating with the Edgebox.io API');
         }
 
         $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));

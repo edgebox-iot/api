@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
-use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Option;
 use App\Entity\Task;
+use App\Factory\TaskFactory;
 use App\Helper\EdgeboxioApiConnector;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
-use App\Factory\TaskFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,9 +21,6 @@ class SettingsController extends AbstractController
     private TaskRepository $taskRepository;
     private TaskFactory $taskFactory;
 
-    /**
-     * @var EntityManagerInterface
-     */
     private EntityManagerInterface $entityManager;
 
     public function __construct(
