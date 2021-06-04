@@ -8,3 +8,4 @@ vendor/
 /.idea/
 /src/.env
 .php-cs-fixer.cache
+coverage.xml
