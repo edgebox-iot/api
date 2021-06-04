@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Task;
+namespace App\Factory;
 
 use App\Entity\Task;
+use App\Helper\EdgeAppsHelper;
+use App\Repository\OptionRepository;
 
 class TaskFactory
 {
@@ -15,20 +17,18 @@ class TaskFactory
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
 
-    public static function createErrorTask(string $task_name, string $error_message, string $target = '')
-    {
-        $task = new Task();
-        $task->setTask($task_name);
-        if (!empty($target)) {
-            $task->setArgs(json_encode(['id' => $target]));
-        }
-        $task->setStatus(3);
-        $task->setResult($error_message);
+    private OptionRepository $optionRepository;
+    private EdgeAppsHelper $edgeAppsHelper;
 
-        return $task;
+    public function __construct(
+        OptionRepository $optionRepository,
+        EdgeAppsHelper $edgeAppsHelper
+    ) {
+        $this->optionRepository = $optionRepository;
+        $this->edgeAppsHelper = $edgeAppsHelper;
     }
 
-    public static function setupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
+    public function createSetupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
     {
         $task = new Task();
         $task->setTask(self::SETUP_TUNNEL);
@@ -42,7 +42,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function createDisableTunnelTask(): Task
+    public function createDisableTunnelTask(): Task
     {
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
@@ -51,7 +51,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function createInstallEdgeappTask(string $id): Task
+    public function createInstallEdgeappTask(string $id): Task
     {
         $task = new Task();
         $task->setTask(self::INSTALL_EDGEAPP);
@@ -60,7 +60,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function createRemoveEdgeappTask(string $id): Task
+    public function createRemoveEdgeappTask(string $id): Task
     {
         $task = new Task();
         $task->setTask(self::REMOVE_EDGEAPP);
@@ -69,7 +69,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function createStartEdgeappTask(string $id): Task
+    public function createStartEdgeappTask(string $id): Task
     {
         $task = new Task();
         $task->setTask(self::START_EDGEAPP);
@@ -78,7 +78,7 @@ class TaskFactory
         return $task;
     }
 
-    public static function createStopEdgeappTask(string $id): Task
+    public function createStopEdgeappTask(string $id): Task
     {
         $task = new Task();
         $task->setTask(self::STOP_EDGEAPP);
@@ -87,16 +87,26 @@ class TaskFactory
         return $task;
     }
 
-    public static function createEnableOnlineTask(string $id, string $internet_url): Task
+    public function createEnableOnlineTask(string $id): Task
     {
+        $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+
+        $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id) : null;
+
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
+
+        if (null === $internet_url) {
+            $task->setStatus(Task::STATUS_ERROR);
+            $task->setResult('Error comunicating with the Edgebox.io API');
+        }
+
         $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));
 
         return $task;
     }
 
-    public static function createDisableOnlineTask(string $id): Task
+    public function createDisableOnlineTask(string $id): Task
     {
         $task = new Task();
         $task->setTask(self::DISABLE_ONLINE);

@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Option;
+use App\Entity\Task;
+use App\Factory\TaskFactory;
 use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
-use App\Task\TaskFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,20 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EdgeAppsController extends AbstractController
 {
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var EdgeAppsHelper
-     */
-    private $edgeAppsHelper;
+    private OptionRepository $optionRepository;
+    private EntityManagerInterface $entityManager;
+    private EdgeAppsHelper $edgeAppsHelper;
+    private TaskFactory $taskFactory;
 
     /**
      * @var array
@@ -55,11 +46,13 @@ class EdgeAppsController extends AbstractController
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
-        EdgeAppsHelper $edgeAppsHelper
+        EdgeAppsHelper $edgeAppsHelper,
+        TaskFactory $taskFactory
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->taskFactory = $taskFactory;
     }
 
     /**
@@ -111,22 +104,10 @@ class EdgeAppsController extends AbstractController
 
             $action_result = 'executing';
 
-            // Using this switch statement, handle cases where the factory method needs different arguments than just edgeapp id
-            switch ($action) {
-                case 'enable_online':
-                    $internet_url = $this->edgeAppsHelper->getInternetUrl($edgeapp);
+            $task = $this->taskFactory->$action_task_factory_method_name($edgeapp);
 
-                    if (null != $internet_url) {
-                        $task = TaskFactory::createEnableOnlineTask($edgeapp, $internet_url);
-                    } else {
-                        $task = TaskFactory::createErrorTask(TaskFactory::ENABLE_ONLINE, 'Error communicating with the tunnel service', $edgeapp);
-                        $action_result = 'error';
-                    }
-                    break;
-
-                default:
-                    $task = TaskFactory::$action_task_factory_method_name($edgeapp);
-                    break;
+            if (Task::STATUS_ERROR === $task->getStatus()) {
+                $action_result = 'error';
             }
 
             $this->entityManager->persist($task);

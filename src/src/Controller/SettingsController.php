@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Option;
 use App\Entity\Task;
+use App\Factory\TaskFactory;
 use App\Helper\EdgeboxioApiConnector;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
-use App\Task\TaskFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,35 +16,24 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController
 {
-    /**
-     * @var EdgeboxioApiConnector
-     */
-    private $edgeboxioApiConnector;
+    private EdgeboxioApiConnector $edgeboxioApiConnector;
+    private OptionRepository $optionRepository;
+    private TaskRepository $taskRepository;
+    private TaskFactory $taskFactory;
 
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
-
-    /**
-     * @var TaskRepository
-     */
-    private $taskRepository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         EdgeboxioApiConnector $edgeboxioApiConnector,
         OptionRepository $optionRepository,
         TaskRepository $taskRepository,
+        TaskFactory $taskFactory,
         EntityManagerInterface $entityManager
     ) {
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->optionRepository = $optionRepository;
         $this->taskRepository = $taskRepository;
+        $this->taskFactory = $taskFactory;
         $this->entityManager = $entityManager;
     }
 
@@ -84,7 +73,7 @@ class SettingsController extends AbstractController
                     $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
 
                     // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                    $task = TaskFactory::setupTunnelTask(
+                    $task = $this->taskFactory->createSetupTunnelTask(
                         $tunnelInfo['value']['bootnode_address'],
                         $tunnelInfo['value']['bootnode_token'],
                         $tunnelInfo['value']['assigned_address'],
@@ -178,7 +167,7 @@ class SettingsController extends AbstractController
         $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
 
         // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-        $task = TaskFactory::createDisableTunnelTask();
+        $task = $this->taskFactory->createDisableTunnelTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
