@@ -1,14 +1,10 @@
 # Development notes
 
-To ensure consistent style we leverage `php-cs-fixer` with some basic rules defined
+To ensure consistent style we leverage `php-cs-fixer`, `PHPUnit` and `PHPStan`
 
-To install:
+It will run on each commit making sure to warn you when something is wrong.  Make sure to have PHP >= 7.4 installed. To run manually, from the base repository directory, run: 
 ```bash
-composer install --working-dir=tools/php-cs-fixer
+./src/vendor/bin/grumphp run
 ```
 
-To Run:
-```bash 
-./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix
-```
 
