@@ -43,3 +43,20 @@ jobs:
         run: |
           cd src/
           ./vendor/bin/phpstan analyse
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+      - name: Install dependencies
+        run: |
+          cd src/
+          composer install --working-dir=tools/php-cs-fixer
+      - name: Run php-cs-fixer
+        run: |
+          cd src/
+          ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
