@@ -7,6 +7,89 @@ use PHPUnit\Framework\TestCase;
 
 class TaskFactoryTest extends TestCase
 {
+    public function testCreateSetupTunnelTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createSetupTunnelTask('test', 'test', 'test', 'test');
+
+        self::assertEquals($factory::SETUP_TUNNEL, $task->getTask());
+        self::assertEquals(json_encode([
+            'bootnode_address' => 'test',
+            'bootnode_token' => 'test',
+            'assigned_address' => 'test',
+            'node_name' => 'test',
+        ]), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateDisableTunnelTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createDisableTunnelTask();
+
+        self::assertEquals($factory::DISABLE_TUNNEL, $task->getTask());
+        self::assertEquals(json_encode([]), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateInstallEdgeappTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createInstallEdgeappTask('test');
+
+        self::assertEquals($factory::INSTALL_EDGEAPP, $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateRemoveEdgeappTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createRemoveEdgeappTask('test');
+
+        self::assertEquals($factory::REMOVE_EDGEAPP, $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateStartEdgeappTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createStartEdgeappTask('test');
+
+        self::assertEquals($factory::START_EDGEAPP, $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateStopEdgeappTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createStopEdgeappTask('test');
+
+        self::assertEquals($factory::STOP_EDGEAPP, $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
     public function testCreateEnableOnlineTaskWithoutApiToken(): void
     {
         $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
@@ -17,7 +100,7 @@ class TaskFactoryTest extends TestCase
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
         $task = $factory->createEnableOnlineTask('test');
 
-        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals($factory::ENABLE_ONLINE, $task->getTask());
         self::assertEquals(json_encode(['id' => 'test', 'internet_url' => null]), $task->getArgs());
         self::assertEquals($task::STATUS_ERROR, $task->getStatus());
     }
@@ -36,7 +119,7 @@ class TaskFactoryTest extends TestCase
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
         $task = $factory->createEnableOnlineTask('test');
 
-        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals($factory::ENABLE_ONLINE, $task->getTask());
         self::assertEquals(json_encode(['id' => 'test', 'internet_url' => null]), $task->getArgs());
         self::assertEquals($task::STATUS_ERROR, $task->getStatus());
     }
@@ -55,8 +138,21 @@ class TaskFactoryTest extends TestCase
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
         $task = $factory->createEnableOnlineTask('test');
 
-        self::assertEquals('enable_online', $task->getTask());
+        self::assertEquals($factory::ENABLE_ONLINE, $task->getTask());
         self::assertEquals(json_encode(['id' => 'test', 'internet_url' => 'https://edgebox.io']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testDisableOnlineTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock);
+        $task = $factory->createDisableOnlineTask('test');
+
+        self::assertEquals($factory::DISABLE_ONLINE, $task->getTask());
+        self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
         self::assertEquals($task::STATUS_CREATED, $task->getStatus());
     }
 }
