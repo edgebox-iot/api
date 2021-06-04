@@ -16,30 +16,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController
 {
-    /**
-     * @var EdgeboxioApiConnector
-     */
-    private $edgeboxioApiConnector;
-
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
-
-    /**
-     * @var TaskRepository
-     */
-    private $taskRepository;
-
-    /**
-     * @var TaskFactory
-     */
-    private $taskFactory;
+    private EdgeboxioApiConnector $edgeboxioApiConnector;
+    private OptionRepository $optionRepository;
+    private TaskRepository $taskRepository;
+    private TaskFactory $taskFactory;
 
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(
         EdgeboxioApiConnector $edgeboxioApiConnector,

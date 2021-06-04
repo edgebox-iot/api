@@ -13,25 +13,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class EdgeAppsController extends AbstractController
 {
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var EdgeAppsHelper
-     */
-    private $edgeAppsHelper;
-
-    /**
-     * @var TaskFactory
-     */
-    private $taskFactory;
+    private OptionRepository $optionRepository;
+    private EntityManagerInterface $entityManager;
+    private EdgeAppsHelper $edgeAppsHelper;
+    private TaskFactory $taskFactory;
 
     /**
      * @var array

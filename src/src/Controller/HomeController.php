@@ -13,25 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    /**
-     * @var OptionRepository
-     */
-    private $optionRepository;
-
-    /**
-     * @var TaskRepository
-     */
-    private $taskRepository;
-
-    /**
-     * @var SystemHelper
-     */
-    private $systemHelper;
-
-    /**
-     * @var EdgeAppsHelper
-     */
-    private $edgeAppsHelper;
+    private TaskRepository $taskRepository;
+    private SystemHelper $systemHelper;
+    private EdgeAppsHelper $edgeAppsHelper;
 
     public function __construct(
         EdgeAppsHelper $edgeAppsHelper,

@@ -8,7 +8,6 @@ use App\Repository\OptionRepository;
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
-
     private EdgeboxioApiConnector $edgeboxioApiConnector;
 
     public function __construct(
