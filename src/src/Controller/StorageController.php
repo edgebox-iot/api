@@ -19,4 +19,16 @@ class StorageController extends AbstractController
             'controller_subtitle' => 'Buckets & Drives',
         ]);
     }
+
+     /**
+     * @Route("/storage/device/new", name="storage_device_new")
+     */
+    public function storage_device_new(): Response
+    {
+        return $this->render('storage/device/new.html.twig', [
+            'controller_name' => 'StorageController',
+            'controller_title' => 'Add Device',
+            'controller_subtitle' => 'More space for apps and files',
+        ]);
+    }
 }
