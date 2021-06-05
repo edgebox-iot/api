@@ -27,8 +27,8 @@ class StorageController extends AbstractController
     {
         return $this->render('storage/device/new.html.twig', [
             'controller_name' => 'StorageController',
-            'controller_title' => 'Add Device',
-            'controller_subtitle' => 'More space for apps and files',
+            'controller_title' => 'Storage',
+            'controller_subtitle' => 'Add new device',
         ]);
     }
 }

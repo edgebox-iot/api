@@ -3,6 +3,9 @@
     EdgeApps
 {% endblock title %}
 {% block content %}
+
+    {{ include('partials/_row_title_block.html.twig', {main_title: 'So many things need privacy', sub_title: 'EdgeApps allow you to run your private cloud.'})}}
+
     {% if not framework_ready %}
         <div class="card">
             <div class="card-body p-3">
