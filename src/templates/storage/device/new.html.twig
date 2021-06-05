@@ -6,12 +6,23 @@
 
     <div class="">
         <div class="" style="margin-top: -25px;">
-            {{ include('partials/_row_title_block.html.twig', {main_title: 'Choose device type'})}}
+            {{ include('partials/_row_title_block.html.twig', {main_title: 'Device Type', sub_title: 'Choose the type of storage you want to add:'})}}
             <div class="row" style="margin-top: -25px;">
                 <div class="col-md-12">
-                    <p>Test</p>
+                    
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+
+            {{ include('partials/_col_card_icon_left.html.twig', {icon_class: 'ni ni-app', icon_size: '125px', icon_style: 'color: grey;', title: 'Edgebox Expansion Unit', description: 'Stacking a supported unit is the easiest way to expand your total system storage.', link_title: "Continue", link_href: '/storage/device/new/stackable'})}}
+            
+            {{ include('partials/_col_card_icon_left.html.twig', {icon_class: 'ni ni-atom', icon_size: '125px', icon_style: 'color: grey;', title: 'Temporary External Drive', description: 'Connect any external drive, to backup files from and into Edgebox, or create a network-wide share with it.', link_title: "Continue", link_href: '/storage/device/new/temporary'})}}
+
+            {{ include('partials/_col_card_icon_left.html.twig', {icon_class: 'fas fa-hdd', icon_size: '125px', icon_style: 'color: grey;', title: 'Expansion by External Drive', description: 'Use the entire hard drive to expand the system total storage. After connecting the new drive, it should not be removed!', link_title: "Continue", link_href: '/storage/device/new/expansion'})}}
+        
+        </div>
     </div>
 
-{% endblock content %}
+{% endblock %}

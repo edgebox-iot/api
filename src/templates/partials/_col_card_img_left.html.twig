@@ -1,0 +1,24 @@
+<div class="{% if col_size is defined %}{{col_size}}{% else %}col-md-4 mt-4{% endif %}">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <img class="card-img-left" src="{{img_src}}">
+                </div>
+                <div class="col-md-8">
+                    <h4>
+                    {{title}}
+                    </h4>
+                    <p>
+                    {{description}}
+                    </p>
+                    <br>
+                    <a href="{{link_href}}" class="text-primary icon-move-right">{{link_title}}
+                    <i class="fas fa-arrow-right text-xs ms-1" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
