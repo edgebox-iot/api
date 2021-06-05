@@ -2,7 +2,7 @@
 
 To ensure consistent style and code quality we leverage `php-cs-fixer`, `PHPUnit` and `PHPStan`.
 
-This is automatically managed through `grumphp` in development, wit the git hooks should automatically register themselves.
+This is automatically managed through `grumphp` in development, with the git hooks automatically register themselves on `composer install`.
 
 If this is not the case, run:
 
