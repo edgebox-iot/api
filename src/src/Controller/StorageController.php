@@ -2,15 +2,13 @@
 
 namespace App\Controller;
 
+use App\Helper\StorageHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use App\Helper\StorageHelper;
-
 class StorageController extends AbstractController
 {
-
     public function __construct(
         StorageHelper $storageHelper
     ) {
@@ -18,15 +16,14 @@ class StorageController extends AbstractController
     }
 
     /**
-    * @Route("/storage", name="storage")
-    */
+     * @Route("/storage", name="storage")
+     */
     public function index(): Response
     {
-
         $storage_ready = false;
         $storage_devices_list = $this->storageHelper->getStorageDevicesList();
 
-        if(!empty($storage_devices_list)) {
+        if (!empty($storage_devices_list)) {
             $storage_ready = true;
         }
 
@@ -35,13 +32,13 @@ class StorageController extends AbstractController
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Buckets & Drives',
             'storage_ready' => $storage_ready,
-            'storage_devices' => $storage_devices_list
+            'storage_devices' => $storage_devices_list,
         ]);
     }
 
     /**
-    * @Route("/storage/device/new", name="storage_device_new")
-    */
+     * @Route("/storage/device/new", name="storage_device_new")
+     */
     public function storage_device_new(): Response
     {
         return $this->render('storage/device/new.html.twig', [
