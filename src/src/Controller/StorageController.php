@@ -9,6 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StorageController extends AbstractController
 {
+
+    private StorageHelper $storageHelper;
+
     public function __construct(
         StorageHelper $storageHelper
     ) {
