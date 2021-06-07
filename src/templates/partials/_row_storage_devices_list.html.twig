@@ -35,7 +35,7 @@
                                     <div class="progress-info">
                                         <div class="progress-percentage">
                                         {% if deviceinfo.status.description == 'healthy' or deviceinfo.status.description == 'locked' or deviceinfo.status.description == 'disconnected' %}
-                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.usage_stat.percent}} occupied / Using {{deviceinfo.usage_stat.used}}</b></span>
+                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.usage_stat.percent}} occupied / Using {{deviceinfo.usage_stat.used}} / {{deviceinfo.usage_stat.free}} free</b></span>
                                         {% elseif deviceinfo.status.description == 'not configured' %}
                                             <span class="text-sm font-weight-bold"><b>{{deviceinfo.partitions|length}} partitions</b></span>
                                         {% else %}

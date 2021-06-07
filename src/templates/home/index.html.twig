@@ -8,7 +8,7 @@
   
       {{ include('partials/_col_card_number.html.twig', {title: 'Online Since', info: container_system_uptime, icon: 'ni ni-watch-time'})}}
 
-      {{ include('partials/_col_card_number.html.twig', {title: 'Storage', info: '34%', indicator: '500GB', icon: 'ni ni-credit-card'})}}
+      {{ include('partials/_col_card_number.html.twig', {title: 'Storage', info: container_storage_summary.percentage, indicator: container_storage_summary.free, icon: 'ni ni-credit-card'})}}
       
       {{ include('partials/_col_card_number.html.twig', {title: 'Working Sources', info: '3', indicator: '+10 entries', icon: 'ni ni-paper-diploma'})}}
       
