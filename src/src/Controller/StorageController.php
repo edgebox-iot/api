@@ -24,7 +24,7 @@ class StorageController extends AbstractController
     public function index(): Response
     {
         $storage_ready = false;
-        $storage_devices_list = $this->storageHelper->getStorageDevicesList();
+        $storage_devices_list = $this->storageHelper->humanizeDeviceUsageValues($this->storageHelper->getStorageDevicesList());
 
         if (!empty($storage_devices_list)) {
             $storage_ready = true;
