@@ -39,10 +39,10 @@ class StorageHelper
                 $storageDevicesList[$deviceKey]['size'] = self::humanizeBytesValue($deviceInfo['size']);
 
                 // First Humanize Partition data split to percentages of total space
-                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['os'] = (int)(($deviceInfo['usage_stat']['usage_split']['os'] / $deviceInfo['usage_stat']['total']) * 100);
-                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['edgeapps'] = (int)(($deviceInfo['usage_stat']['usage_split']['edgeapps'] / $deviceInfo['usage_stat']['total']) * 100);
-                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['buckets'] = (int)(($deviceInfo['usage_stat']['usage_split']['buckets'] / $deviceInfo['usage_stat']['total']) * 100);
-                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['others'] = (int)(($deviceInfo['usage_stat']['usage_split']['others'] / $deviceInfo['usage_stat']['total']) * 100);
+                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['os'] = (($deviceInfo['usage_stat']['usage_split']['os'] / $deviceInfo['usage_stat']['total']) * 100);
+                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['edgeapps'] = (($deviceInfo['usage_stat']['usage_split']['edgeapps'] / $deviceInfo['usage_stat']['total']) * 100);
+                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['buckets'] = (($deviceInfo['usage_stat']['usage_split']['buckets'] / $deviceInfo['usage_stat']['total']) * 100);
+                $storageDevicesList[$deviceKey]['usage_stat']['usage_split']['others'] = (($deviceInfo['usage_stat']['usage_split']['others'] / $deviceInfo['usage_stat']['total']) * 100);
 
                 // Then Humanize Partition storage usage values, won't be needed anymore as bytes
                 $storageDevicesList[$deviceKey]['usage_stat']['total'] = self::humanizeBytesValue($deviceInfo['usage_stat']['total'], 2);

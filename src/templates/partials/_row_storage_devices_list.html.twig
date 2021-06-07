@@ -35,7 +35,7 @@
                                     <div class="progress-info">
                                         <div class="progress-percentage">
                                         {% if deviceinfo.status.description == 'healthy' or deviceinfo.status.description == 'locked' or deviceinfo.status.description == 'disconnected' %}
-                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.usage_stat.percent}}% occupied / Using {{deviceinfo.usage_stat.used}}</b></span>
+                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.usage_stat.percent}} occupied / Using {{deviceinfo.usage_stat.used}}</b></span>
                                         {% elseif deviceinfo.status.description == 'not configured' %}
                                             <span class="text-sm font-weight-bold"><b>{{deviceinfo.partitions|length}} partitions</b></span>
                                         {% else %}
@@ -49,6 +49,8 @@
                                             <div class="progress-bar bg-gradient-dark" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os}}" style="width: {{deviceinfo.usage_stat.usage_split.os}}%;">OS</div>
                                             <div class="progress-bar bg-gradient-primary" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" style="width: {{deviceinfo.usage_stat.usage_split.edgeapps}}%;">EdgeApps</div>
                                             <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" style="width: {{deviceinfo.usage_stat.usage_split.buckets}}%;">Buckets</div>
+                                            <div class="progress-bar bg-gradient-secondary" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets + deviceinfo.usage_stat.usage_split.others}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets + deviceinfo.usage_stat.usage_split.others}}" style="width: {{deviceinfo.usage_stat.usage_split.others}}%;">Others</div>
+
 
                                         {% elseif deviceinfo.status.description == 'locked' %}
 
