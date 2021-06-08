@@ -1,5 +1,8 @@
 #  Edgebox API Module
 
+[![CI](https://github.com/edgebox-iot/api/actions/workflows/ci.yml/badge.svg)](https://github.com/edgebox-iot/api/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/edgebox-iot/edgeboxctl/branch/main/graph/badge.svg?token=G7I9QC5CN7)](https://codecov.io/gh/edgebox-iot/edgeboxctl)
+
 The API and web-interface module built with PHP, running on a LAMP stack environment built using Docker Compose or Edgebox Compose. It consists of the following:
 
 * PHP
@@ -112,7 +115,7 @@ By default following modules are enabled.
 * headers
 
 > If you want to enable more modules, just update `./bin/webserver/Dockerfile`. You can also generate a PR and we will merge if seems good for general purpose.
-> You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
+> You[![CI](https://github.com/edgebox-iot/api/actions/workflows/ci.yml/badge.svg)](https://github.com/edgebox-iot/api/actions/workflows/ci.yml) have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
 #### Connect via SSH
 
