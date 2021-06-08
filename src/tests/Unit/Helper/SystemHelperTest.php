@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\App\Unit\Helper;
+namespace App\Tests\Unit\Helper;
 
 use App\Entity\Option;
 use App\Helper\SystemHelper;
