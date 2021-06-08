@@ -22,7 +22,7 @@ jobs:
       - name: Run tests
         run: |
           cd src/
-          XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover coverage.xml
+          XDEBUG_MODE=coverage ./vendor/bin/phpunit --debug --coverage-clover coverage.xml
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
