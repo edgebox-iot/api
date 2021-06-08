@@ -2,7 +2,7 @@
 
 <!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="bin/.phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.5/phpunit.xsd"
          backupGlobals="false"
          colors="true"
          verbose="true"
@@ -13,7 +13,7 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="8.5" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
     </php>
 
     <coverage>
@@ -23,8 +23,11 @@
     </coverage>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Functional Tests">
+            <directory>tests/Functional</directory>
         </testsuite>
     </testsuites>
 
