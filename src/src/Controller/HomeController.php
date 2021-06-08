@@ -226,14 +226,12 @@ class HomeController extends AbstractController
 
         $storage_devices_list = $this->storageHelper->getStorageDevicesList();
 
-        if(empty($storage_devices_list)) {
+        if (empty($storage_devices_list)) {
             $result['percentage'] = 'Working...';
         } else {
-
             $total_storage = 0.0;
             $total_storage_used = 0.0;
             $total_storage_free = 0.0;
-
 
             foreach ($storage_devices_list as $device) {
                 $total_storage += $device['usage_stat']['total'];
@@ -243,12 +241,10 @@ class HomeController extends AbstractController
 
             $percentage_used = (($total_storage_used / $total_storage) * 100);
 
-            $result['percentage'] = round($percentage_used, 0) . '%';
-            $result['free'] = StorageHelper::humanizeBytesValue($total_storage_free, 0) . ' free';
-
+            $result['percentage'] = round($percentage_used, 0).'%';
+            $result['free'] = StorageHelper::humanizeBytesValue($total_storage_free, 0).' free';
         }
 
         return $result;
-
     }
 }
