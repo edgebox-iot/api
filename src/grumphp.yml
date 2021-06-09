@@ -1,0 +1,7 @@
+grumphp:
+    tasks:
+        phpunit: ~
+        phpstan:
+            use_grumphp_paths: false
+        phpcsfixer:
+            config: .php-cs-fixer.dist.php
