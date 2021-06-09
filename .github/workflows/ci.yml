@@ -17,11 +17,12 @@ jobs:
       - name: Setup app
         run: |
           cd src/
-          ./bin/console doctrine:schema:create
+          ./bin/console doctrine:database:create -e test
+          ./bin/console doctrine:migrations:migrate -n  -e test
       - name: Run tests
         run: |
           cd src/
-          XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover coverage.xml
+          XDEBUG_MODE=coverage ./vendor/bin/phpunit --debug --coverage-clover coverage.xml
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
