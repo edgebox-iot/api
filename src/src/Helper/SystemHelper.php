@@ -28,12 +28,12 @@ class SystemHelper
         return $uptime;
     }
 
-    public function getReleaseVersion(): string
+    public function getReleaseVersion(): ?string
     {
         $release_version_option = $this->optionRepository->findOneBy(['name' => 'RELEASE_VERSION']) ?? new Option();
 
         if (null === $release_version_option->getValue()) {
-            return 0;
+            return null;
         }
 
         return $release_version_option->getValue();

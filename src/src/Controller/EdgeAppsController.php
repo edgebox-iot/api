@@ -18,6 +18,7 @@ class EdgeAppsController extends AbstractController
     private OptionRepository $optionRepository;
     private EntityManagerInterface $entityManager;
     private EdgeAppsHelper $edgeAppsHelper;
+    private SystemHelper $systemHelper;
     private TaskFactory $taskFactory;
 
     /**
