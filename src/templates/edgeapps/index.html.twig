@@ -48,6 +48,8 @@
                                         <div class="internet-access">
                                             {% if appinfo.internet_accessible %}
                                                 <p><span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="right" title="{{appinfo.internet_url}}">Online</span><span></span></p>
+                                            {% else if release_version == 'cloud' %}
+                                                <p><span class="badge badge-sm bg-gradient-secondary">Offline</span></p>
                                             {% else %}
                                                 <p><span class="badge badge-sm bg-gradient-secondary">Home-Only</span></p>
                                             {% endif %}
@@ -67,6 +69,8 @@
                                             {% if appinfo.internet_accessible %}
                                                 {% if tunnel_on %}
                                                     <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to home only<i class="fas fa-home text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% else if release_version == "cloud" %}
+                                                    <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Block Online Access<i class="fas fa-lock text-sm ms-1" aria-hidden="true"></i></a><br>
                                                 {% else %}
                                                     <br>
                                                 {% endif %}
@@ -77,6 +81,13 @@
                                                 {% else %}
                                                     <br>
                                                 {% endif %}
+
+                                                {% if not release_version == "cloud" %}
+                                                    <a href="http://{{appinfo.network_url}}" target="_blank" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% else %}
+                                                    <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% endif %}
+
                                                 <a href="http://{{appinfo.network_url}}" target="_blank" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
                                             {% endif %}
 

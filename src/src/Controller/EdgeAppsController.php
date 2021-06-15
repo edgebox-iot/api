@@ -6,6 +6,7 @@ use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,11 +48,13 @@ class EdgeAppsController extends AbstractController
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
         EdgeAppsHelper $edgeAppsHelper,
+        SystemHelper $systemHelper,
         TaskFactory $taskFactory
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->systemHelper = $systemHelper;
         $this->taskFactory = $taskFactory;
     }
 
@@ -77,6 +80,7 @@ class EdgeAppsController extends AbstractController
             'controller_title' => 'EdgeApps',
             'controller_subtitle' => 'Applications control',
             'framework_ready' => $framework_ready,
+            'release_version' => $this->systemHelper->getReleaseVersion(),
             'apps_list' => $apps_list,
             'tunnel_on' => $tunnel_on,
         ]);
