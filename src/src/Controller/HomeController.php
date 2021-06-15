@@ -69,18 +69,18 @@ class HomeController extends AbstractController
         $uptime = $this->systemHelper->getUptimeInSeconds();
 
         $days = $uptime / (60 * 60 * 24);
-        $hours = ($uptime - ($days * 60 * 60 * 24)) / (60 * 60);
-        $minutes = (($uptime - ($days * 60 * 60 * 24)) - ($hours * 60 * 60)) / 60;
+        $hours = $uptime / (60 * 60);
+        $minutes = $uptime / 60;
 
-        if ($days > 0) {
+        if ($days >= 2) {
             return (int) $days.' days';
         }
 
-        if ($hours > 0) {
+        if ($hours >= 2) {
             return (int) $hours.' hours';
         }
 
-        if ($minutes > 0) {
+        if ($minutes >= 2) {
             return (int) $minutes.' minutes';
         }
 
