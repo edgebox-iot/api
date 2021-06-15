@@ -38,4 +38,24 @@ class SystemHelper
 
         return $release_version_option->getValue();
     }
+
+    public function isOnlineReady(): bool {
+        // Checking if a domain name is configured in the system, either manual via domain name setting, or via the myedge.app service login.
+        // Can use 1 or the other. Domain name setting takes precendence.
+
+        // First check. Is there a manual domain name set?
+        $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
+
+        if($domain_option != null) {
+            return true;
+        }
+        
+        // Second check. Is there a previous login token saved for edgebox.io API?
+        $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+        if($token_option != null) {
+            return true;
+        }
+
+        return false;
+    }
 }

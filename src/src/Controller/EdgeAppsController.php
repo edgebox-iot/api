@@ -83,6 +83,7 @@ class EdgeAppsController extends AbstractController
             'framework_ready' => $framework_ready,
             'release_version' => $this->systemHelper->getReleaseVersion(),
             'apps_list' => $apps_list,
+            'is_online_ready' => $this->systemHelper->isOnlineReady(),
             'tunnel_on' => $tunnel_on,
         ]);
     }

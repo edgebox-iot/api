@@ -49,7 +49,7 @@
                                             {% if appinfo.internet_accessible %}
                                                 <p><span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="right" title="{{appinfo.internet_url}}">Online</span><span></span></p>
                                             {% elseif release_version == 'cloud' %}
-                                                <p><span class="badge badge-sm bg-gradient-secondary">Offline</span></p>
+                                                <p><span class="badge badge-sm bg-gradient-secondary data-bs-toggle="tooltip" data-bs-placement="right" title="Application running but not accessible online"">Offline</span></p>
                                             {% else %}
                                                 <p><span class="badge badge-sm bg-gradient-secondary">Home-Only</span></p>
                                             {% endif %}
@@ -67,25 +67,55 @@
 
                                         {% if appinfo.status.description == 'on' %}
                                             {% if appinfo.internet_accessible %}
-                                                {% if tunnel_on %}
-                                                    <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to home only<i class="fas fa-home text-sm ms-1" aria-hidden="true"></i></a><br>
-                                                {% elseif release_version == "cloud" %}
+
+                                                {% if release_version == 'cloud' %}
                                                     <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Block Online Access<i class="fas fa-lock text-sm ms-1" aria-hidden="true"></i></a><br>
                                                 {% else %}
-                                                    <br>
-                                                {% endif %}
-                                                <a href="http://{{appinfo.internet_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
-                                            {% else %}
-                                                {% if tunnel_on %}
-                                                    <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
-                                                {% else %}
-                                                    <br>
-                                                {% endif %}
+                                                    <a href="/edgeapps/disable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to home only<i class="fas fa-home text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% endif %}                                                
 
-                                                {% if release_version == "cloud" %}
-                                                    <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                <a href="http://{{appinfo.internet_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            
+                                            
+                                            {% else %}
+
+                                                {% if is_online_ready %}
+                                                    {% if release_version == 'cloud' %}
+                                                        <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% else %}
+                                                        <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                        <a href="http://{{appinfo.network_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% endif %}
                                                 {% else %}
-                                                    <a href="http://{{appinfo.network_url}}" target="_blank" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% if release_version == 'cloud' %}
+                                                        <br>
+                                                        <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% else %}
+                                                        <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                        <a href="http://{{appinfo.network_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% endif %}
+                                                    <div class="modal fade" id="modal-not-online" tabindex="-1" role="dialog" aria-labelledby="modal-not-online" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                                            <div class="modal-content">
+                                                            <div class="modal-body p-0">
+                                                                <div class="card card-plain">
+                                                                <div class="card-header pb-0 text-left">
+                                                                    <h3 class="font-weight-bolder text-warning text-gradient">One more thing...</h3>
+                                                                    <p class="mb-0">To be able to access your EdgeApps from anywhere online, you first need to configure online access in the setting screen.</p>
+                                                                    <p class="mb-0">Either login with your Edgebox.io account (simple), or configure a domain name (advanced), and try again.<p>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="text-center">
+                                                                        <a href="/settings" class="btn bg-gradient-warning btn-lg w-100 mt-4 mb-0">Go to settings</a>
+                                                                        <a href="" class="btn bg-gradient-secondary btn-lg w-100 mt-4 mb-0">I'll do this later</a>
+
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 {% endif %}
 
                                             {% endif %}
