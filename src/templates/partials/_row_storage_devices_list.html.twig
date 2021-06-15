@@ -1,0 +1,85 @@
+<div class="row edgeapps-list" style="margin-top: -25px;">
+
+    {% for devicekey,deviceinfo in storage_devices %}
+
+        {% if deviceinfo %}
+
+            <div class="edgeapp on col-lg-4 mb-lg-0 mb-2" id="storage-1">
+                <div class="card">
+                    <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-12 col-lg-12">
+                            <div class="d-flex flex-column h-100">
+                                <div class="status">
+                                    <p class="mb-1 pt-2 text-bold">
+                                        {% if deviceinfo.main_device %}
+                                            Internal storage
+                                        {% else %}
+                                            {{deviceinfo.name}}
+                                        {% endif %}
+                                    </p>
+                                </div>
+
+                                <h5 class="font-weight-bolder">{{deviceinfo.size}}</h5>
+                                {% if deviceinfo.status.description == 'healthy' %}
+                                    <p><span class="badge badge-sm bg-gradient-success">{{deviceinfo.status.description}}</span></p>
+                                {% elseif deviceinfo.status.description == 'locked' %}
+                                    <p><span class="badge badge-sm bg-gradient-default">{{deviceinfo.status.description}}</span></p>
+                                {% elseif deviceinfo.status.description == 'disconnected' %}
+                                    <p><span class="badge badge-sm bg-gradient-danger">{{deviceinfo.status.description}}</span></p>
+                                {% else %}
+                                    <p><span class="badge badge-sm bg-gradient-warning">{{deviceinfo.status.description}}</span></p>
+                                {% endif %}
+                                
+                                <div class="progress-wrapper">
+                                    <div class="progress-info">
+                                        <div class="progress-percentage">
+                                        {% if deviceinfo.status.description == 'healthy' or deviceinfo.status.description == 'locked' or deviceinfo.status.description == 'disconnected' %}
+                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.usage_stat.percent}} occupied / Using {{deviceinfo.usage_stat.used}} / {{deviceinfo.usage_stat.free}} free</b></span>
+                                        {% elseif deviceinfo.status.description == 'not configured' %}
+                                            <span class="text-sm font-weight-bold"><b>{{deviceinfo.partitions|length}} partitions</b></span>
+                                        {% else %}
+                                            <span class="text-sm font-weight-bold"><b>Plugged in. Ready to configure</b></span>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="progress" style="height: 35px;">
+                                        {% if deviceinfo.status.description == 'healthy' or deviceinfo.status.description == 'disconnected' %}
+
+                                            <div class="progress-bar bg-gradient-dark" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os}}" style="width: {{deviceinfo.usage_stat.usage_split.os}}%;"><i class="fas fa-cog text-sm ms-1" aria-hidden="true"> OS</i></div>
+                                            <div class="progress-bar bg-gradient-primary" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" style="width: {{deviceinfo.usage_stat.usage_split.edgeapps}}%;"><i class="fas fa-rocket text-sm ms-1" aria-hidden="true"> EdgeApps</i> </div>
+                                            <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" style="width: {{deviceinfo.usage_stat.usage_split.buckets}}%;"><i class="fas fa-bitbucket text-sm ms-1" aria-hidden="true"> Buckets</i></div>
+                                            <div class="progress-bar bg-gradient-secondary" role="progressbar" aria-valuenow="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets + deviceinfo.usage_stat.usage_split.others}}" aria-valuemin="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets}}" aria-valuemax="{{deviceinfo.usage_stat.usage_split.os + deviceinfo.usage_stat.usage_split.edgeapps + deviceinfo.usage_stat.usage_split.buckets + deviceinfo.usage_stat.usage_split.others}}" style="width: {{deviceinfo.usage_stat.usage_split.others}}%;"><i class="fas fa-question-circle text-sm ms-1" aria-hidden="true"> Others</i></div>
+
+
+                                        {% elseif deviceinfo.status.description == 'locked' %}
+
+                                        {% else %}
+                                            <div class="progress-bar bg-gradient-secondary" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">Space utilization not available</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="action-btns">
+                                    <br>
+                                    {% if not deviceinfo.main_device and deviceinfo.in_use %}
+                                        <a href="/storage/device/{{deviceinfo.id}}/remove" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Safely remove <i class="fas fa-unlink text-sm ms-1" aria-hidden="true"></i></a><br>
+                                    {% elseif not deviceinfo.in_use %}
+                                        <a href="/storage/device/new?id={{deviceinfo.id}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Configure <i class="fas fa-plus text-sm ms-1" aria-hidden="true"></i></a><br>
+                                    {% else %}
+                                        <br>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+</div>

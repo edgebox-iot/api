@@ -5033,18 +5033,22 @@ fieldset:disabled .btn {
 
 .card-img,
 .card-img-top,
-.card-img-bottom {
+.card-img-left,
+.card-img-bottom,
+.card-icon-left {
   width: 100%;
 }
 
 .card-img,
-.card-img-top {
+.card-img-top,
+.card-img-left {
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 }
 
 .card-img,
-.card-img-bottom {
+.card-img-bottom,
+.card-img-left {
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
 }
@@ -21209,6 +21213,12 @@ SVG Icons - svgicons.sparkk.fr
 @media (max-width: 992px) {
   .container-storage-overview {
     margin-top: 25px;
+  }
+}
+
+@media (min-width: 992px) {
+  .row.my-5 {
+    margin-left: 15px;
   }
 }
 

@@ -1,0 +1,24 @@
+<div class="{% if col_size is defined %}{{col_size}}{% else %}col-xl-3 col-sm-6 mb-xl-0 mb-4{% endif %}">
+    <div class="card">
+        <div class="card-body p-3">
+        <div class="row">
+            <div class="col-8">
+            <div class="numbers">
+                <p class="text-sm mb-0 text-capitalize font-weight-bold">{{title}}</p>
+                <h5 class="font-weight-bolder mb-0">
+                {{info}}
+                {% if indicator is defined %}
+                    <span class="text-{% if indicator_color is defined %}{{indicator_color}}{% else %}success{% endif %} text-sm font-weight-bolder">{{indicator}}</span>
+                {% endif %}
+                </h5>
+            </div>
+            </div>
+            <div class="col-4 text-end">
+            <div class="icon icon-shape bg-gradient-secondary shadow text-center border-radius-md">
+                <i class="ni ni-{% if icon is defined %}{{icon}}{% else %}chart-bar-32{% endif %} text-lg opacity-10" aria-hidden="true"></i>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
