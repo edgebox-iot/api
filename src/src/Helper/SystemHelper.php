@@ -36,6 +36,6 @@ class SystemHelper
             return 0;
         }
 
-        return $release_version_option->getValue()
+        return $release_version_option->getValue();
     }
 }
