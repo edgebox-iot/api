@@ -23,6 +23,11 @@ class PlaygroundController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
 
+            $this->addFlash(
+                'info',
+                sprintf('You submitted a new blog post titled "%s"', $blogPost->getTitle())
+            );
+
             return $this->redirectToRoute('home');
         }
 
