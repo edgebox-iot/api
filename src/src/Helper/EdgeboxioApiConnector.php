@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 
 class EdgeboxioApiConnector
@@ -54,11 +55,20 @@ class EdgeboxioApiConnector
         }
 
         $url = $this->api_url.'/myedgeapp/v1/bootnode';
-        $response = $this->client->get($url, [
-            RequestOptions::HEADERS => [
-                'Authorization' => sprintf('Bearer %s', $token),
-            ],
-        ]);
+        
+        try {
+            $response = $this->client->get($url, [
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $token),
+                ],
+            ]);
+        } catch(ClientException $e) {
+            return [
+                'status' => 'error',
+                'value' => json_decode($e->getResponse()->getBody(), true)
+            ];
+        }
+        
 
         $response = json_decode($response->getBody(), true);
 

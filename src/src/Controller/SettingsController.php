@@ -57,6 +57,8 @@ class SettingsController extends AbstractController
         $task_status = 0;
         $alert = [];
         $show_form = false;
+        $domain_name = "";
+        $domain_name_config_step = 0;
 
         if ($request->isMethod('post')) {
             $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
@@ -104,9 +106,16 @@ class SettingsController extends AbstractController
                 // Is already logged in, and not doing this request through post
 
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
-                $connection_details = $tunnelInfo['value'];
-
-                $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
+                if($tunnelInfo['status'] == 'error') {
+                    $connection_details = [
+                        'node_name' => 'Unavailable',
+                        'details' => $tunnelInfo['value']['message']
+                    ];
+                    $status = 'Logged in to Edgebox.io but a problem is ocurring.';
+                } else {
+                    $connection_details = $tunnelInfo['value'];
+                    $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
+                }
 
                 $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
@@ -133,8 +142,9 @@ class SettingsController extends AbstractController
                         break;
 
                     case 2:
+
                         // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
-                        $connection_status = 'Successfully connected to myedge.app Service';
+                        $connection_status = 'Successfully configured myedge.app Service';
 
                         break;
 
@@ -143,6 +153,18 @@ class SettingsController extends AbstractController
                         $connection_status = json_decode($tunnelSetupTask->getResult())['value'];
                 }
             }
+ 
+            $options =  $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
+            $domain_name = $options->getValue();
+
+            if(!empty($domain_name)) {
+
+                // A custom domain was already inserted.
+                $domain_name_config_step = 1;
+
+            }
+
+
         }
 
         return $this->render('settings/index.html.twig', [
@@ -156,6 +178,8 @@ class SettingsController extends AbstractController
             'connection_details' => $connection_details,
             'task_status' => $task_status,
             'api_token' => $apiToken,
+            'domain_name' => $domain_name,
+            'domain_name_config_step' => $domain_name_config_step,
         ]);
     }
 
