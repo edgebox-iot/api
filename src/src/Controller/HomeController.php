@@ -219,30 +219,12 @@ class HomeController extends AbstractController
 
     private function getStorageSummaryContainerVars(): array
     {
-        $result = [
-            'percentage' => '',
-            'free' => '',
-        ];
-
         $storage_devices_list = $this->storageHelper->getStorageDevicesList();
 
         if (empty($storage_devices_list)) {
             $result['percentage'] = 'Working...';
-        } else {
-            $total_storage = 0.0;
-            $total_storage_used = 0.0;
-            $total_storage_free = 0.0;
-
-            foreach ($storage_devices_list as $device) {
-                $total_storage += $device['usage_stat']['total'];
-                $total_storage_used += $device['usage_stat']['used'];
-                $total_storage_free += $device['usage_stat']['free'];
-            }
-
-            $percentage_used = (($total_storage_used / $total_storage) * 100);
-
-            $result['percentage'] = round($percentage_used, 0).'%';
-            $result['free'] = StorageHelper::humanizeBytesValue($total_storage_free, 0).' free';
+        }  else {
+            $result = $this->storageHelper->getOverallStorageSummary($storage_devices_list);
         }
 
         return $result;

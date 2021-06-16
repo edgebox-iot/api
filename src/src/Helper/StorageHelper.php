@@ -27,6 +27,31 @@ class StorageHelper
         return json_decode($storage_devices_list_option->getValue(), true);
     }
 
+    public static function getOverallStorageSummary(array $storageDevicesList): array
+    {
+        $result = [
+            'percentage' => '',
+            'free' => '',
+        ];
+
+        $total_storage = 0.0;
+        $total_storage_used = 0.0;
+        $total_storage_free = 0.0;
+
+        foreach ($storageDevicesList as $device) {
+            $total_storage += $device['usage_stat']['total'];
+            $total_storage_used += $device['usage_stat']['used'];
+            $total_storage_free += $device['usage_stat']['free'];
+        }
+
+        $percentage_used = (($total_storage_used / $total_storage) * 100);
+
+        $result['percentage'] = round($percentage_used, 0).'%';
+        $result['free'] = StorageHelper::humanizeBytesValue($total_storage_free, 0).' free';
+
+        return $result;
+    }
+
     public static function humanizeDeviceUsageValues(array $storageDevicesList, bool $include_partitions = false): array
     {
         foreach ($storageDevicesList as $deviceKey => $deviceInfo) {
@@ -52,7 +77,7 @@ class StorageHelper
         return $storageDevicesList;
     }
 
-    public static function humanizeBytesValue(int $bytes, int $decimals = 2): string
+    public static function humanizeBytesValue(float $bytes, int $decimals = 2): string
     {
         $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         $factor = floor((strlen($bytes) - 1) / 3);
