@@ -4,91 +4,58 @@
     Web Dashboard
 {% endblock title %}
 {% block content %}
-    <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Online since</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      {{container_system_uptime}}
-                      {# <span class="text-success text-sm font-weight-bolder">+55%</span> #}
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-secondary shadow text-center border-radius-md">
-                    <i class="ni ni-watch-time text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Storage</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      34%
-                      <span class="text-success text-sm font-weight-bolder">280GB</span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-secondary shadow text-center border-radius-md">
-                    <i class="ni ni-credit-card text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Working Sources</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      3
-                      <span class="text-success text-sm font-weight-bolder">+10 entires</span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-secondary shadow text-center border-radius-md">
-                    <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
-                  </div>
+  <div class="row">
+
+    {% if container_system_uptime == '100 days' or container_system_uptime == '365 days' %}
+    
+      {{ include('partials/_col_card_number.html.twig', {title: 'Online Since', info: container_system_uptime ~ '🎉', icon: 'ni ni-watch-time'})}}
+
+    {% else %}
+
+      {{ include('partials/_col_card_number.html.twig', {title: 'Online Since', info: container_system_uptime, icon: 'ni ni-watch-time'})}}
+
+    {% endif %}
+
+    {{ include('partials/_col_card_number.html.twig', {title: 'Storage', info: container_storage_summary.percentage, indicator: container_storage_summary.free, icon: 'ni ni-credit-card'})}}
+    
+    {{ include('partials/_col_card_number.html.twig', {title: 'Working Sources', info: '3', indicator: '+10 entries', icon: 'ni ni-paper-diploma'})}}
+    
+    {% if (container_working_edgeapps.online > 0) and not (container_working_edgeapps.total == container_working_edgeapps.online) %}
+
+      {{ include('partials/_col_card_number.html.twig', {title: 'Working EdgeApps', info: container_working_edgeapps.total, indicator: '(' ~ container_working_edgeapps.online ~ ' online)', icon: 'ni ni-world'})}}
+
+    {% elseif (container_working_edgeapps.online > 0) and (container_working_edgeapps.total == container_working_edgeapps.online) %}
+
+      {{ include('partials/_col_card_number.html.twig', {title: 'Working EdgeApps', info: container_working_edgeapps.total, indicator: '(all online)', icon: 'ni ni-world'})}}
+
+    {% else %}
+
+      {{ include('partials/_col_card_number.html.twig', {title: 'Working EdgeApps', info: container_working_edgeapps.total, icon: 'ni ni-world'})}}
+
+    {% endif %}
+      
+    </div>
+    <div class="row mt-4">
+      <div class="col-lg-7 mb-lg-0 mb-4">
+        <div class="card">
+          <div class="card-body p-3">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="d-flex flex-column h-100">
+                  <p class="mb-1 pt-2 text-bold">Built for the future</p>
+                  <h5 class="font-weight-bolder">Own your Data</h5>
+                  <p class="mb-5">Setup a secure vault, import data from various sources, and consume it securely.</p>
+                  <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="https://edgebox.io/alkthrough" target="_blank">
+                    See the walkthough
+                    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+                  </a>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-sm-6">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-8">
-                  <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Working EdgeApps</p>
-                    <h5 class="font-weight-bolder mb-0">
-                      {{container_working_edgeapps.total}}
-                      {% if container_working_edgeapps.online > 0 %}
-                        <span class="text-success text-sm font-weight-bolder">({{container_working_edgeapps.online}} online)</span>
-                      {% endif %}
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="icon icon-shape bg-gradient-secondary shadow text-center border-radius-md">
-                    <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+              <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
+                <div class="bg-gradient-primary border-radius-lg h-100">
+                  <img src="/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
+                  <div class="position-relative d-flex align-items-center justify-content-center h-100">
+                    <img class="w-100 position-relative z-index-2 pt-4" src="/assets/img/illustrations/rocket-white.png">
                   </div>
                 </div>
               </div>
@@ -96,72 +63,41 @@
           </div>
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col-lg-7 mb-lg-0 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="d-flex flex-column h-100">
-                    <p class="mb-1 pt-2 text-bold">Built for the future</p>
-                    <h5 class="font-weight-bolder">Own your Data</h5>
-                    <p class="mb-5">Setup a secure vault, import data from various sources, and consume it securely.</p>
-                    <a class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="https://edgebox.io/alkthrough" target="_blank">
-                      See the walkthough
-                      <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
-                  <div class="bg-gradient-primary border-radius-lg h-100">
-                    <img src="/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
-                    <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                      <img class="w-100 position-relative z-index-2 pt-4" src="/assets/img/illustrations/rocket-white.png">
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div class="col-lg-5">
+        <div class="card h-100 p-3">
+          <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100" style="background-image: url('/assets/img/ivancik.jpg');">
+            <span class="mask bg-gradient-dark"></span>
+            <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
+              <h5 class="text-white font-weight-bolder mb-4 pt-2">So many things need privacy</h5>
+              <p class="text-white">Check out useful examples and guides to take the most of your Edgebox. Make your digital data as personal as your life.</p>
+              <a class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="https://edgebox.io/topics/guides" target="_blank">
+                Read More
+                <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+              </a>
             </div>
           </div>
         </div>
-        <div class="col-lg-5">
-          <div class="card h-100 p-3">
-            <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100" style="background-image: url('/assets/img/ivancik.jpg');">
-              <span class="mask bg-gradient-dark"></span>
-              <div class="card-body position-relative z-index-1 d-flex flex-column h-100 p-3">
-                <h5 class="text-white font-weight-bolder mb-4 pt-2">So many things need privacy</h5>
-                <p class="text-white">Check out useful examples and guides to take the most of your Edgebox. Make your digital data as personal as your life.</p>
-                <a class="text-white text-sm font-weight-bold mb-0 icon-move-right mt-auto" href="https://edgebox.io/topics/guides" target="_blank">
-                  Read More
-                  <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-                </a>
-              </div>
+      </div>
+  </div>
+  <div class="row mt-4">
+      <div class="col-lg-5 col-md-12 container-actions-overview">
+        {{ include('partials/_container_actions_overview.html.twig', {actions: container_actions_overview})}}
+      </div>
+      <div class="col-lg-7 col-md-12 container-storage-overview">
+        <div class="card h-100">
+          <div class="card-header pb-0">
+            <h6>Storage usage overview</h6>
+            <p class="text-sm">
+              <i class="fa fa-arrow-up text-success"></i>
+              <span class="font-weight-bold">4% more</span> in 2021
+            </p>
+          </div>
+          <div class="card-body p-3">
+            <div class="chart">
+              <canvas id="chart-line" class="chart-canvas" height="300px"></canvas>
             </div>
           </div>
         </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-lg-5 col-md-12 container-actions-overview">
-          {{ include('partials/_container_actions_overview.html.twig', {actions: container_actions_overview})}}
-        </div>
-        <div class="col-lg-7 col-md-12 container-storage-overview">
-          <div class="card h-100">
-            <div class="card-header pb-0">
-              <h6>Storage usage overview</h6>
-              <p class="text-sm">
-                <i class="fa fa-arrow-up text-success"></i>
-                <span class="font-weight-bold">4% more</span> in 2021
-              </p>
-            </div>
-            <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="chart-line" class="chart-canvas" height="300px"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-    <div class="row my-4">
-       {# Row for further things... #}
-    </div>
+      </div>
+  </div>
 {% endblock content %}

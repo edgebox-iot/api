@@ -1,0 +1,36 @@
+<div class="{% if col_size is defined %}{{col_size}}{% else %}col-md-4 mt-4{% endif %}">
+    <div class="card">
+        {% if img_src is defined %}
+            <img class="card-img-top" src="{{img_src}}">
+            <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                    <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                    <defs>
+                        <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                    </defs>
+                    <g class="moving-waves">
+                        <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                        <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                        <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                        <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                        <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                        <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                    </g>
+                    </svg>
+                </div>
+            </div>
+        {% endif %}
+        <div class="card-body">
+            <h4>
+            <i class="fas fa-arrow-right text-xs ms-1" aria-hidden="true"></i> {{title}}
+            </h4>
+            <p>
+            {{description}}
+            </p>
+            <br>
+            <a href="{{link_href}}" class="text-primary icon-move-right">{{link_title}}
+            <i class="fas fa-arrow-right text-xs ms-1" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</div>

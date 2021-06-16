@@ -75,7 +75,6 @@ class EdgeAppsController extends AbstractController
             $framework_ready = true;
         }
 
-        // TODO: Port EdgeApps control logic from src-f3
         return $this->render('edgeapps/index.html.twig', [
             'controller_name' => 'EdgeAppsController',
             'controller_title' => 'EdgeApps',
