@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController
@@ -62,15 +63,19 @@ class SettingsController extends AbstractController
 
         if ($request->isMethod('post')) {
 
-            // Find out with form to process and call the correct handler
+            // Find out with form to process and call the correct handler, which should return a RedirectResponse
 
             switch ($request->get('setting')) {
                 case 'edgeboxio_login':
-                    $this->handleEdgeboxioLoginSetting($request);
+                    return $this->handleEdgeboxioLoginSetting($request);
                     break;
-                
+
+                case 'custom_domain':
+                    return $this->handleCustomDomainSetting($request);
+                    break;
+
                 default:
-                    # code...
+                    return $this->redirectToRoute('settings');
                     break;
             }
             
@@ -148,6 +153,10 @@ class SettingsController extends AbstractController
 
             }
 
+            // Figure if any of the alerts should trigger...
+            if(!empty($request->query->get('setting')) && !empty($request->query->get('type'))) {
+                $alert = ['setting' => $request->query->get('setting'), 'type' => $request->query->get('type')];
+            }
 
         }
 
@@ -182,7 +191,7 @@ class SettingsController extends AbstractController
         return $this->redirectToRoute('settings');
     }
 
-    private function handleEdgeboxioLoginSetting(Request $request) 
+    private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse 
     {
         $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
         if ('success' === $apiToken['status']) {
@@ -210,8 +219,19 @@ class SettingsController extends AbstractController
                 $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
                 $connection_details = $tunnelInfo['value'];
         
-                $alert = ['category' => 'access', 'type' => 'success', 'message' => 'Login Successful!'];
-            }
+                return $this->redirectToRoute('settings', ['setting' => 'edgeboxio_login', 'type' => 'success']);
+            } 
+
+            return $this->redirectToRoute('settings', ['setting' => 'edgeboxio_login', 'type' => 'warning']);
+
         }
+    }
+
+    private function handleCustomDomainSetting(Request $request): Redirectresponse
+    {
+
+        // TODO: Validate that this is a valid domain name.
+        $this->setOptionValue('DOMAIN_NAME', $request->get('domain'));
+        return $this->redirectToRoute('settings', ['setting' => 'custom_domain', 'type' => 'success']);
     }
 }
