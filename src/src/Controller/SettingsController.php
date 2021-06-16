@@ -61,35 +61,19 @@ class SettingsController extends AbstractController
         $domain_name_config_step = 0;
 
         if ($request->isMethod('post')) {
-            $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
-            if ('success' === $apiToken['status']) {
-                $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
 
-                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
+            // Find out with form to process and call the correct handler
 
-                if ('success' === $tunnelInfo['status']) {
-                    // The response was successful. Save fetched information in options and issue setup_tunnel task.
-                    $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
-                    $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
-                    $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
-                    $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
-
-                    // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                    $task = $this->taskFactory->createSetupTunnelTask(
-                        $tunnelInfo['value']['bootnode_address'],
-                        $tunnelInfo['value']['bootnode_token'],
-                        $tunnelInfo['value']['assigned_address'],
-                        $tunnelInfo['value']['node_name']
-                    );
-                    $this->entityManager->persist($task);
-                    $this->entityManager->flush();
-
-                    $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
-                    $connection_details = $tunnelInfo['value'];
-
-                    $alert = ['category' => 'access', 'type' => 'success', 'message' => 'Login Successful!'];
-                }
+            switch ($request->get('setting')) {
+                case 'edgeboxio_login':
+                    $this->handleEdgeboxioLoginSetting($request);
+                    break;
+                
+                default:
+                    # code...
+                    break;
             }
+            
         } else {
             // GET Request. Should get latest setup_tunnel task status and display it.
 
@@ -196,5 +180,38 @@ class SettingsController extends AbstractController
         $this->entityManager->flush();
 
         return $this->redirectToRoute('settings');
+    }
+
+    private function handleEdgeboxioLoginSetting(Request $request) 
+    {
+        $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
+        if ('success' === $apiToken['status']) {
+            $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
+        
+            $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
+        
+            if ('success' === $tunnelInfo['status']) {
+                // The response was successful. Save fetched information in options and issue setup_tunnel task.
+                $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
+                $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
+                $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
+                $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
+        
+                // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+                $task = $this->taskFactory->createSetupTunnelTask(
+                    $tunnelInfo['value']['bootnode_address'],
+                    $tunnelInfo['value']['bootnode_token'],
+                    $tunnelInfo['value']['assigned_address'],
+                    $tunnelInfo['value']['node_name']
+                );
+                $this->entityManager->persist($task);
+                $this->entityManager->flush();
+        
+                $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
+                $connection_details = $tunnelInfo['value'];
+        
+                $alert = ['category' => 'access', 'type' => 'success', 'message' => 'Login Successful!'];
+            }
+        }
     }
 }
