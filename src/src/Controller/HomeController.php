@@ -222,7 +222,10 @@ class HomeController extends AbstractController
         $storage_devices_list = $this->storageHelper->getStorageDevicesList();
 
         if (empty($storage_devices_list)) {
-            $result['percentage'] = 'Working...';
+            $result = [
+                'percentage' => 'Working...',
+                'free' => '',
+            ];
         } else {
             $result = $this->storageHelper->getOverallStorageSummary($storage_devices_list);
         }
