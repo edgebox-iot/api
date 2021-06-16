@@ -52,7 +52,7 @@ class StorageHelper
         return $storageDevicesList;
     }
 
-    public static function humanizeBytesValue($bytes, $decimals = 2)
+    public static function humanizeBytesValue(int $bytes, int $decimals = 2): string
     {
         $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         $factor = floor((strlen($bytes) - 1) / 3);
