@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,15 +16,18 @@ class HomeController extends AbstractController
     private TaskRepository $taskRepository;
     private SystemHelper $systemHelper;
     private EdgeAppsHelper $edgeAppsHelper;
+    private StorageHelper $storageHelper;
 
     public function __construct(
-        EdgeAppsHelper $edgeAppsHelper,
+        TaskRepository $taskRepository,
         SystemHelper $systemHelper,
-        TaskRepository $taskRepository
+        EdgeAppsHelper $edgeAppsHelper,
+        StorageHelper $storageHelper
     ) {
         $this->taskRepository = $taskRepository;
-        $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
+        $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->storageHelper = $storageHelper;
     }
 
     /**
@@ -37,6 +41,7 @@ class HomeController extends AbstractController
             'controller_subtitle' => 'Welcome back!',
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
+            'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
         ]);
     }
@@ -210,5 +215,21 @@ class HomeController extends AbstractController
         }
 
         return $action_overview_list;
+    }
+
+    private function getStorageSummaryContainerVars(): array
+    {
+        $storage_devices_list = $this->storageHelper->getStorageDevicesList();
+
+        if (empty($storage_devices_list)) {
+            $result = [
+                'percentage' => 'Working...',
+                'free' => '',
+            ];
+        } else {
+            $result = $this->storageHelper->getOverallStorageSummary($storage_devices_list);
+        }
+
+        return $result;
     }
 }
