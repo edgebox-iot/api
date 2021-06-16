@@ -159,18 +159,19 @@
                                     <div class="tab-pane fade" id="pills-custom-domain" role="tabpanel" aria-labelledby="pills-custom-domain-tab">
                                         <br>
                                         <p class="text-sm opacity-8">
-                                            <b>Configure Edgebox to receive connections through a custom domain name you own.</b> This is an advanced setting and requires you to know how to setup a domain name and potentially how to configure security certificates.
+                                            <b>Configure Edgebox to allow receiving connections through a custom domain name you own.</b> This is an advanced setting and requires you to know how to setup a domain name and potentially how to configure security certificates.
                                         </p>
+                                        <br>
                                         
                                         {% if domain_name_config_step == "0" %}
                                             <p class="text-sm opacity-8">
                                                 <b>Step 1: </b>Insert the domain name below (for example "mydomain.com"). Edgebox will configure itself to accept connections from this domain.
                                             </p>
                                             <div class="form-group">
-                                                <label for="example-url-input" class="form-control-label">Domain name</label>
+                                                <label for="example-url-input" class="form-control-label">Domain name:</label>
                                                 <input class="form-control" type="url" value="" id="example-url-input">
                                             </div>
-                                            <button type="button" class="btn btn-outline-success">Continue</button>
+                                            <button type="button" class="btn btn-outline-secondary">Continue</button>
                                         {% endif %}
                                         
                                         {% if domain_name_config_step == "1" %}
