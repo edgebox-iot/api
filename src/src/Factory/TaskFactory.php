@@ -103,7 +103,7 @@ class TaskFactory
                 // Cloud version does not use bootnode but direct IP instead.
                 $ip = $this->systemHelper->getIP();
             } 
-            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $ip) : null;
+            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
         }
 
         $task = new Task();

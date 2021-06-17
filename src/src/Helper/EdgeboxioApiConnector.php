@@ -97,11 +97,8 @@ class EdgeboxioApiConnector
 
         $request_options = [
             'apps' => $apps,
+            'ip' => $ip,
         ];
-
-        if(!empty($ip)) {
-            $request_options['ip'] = $ip;
-        }
 
         $url = $this->api_url.'/myedgeapp/v1/apps/register';
         $response = $this->client->put($url, [
