@@ -84,7 +84,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function register_apps(string $token, string $apps)
+    public function register_apps(string $token, string $apps, string $ip = "")
     {
         $token = empty($token) ? $this->token : $token;
 
@@ -95,11 +95,17 @@ class EdgeboxioApiConnector
             ];
         }
 
+        $request_options = [
+            'apps' => $apps,
+        ];
+
+        if(!empty($ip)) {
+            $request_options['ip'] = $ip;
+        }
+
         $url = $this->api_url.'/myedgeapp/v1/apps/register';
         $response = $this->client->put($url, [
-            RequestOptions::JSON => [
-                'apps' => $apps,
-            ],
+            RequestOptions::JSON => $request_options,
             RequestOptions::HEADERS => [
                 'Authorization' => sprintf('Bearer %s', $token),
             ],

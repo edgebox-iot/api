@@ -128,7 +128,7 @@ class HomeController extends AbstractController
             'disable_online' => [
                 Task::STATUS_CREATED => 'Waiting to restrict online access to %s',
                 Task::STATUS_EXECUTING => 'Restricting Online access to %s',
-                Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
+                Task::STATUS_FINISHED => 'Restricted Online access to %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ],
             'setup_tunnel' => [

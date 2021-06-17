@@ -46,7 +46,7 @@ class SystemHelper
         // First check. Is there a manual domain name set?
         $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
 
-        if($domain_option != null) {
+        if($domain_option != null && !empty($domain_option->getValue())) {
             return true;
         }
         
@@ -57,5 +57,18 @@ class SystemHelper
         }
 
         return false;
+    }
+
+    public function getIP(): string {
+
+        $ip = "";
+        $ip_option = $this->optionRepository->findOneBy(['name' => 'IP_ADDRESS']);
+
+        if($ip_option != null && !empty($ip_option->getValue())) {
+            $ip = $ip_option->getValue();
+        }
+
+        return $ip
+
     }
 }

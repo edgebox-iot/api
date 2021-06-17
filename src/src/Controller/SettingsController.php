@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
@@ -21,6 +22,7 @@ class SettingsController extends AbstractController
     private OptionRepository $optionRepository;
     private TaskRepository $taskRepository;
     private TaskFactory $taskFactory;
+    private EdgeAppsHelper $edgeAppsHelper;
 
     private EntityManagerInterface $entityManager;
 
@@ -29,12 +31,14 @@ class SettingsController extends AbstractController
         OptionRepository $optionRepository,
         TaskRepository $taskRepository,
         TaskFactory $taskFactory,
+        EdgeAppsHelper $edgeAppsHelper,
         EntityManagerInterface $entityManager
     ) {
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->optionRepository = $optionRepository;
         $this->taskRepository = $taskRepository;
         $this->taskFactory = $taskFactory;
+        $this->edgeAppsHelper = $edgeAppsHelper;
         $this->entityManager = $entityManager;
     }
 
@@ -72,6 +76,10 @@ class SettingsController extends AbstractController
 
                 case 'custom_domain':
                     return $this->handleCustomDomainSetting($request);
+                    break;
+
+                case 'remove_custom_domain':
+                    return $this->handleRemoveCustoMDomainSetting($request);
                     break;
 
                 default:
@@ -153,10 +161,18 @@ class SettingsController extends AbstractController
 
             }
 
+            $ip_address = $this->SystemHelper->getIP();
+
             // Figure if any of the alerts should trigger...
-            if(!empty($request->query->get('setting')) && !empty($request->query->get('type'))) {
-                $alert = ['setting' => $request->query->get('setting'), 'type' => $request->query->get('type')];
+            if(!empty($request->query->get('alert')) && !empty($request->query->get('type'))) {
+                $alert = ['alert' => $request->query->get('alert'), 'type' => $request->query->get('type')];
             }
+
+            $edgeapps_list = $this->edgeAppsHelper->getEdgeAppsList();
+            $apps_online = 0;
+            foreach($edgeapps_list as $edgeapp) {
+                if($edgeapp['internet_accessible']) ++$apps_online;
+            } 
 
         }
 
@@ -173,6 +189,9 @@ class SettingsController extends AbstractController
             'api_token' => $apiToken,
             'domain_name' => $domain_name,
             'domain_name_config_step' => $domain_name_config_step,
+            'apps_online' => $apps_online,
+            'apps_list' => $edgeapps_list,
+            'ip_address' => $ip_address
         ]);
     }
 
@@ -197,41 +216,60 @@ class SettingsController extends AbstractController
         if ('success' === $apiToken['status']) {
             $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
         
-            $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
-        
-            if ('success' === $tunnelInfo['status']) {
-                // The response was successful. Save fetched information in options and issue setup_tunnel task.
-                $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
-                $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
-                $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
-                $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
-        
-                // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                $task = $this->taskFactory->createSetupTunnelTask(
-                    $tunnelInfo['value']['bootnode_address'],
-                    $tunnelInfo['value']['bootnode_token'],
-                    $tunnelInfo['value']['assigned_address'],
-                    $tunnelInfo['value']['node_name']
-                );
-                $this->entityManager->persist($task);
-                $this->entityManager->flush();
-        
-                $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
-                $connection_details = $tunnelInfo['value'];
-        
-                return $this->redirectToRoute('settings', ['setting' => 'edgeboxio_login', 'type' => 'success']);
-            } 
+            if($this->systemHelper->getReleaseVersion() =! "cloud") {
 
-            return $this->redirectToRoute('settings', ['setting' => 'edgeboxio_login', 'type' => 'warning']);
+                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
+            
+                if ('success' === $tunnelInfo['status']) {
+                    // The response was successful. Save fetched information in options and issue setup_tunnel task.
+                    $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
+                    $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
+                    $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
+                    $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
+            
+                    // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+                    $task = $this->taskFactory->createSetupTunnelTask(
+                        $tunnelInfo['value']['bootnode_address'],
+                        $tunnelInfo['value']['bootnode_token'],
+                        $tunnelInfo['value']['assigned_address'],
+                        $tunnelInfo['value']['node_name']
+                    );
+                    $this->entityManager->persist($task);
+                    $this->entityManager->flush();
+            
+                    $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
+                    $connection_details = $tunnelInfo['value'];
+            
+                    return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
+                } 
+
+                // This return means that login was ok but there was an error getting bootnode information.
+                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'error']);
+
+            } else {
+
+                // Logged in successfully, no need to setup bootnode as this will receive direct connections.
+                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
+
+            }
 
         }
+
+        // Error Logging in.
+        return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'warning']);
+
     }
 
-    private function handleCustomDomainSetting(Request $request): Redirectresponse
+    private function handleCustomDomainSetting(Request $request): RedirectResponse
     {
-
         // TODO: Validate that this is a valid domain name.
         $this->setOptionValue('DOMAIN_NAME', $request->get('domain'));
-        return $this->redirectToRoute('settings', ['setting' => 'custom_domain', 'type' => 'success']);
+        return $this->redirectToRoute('settings', ['alert' => 'custom_domain', 'type' => 'success']);
+    }
+
+    private function handleRemoveCustomDomainSetting(Request $request): RedirectResponse
+    {
+        $this->setOptionValue('DOMAIN_NAME', "");
+        return $this->redirectToRoute('settings', ['alert' => 'remove_custom_domain', 'type' => 'success']);
     }
 }
