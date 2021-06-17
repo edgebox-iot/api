@@ -118,15 +118,15 @@ class TaskFactoryTest extends TestCase
 
         $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
         $option_repository_mock->method('findOneBy')->will($this->returnCallback(
-            function($arg) { 
+            function ($arg) {
                 $option_mock = $this->getMockBuilder(\App\Entity\Option::class)->disableOriginalConstructor()->getMock();
-                if($arg['name'] == "DOMAIN_NAME") {
+                if ('DOMAIN_NAME' == $arg['name']) {
                     $option_mock->method('getValue')->will($this->returnValue(''));
                 } else {
                     $option_mock->method('getValue')->will($this->returnValue('test'));
                 }
-                
-                return $option_mock; 
+
+                return $option_mock;
             }
         ));
 
@@ -134,7 +134,7 @@ class TaskFactoryTest extends TestCase
         $edge_apps_helper_mock->method('getInternetUrl')->will($this->returnValue(null));
 
         $system_helper_mock = $this->getMockBuilder(\App\Helper\SystemHelper::class)->disableOriginalConstructor()->getMock();
-        $system_helper_mock->method('getIP')->will($this->returnValue("192.168.1.1"));
+        $system_helper_mock->method('getIP')->will($this->returnValue('192.168.1.1'));
 
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock, $system_helper_mock);
         $task = $factory->createEnableOnlineTask('test');
@@ -150,23 +150,23 @@ class TaskFactoryTest extends TestCase
 
         $option_repository_mock = $this->getMockBuilder(\App\Repository\OptionRepository::class)->disableOriginalConstructor()->getMock();
         $option_repository_mock->method('findOneBy')->will($this->returnCallback(
-            function($arg) { 
+            function ($arg) {
                 $option_mock = $this->getMockBuilder(\App\Entity\Option::class)->disableOriginalConstructor()->getMock();
-                if($arg['name'] == "DOMAIN_NAME") {
+                if ('DOMAIN_NAME' == $arg['name']) {
                     $option_mock->method('getValue')->will($this->returnValue(''));
                 } else {
                     $option_mock->method('getValue')->will($this->returnValue('test'));
                 }
-                
-                return $option_mock; 
+
+                return $option_mock;
             }
         ));
         $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
         $edge_apps_helper_mock->method('getInternetUrl')->will($this->returnValue('https://edgebox.io'));
 
         $system_helper_mock = $this->getMockBuilder(\App\Helper\SystemHelper::class)->disableOriginalConstructor()->getMock();
-        $system_helper_mock->method('getIP')->will($this->returnValue("192.168.1.1"));
-        $system_helper_mock->method('getReleaseVersion')->will($this->returnValue("prod"));
+        $system_helper_mock->method('getIP')->will($this->returnValue('192.168.1.1'));
+        $system_helper_mock->method('getReleaseVersion')->will($this->returnValue('prod'));
 
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock, $system_helper_mock);
         $task = $factory->createEnableOnlineTask('test');
@@ -182,7 +182,6 @@ class TaskFactoryTest extends TestCase
         $edge_apps_helper_mock = $this->getMockBuilder(\App\Helper\EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
         $system_helper_mock = $this->getMockBuilder(\App\Helper\SystemHelper::class)->disableOriginalConstructor()->getMock();
 
-
         $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock, $system_helper_mock);
         $task = $factory->createDisableOnlineTask('test');
 
@@ -190,5 +189,4 @@ class TaskFactoryTest extends TestCase
         self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
         self::assertEquals($task::STATUS_CREATED, $task->getStatus());
     }
-
 }

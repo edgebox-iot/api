@@ -55,20 +55,19 @@ class EdgeboxioApiConnector
         }
 
         $url = $this->api_url.'/myedgeapp/v1/bootnode';
-        
+
         try {
             $response = $this->client->get($url, [
                 RequestOptions::HEADERS => [
                     'Authorization' => sprintf('Bearer %s', $token),
                 ],
             ]);
-        } catch(ClientException $e) {
+        } catch (ClientException $e) {
             return [
                 'status' => 'error',
-                'value' => json_decode($e->getResponse()->getBody(), true)
+                'value' => json_decode($e->getResponse()->getBody(), true),
             ];
         }
-        
 
         $response = json_decode($response->getBody(), true);
 
@@ -84,7 +83,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function register_apps(string $token, string $apps, string $ip = "")
+    public function register_apps(string $token, string $apps, string $ip = '')
     {
         $token = empty($token) ? $this->token : $token;
 

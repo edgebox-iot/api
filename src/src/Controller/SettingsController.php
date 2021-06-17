@@ -6,15 +6,15 @@ use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
 use App\Helper\EdgeAppsHelper;
-use App\Helper\SystemHelper;
 use App\Helper\EdgeboxioApiConnector;
+use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController
@@ -66,11 +66,10 @@ class SettingsController extends AbstractController
         $task_status = 0;
         $alert = [];
         $show_form = false;
-        $domain_name = "";
+        $domain_name = '';
         $domain_name_config_step = 0;
 
         if ($request->isMethod('post')) {
-
             // Find out with form to process and call the correct handler, which should return a RedirectResponse
 
             switch ($request->get('setting')) {
@@ -90,7 +89,6 @@ class SettingsController extends AbstractController
                     return $this->redirectToRoute('settings');
                     break;
             }
-            
         } else {
             // GET Request. Should get latest setup_tunnel task status and display it.
 
@@ -98,7 +96,6 @@ class SettingsController extends AbstractController
             $apiToken = $options->getValue();
             $show_form = true;
             $release_version = $this->systemHelper->getReleaseVersion();
-
 
             if (!empty($apiToken)) {
                 // We have an API token, which means that a previous login and tunnel setup was made.
@@ -110,15 +107,15 @@ class SettingsController extends AbstractController
 
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
 
-                if($tunnelInfo['status'] == 'error') {
+                if ('error' == $tunnelInfo['status']) {
                     $connection_details = [
                         'node_name' => 'Unavailable',
-                        'details' => $tunnelInfo['value']['message']
+                        'details' => $tunnelInfo['value']['message'],
                     ];
                     $status = 'Logged in to Edgebox.io but a problem is ocurring.';
                 } else {
                     $connection_details = $tunnelInfo['value'];
-                    if(!empty($release_version) && $release_version == 'cloud') {
+                    if (!empty($release_version) && 'cloud' == $release_version) {
                         $connection_details = [
                             'assigned_address' => $this->systemHelper->getIP(),
                             'node_name' => $tunnelInfo['value']['node_name'],
@@ -127,7 +124,7 @@ class SettingsController extends AbstractController
                     $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
                 }
 
-                if(!empty($release_version) && $release_version != 'cloud' ) {
+                if (!empty($release_version) && 'cloud' != $release_version) {
                     $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
                     if (null === $tunnelSetupTask) {
@@ -153,7 +150,6 @@ class SettingsController extends AbstractController
                             break;
 
                         case 2:
-
                             // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
                             $connection_status = 'Successfully configured myedge.app Service';
 
@@ -164,36 +160,32 @@ class SettingsController extends AbstractController
                             $connection_status = json_decode($tunnelSetupTask->getResult())['value'];
                     }
                 } else {
-
-                    $connection_status = "Connected to the myedge.app service.";
-
+                    $connection_status = 'Connected to the myedge.app service.';
                 }
-
             }
- 
-            $options =  $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
+
+            $options = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
             $domain_name = $options->getValue();
 
-            if(!empty($domain_name)) {
-
+            if (!empty($domain_name)) {
                 // A custom domain was already inserted.
                 $domain_name_config_step = 1;
-
             }
 
             $ip_address = $this->systemHelper->getIP();
 
             // Figure if any of the alerts should trigger...
-            if(!empty($request->query->get('alert')) && !empty($request->query->get('type'))) {
+            if (!empty($request->query->get('alert')) && !empty($request->query->get('type'))) {
                 $alert = ['alert' => $request->query->get('alert'), 'type' => $request->query->get('type')];
             }
 
             $edgeapps_list = $this->edgeAppsHelper->getEdgeAppsList();
             $apps_online = 0;
-            foreach($edgeapps_list as $edgeapp) {
-                if($edgeapp['internet_accessible']) ++$apps_online;
-            } 
-
+            foreach ($edgeapps_list as $edgeapp) {
+                if ($edgeapp['internet_accessible']) {
+                    ++$apps_online;
+                }
+            }
         }
 
         return $this->render('settings/index.html.twig', [
@@ -211,7 +203,7 @@ class SettingsController extends AbstractController
             'domain_name_config_step' => $domain_name_config_step,
             'apps_online' => $apps_online,
             'apps_list' => $edgeapps_list,
-            'ip_address' => $ip_address
+            'ip_address' => $ip_address,
         ]);
     }
 
@@ -230,25 +222,24 @@ class SettingsController extends AbstractController
         return $this->redirectToRoute('settings');
     }
 
-    private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse 
+    private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse
     {
-        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : "dev";
+        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : 'dev';
 
         $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
         if ('success' === $apiToken['status']) {
             $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
-        
-            if($release_version =! "cloud") {
 
+            if ($release_version = !'cloud') {
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
-            
+
                 if ('success' === $tunnelInfo['status']) {
                     // The response was successful. Save fetched information in options and issue setup_tunnel task.
                     $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
                     $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
                     $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
                     $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
-            
+
                     // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
                     $task = $this->taskFactory->createSetupTunnelTask(
                         $tunnelInfo['value']['bootnode_address'],
@@ -258,40 +249,37 @@ class SettingsController extends AbstractController
                     );
                     $this->entityManager->persist($task);
                     $this->entityManager->flush();
-            
+
                     $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
                     $connection_details = $tunnelInfo['value'];
-            
+
                     return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-                } 
+                }
 
                 // This return means that login was ok but there was an error getting bootnode information.
                 return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'error']);
-
             } else {
-
                 // Logged in successfully, no need to setup bootnode as this will receive direct connections.
                 return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-
             }
-
         }
 
         // Error Logging in.
         return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'warning']);
-
     }
 
     private function handleCustomDomainSetting(Request $request): RedirectResponse
     {
         // TODO: Validate that this is a valid domain name.
         $this->setOptionValue('DOMAIN_NAME', $request->get('domain'));
+
         return $this->redirectToRoute('settings', ['alert' => 'custom_domain', 'type' => 'success']);
     }
 
     private function handleRemoveCustomDomainSetting(Request $request): RedirectResponse
     {
-        $this->setOptionValue('DOMAIN_NAME', "");
+        $this->setOptionValue('DOMAIN_NAME', '');
+
         return $this->redirectToRoute('settings', ['alert' => 'remove_custom_domain', 'type' => 'success']);
     }
 }

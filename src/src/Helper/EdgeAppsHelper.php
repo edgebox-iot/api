@@ -46,7 +46,7 @@ class EdgeAppsHelper
         return $found;
     }
 
-    public function getInternetUrl(?string $api_token, string $app_id, string $ip = ""): ?string
+    public function getInternetUrl(?string $api_token, string $app_id, string $ip = ''): ?string
     {
         $url = null;
 
