@@ -14,7 +14,6 @@ class SourcesController extends AbstractController
     public function index(): Response
     {
         return $this->render('not_available.html.twig', [
-            'controller_name' => 'SourcesController',
             'controller_title' => 'Sources',
             'controller_subtitle' => 'Automatically pull data',
         ]);

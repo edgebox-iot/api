@@ -14,7 +14,6 @@ class BackupsController extends AbstractController
     public function index(): Response
     {
         return $this->render('not_available.html.twig', [
-            'controller_name' => 'BackupsController',
             'controller_title' => 'Backups',
             'controller_subtitle' => 'Safeguard Data',
         ]);

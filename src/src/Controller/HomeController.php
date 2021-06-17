@@ -36,7 +36,6 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
             'controller_title' => 'Dashboard',
             'controller_subtitle' => 'Welcome back!',
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),

@@ -72,7 +72,6 @@ class EdgeAppsController extends AbstractController
         }
 
         return $this->render('edgeapps/index.html.twig', [
-            'controller_name' => 'EdgeAppsController',
             'controller_title' => 'EdgeApps',
             'controller_subtitle' => 'Applications control',
             'framework_ready' => $framework_ready,
@@ -117,7 +116,6 @@ class EdgeAppsController extends AbstractController
         }
 
         return $this->render('edgeapps/action.html.twig', [
-            'controller_name' => 'EdgeAppsController',
             'controller_title' => 'EdgeApps - '.$controller_title,
             'controller_subtitle' => 'Please wait...',
             'edgeapp' => $edgeapp,
