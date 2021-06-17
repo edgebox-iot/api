@@ -94,16 +94,16 @@ class TaskFactory
     public function createEnableOnlineTask(string $id): Task
     {
         $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
-        if($domain_option != null) {
+        if($domain_option != null && !empty($domain_option->getValue())) {
             $internet_url = sprintf('%s.%s', $id, $domain_option->getValue());
         } else {
             $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
             $ip = "";
-            if($this->systemHelper->getRealeaseVersion() == 'cloud') {
+            if($this->systemHelper->getReleaseVersion() == 'cloud') {
                 // Cloud version does not use bootnode but direct IP instead.
                 $ip = $this->systemHelper->getIP();
             } 
-            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id) : null;
+            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $ip) : null;
         }
 
         $task = new Task();
