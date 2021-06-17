@@ -6,6 +6,7 @@ use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\SystemHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
@@ -23,6 +24,7 @@ class SettingsController extends AbstractController
     private TaskRepository $taskRepository;
     private TaskFactory $taskFactory;
     private EdgeAppsHelper $edgeAppsHelper;
+    private SystemHelper $systemHelper;
 
     private EntityManagerInterface $entityManager;
 
@@ -32,6 +34,7 @@ class SettingsController extends AbstractController
         TaskRepository $taskRepository,
         TaskFactory $taskFactory,
         EdgeAppsHelper $edgeAppsHelper,
+        SystemHelper $systemhelper,
         EntityManagerInterface $entityManager
     ) {
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
@@ -39,6 +42,7 @@ class SettingsController extends AbstractController
         $this->taskRepository = $taskRepository;
         $this->taskFactory = $taskFactory;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->systemHelper = $systemhelper;
         $this->entityManager = $entityManager;
     }
 
@@ -93,6 +97,8 @@ class SettingsController extends AbstractController
             $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
             $apiToken = $options->getValue();
             $show_form = true;
+            $release_version = $this->systemHelper->getReleaseVersion();
+
 
             if (!empty($apiToken)) {
                 // We have an API token, which means that a previous login and tunnel setup was made.
@@ -103,6 +109,7 @@ class SettingsController extends AbstractController
                 // Is already logged in, and not doing this request through post
 
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
+
                 if($tunnelInfo['status'] == 'error') {
                     $connection_details = [
                         'node_name' => 'Unavailable',
@@ -111,44 +118,57 @@ class SettingsController extends AbstractController
                     $status = 'Logged in to Edgebox.io but a problem is ocurring.';
                 } else {
                     $connection_details = $tunnelInfo['value'];
+                    if(!empty($release_version) && $release_version == 'cloud') {
+                        $connection_details = [
+                            'assigned_address' => $this->systemHelper->getIP(),
+                            'node_name' => $tunnelInfo['value']['node_name'],
+                        ];
+                    }
                     $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
                 }
 
-                $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
+                if(!empty($release_version) && $release_version != 'cloud' ) {
+                    $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
-                if (null === $tunnelSetupTask) {
-                    // Setup task was not found. This is an inconsistent state.
-                    $tunnel_setup_status = -1;
+                    if (null === $tunnelSetupTask) {
+                        // Setup task was not found. This is an inconsistent state.
+                        $tunnel_setup_status = -1;
+                    } else {
+                        $tunnel_setup_status = $tunnelSetupTask->getStatus();
+                    }
+
+                    switch ($tunnel_setup_status) {
+                        case -1:
+                            $connection_status = 'Problem with tunnel setup task. Please re-login.';
+                            break;
+                        case 0:
+                            // Task has not yet been picked up by edgeboxctl...
+                            $connection_status = 'Waiting for Edgebox to start executing the setup...';
+                            break;
+
+                        case 1:
+                            // Task has been picked up by edgeboxctl and is not in progress...
+                            $connection_status = 'Configuring tunnel network for '.$connection_details['node_name'].'...';
+                            // TODO: Some sort of auto-reload when the status is this one could be very useful.
+                            break;
+
+                        case 2:
+
+                            // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
+                            $connection_status = 'Successfully configured myedge.app Service';
+
+                            break;
+
+                        default:
+                            // Error occurred and should be shown to the user.
+                            $connection_status = json_decode($tunnelSetupTask->getResult())['value'];
+                    }
                 } else {
-                    $tunnel_setup_status = $tunnelSetupTask->getStatus();
+
+                    $connection_status = "Connected to the myedge.app service.";
+
                 }
 
-                switch ($tunnel_setup_status) {
-                    case -1:
-                        $connection_status = 'Problem with tunnel setup task. Please re-login.';
-                        break;
-                    case 0:
-                        // Task has not yet been picked up by edgeboxctl...
-                        $connection_status = 'Waiting for Edgebox to start executing the setup...';
-                        break;
-
-                    case 1:
-                        // Task has been picked up by edgeboxctl and is not in progress...
-                        $connection_status = 'Configuring tunnel network for '.$connection_details['node_name'].'...';
-                        // TODO: Some sort of auto-reload when the status is this one could be very useful.
-                        break;
-
-                    case 2:
-
-                        // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
-                        $connection_status = 'Successfully configured myedge.app Service';
-
-                        break;
-
-                    default:
-                        // Error occurred and should be shown to the user.
-                        $connection_status = json_decode($tunnelSetupTask->getResult())['value'];
-                }
             }
  
             $options =  $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
@@ -161,7 +181,7 @@ class SettingsController extends AbstractController
 
             }
 
-            $ip_address = $this->SystemHelper->getIP();
+            $ip_address = $this->systemHelper->getIP();
 
             // Figure if any of the alerts should trigger...
             if(!empty($request->query->get('alert')) && !empty($request->query->get('type'))) {
@@ -212,11 +232,13 @@ class SettingsController extends AbstractController
 
     private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse 
     {
+        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : "dev";
+
         $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
         if ('success' === $apiToken['status']) {
             $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
         
-            if($this->systemHelper->getReleaseVersion() =! "cloud") {
+            if($release_version =! "cloud") {
 
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
             

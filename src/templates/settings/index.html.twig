@@ -183,17 +183,6 @@
                                                     <a href="/settings"><button class="btn btn-outline-secondary">Re-Check Status</button></a>
                                                 {% endif %}
                                             {% endif %}
-                                        {% if not show_form %}
-                                            <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-4">Access</h6>
-                                            <ul class="list-group">
-                                                <li class="list-group-item border-0 px-0">
-                                                    <div class="form-check form-switch ps-0">
-                                                        <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4">
-                                                        <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault4">Kill Switch - Block access for all apps</label>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        {% endif %}
 
                                     </div>
                                     <div class="tab-pane fade {% if domain_name_config_step == "1" %}show active{% endif %}" id="pills-custom-domain" role="tabpanel" aria-labelledby="pills-custom-domain-tab">

@@ -68,7 +68,7 @@ class SystemHelper
             $ip = $ip_option->getValue();
         }
 
-        return $ip
+        return $ip;
 
     }
 }
