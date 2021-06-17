@@ -118,21 +118,21 @@ class SettingsController extends AbstractController
                 }
 
                 switch ($tunnel_setup_status) {
-                    case -1:
+                    case Task::STATUS_ERROR:
                         $connection_status = 'Problem with tunnel setup task. Please re-login.';
                         break;
-                    case 0:
+                    case Task::STATUS_CREATED:
                         // Task has not yet been picked up by edgeboxctl...
                         $connection_status = 'Waiting for Edgebox to start executing the setup...';
                         break;
 
-                    case 1:
+                    case Task::STATUS_EXECUTING:
                         // Task has been picked up by edgeboxctl and is not in progress...
                         $connection_status = 'Configuring tunnel network for '.$connection_details['node_name'].'...';
                         // TODO: Some sort of auto-reload when the status is this one could be very useful.
                         break;
 
-                    case 2:
+                    case Task::STATUS_FINISHED:
                         // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
                         $connection_status = 'Successfully connected to myedge.app Service';
 
