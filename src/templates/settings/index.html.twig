@@ -356,23 +356,21 @@
                             <br><br>
                             The settings below are more complicated and advanced then usual. Take special care when editing these. If you have questions and need more information, <a href="/docs" taget="_blank">the documentation explains in as much detail as possible the implications of each one of these.</a></p> #}
                             {# <h6 class="text-uppercase text-body text-xs font-weight-bolder">Services</h6> #}
-                            <ul class="list-group">
-                                <li class="list-group-item border-0 px-0">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="card bg-cover text-center" style="background-image: url('/assets/img/coming-soon-bg.jpg')">
-                                                <div class="card-body z-index-2 py-9">
-                                                    <h4 class="text-white">Coming Soon</h2>
-                                                        <p class="text-white">
-                                                            Your current version still does not support this feature. We are working to bring it as fast as possible. <a href="https://github.com/edgebox-iot/contribute" target="_blank">Want to help? You can!</a>
-                                                        </p>
-                                                </div>
-                                                <div class="mask bg-gradient-primary border-radius-lg"></div>
-                                            </div>
-                                        </div>
+                            <p class="text-sm opacity-8">The following settings help you take action on setting up advanced features.</p>
+                            <h6 class="text-uppercase text-body text-xs font-weight-bolder">Dashboard Public Access</h6>
+                            <p class="text-sm opacity-8">Toggle between being able to access this dashboard via the internet, or only inside your home network.</p>
+                            {% if not release_version == 'cloud' %}
+                                <button class="btn btn-outline-danger">Disable</button>
+                            {% else %}
+                                <div class="row">
+                                    <div class="col-3">
+                                        <button type="button" class="btn btn-outline-light" >Disable</button>
                                     </div>
-                                </li>
-                            </ul>
+                                    <div class="col-9">
+                                        <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-exclamation-triangle"></i>  Only available in the <a href="https://edgebox.io/product" target="_blank">self-hosted verisn</a></p>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -25,8 +25,23 @@ class SettingsController extends AbstractController
     private TaskFactory $taskFactory;
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
-
     private EntityManagerInterface $entityManager;
+
+    /**
+     * @var array
+     */
+    private const ACTION_CONTROLLER_TITLES = [
+        'enable_public_dashboard' => 'Enabling Online Access',
+        'disable_public_dashboard' => 'Disabling Online Access',
+    ];
+
+    /**
+     * @var array
+     */
+    public const ALLOWED_ACTIONS = [
+        'enable_public_dashboard' => 'createEnablePublicDashboardTask',
+        'disable_public_dashboard' => 'createDisablePublicDashboardTask',
+    ];
 
     public function __construct(
         EdgeboxioApiConnector $edgeboxioApiConnector,
@@ -68,6 +83,7 @@ class SettingsController extends AbstractController
         $show_form = false;
         $domain_name = '';
         $domain_name_config_step = 0;
+        $release_version = '';
 
         if ($request->isMethod('post')) {
             // Find out with form to process and call the correct handler, which should return a RedirectResponse
@@ -186,6 +202,8 @@ class SettingsController extends AbstractController
                     ++$apps_online;
                 }
             }
+
+            $release_version = $this->systemHelper->getReleaseVersion();
         }
 
         return $this->render('settings/index.html.twig', [
@@ -204,7 +222,46 @@ class SettingsController extends AbstractController
             'apps_online' => $apps_online,
             'apps_list' => $edgeapps_list,
             'ip_address' => $ip_address,
+            'release_version' => $release_version,
         ]);
+    }
+
+    /**
+     * @Route("/edgeapps/{action}/{edgeapp}", name="edgeapp_action")
+     */
+    public function action(string $action): Response
+    {
+        $controller_title = 'Invalid action';
+        $action_result = 'invalid_action';
+
+        $framework_ready = !empty($apps_list);
+
+        $valid_action = !empty(self::ALLOWED_ACTIONS[$action]);
+
+        if($valid_action) {
+            $controller_title = self::ACTION_CONTROLLER_TITLES[$action];
+            $action_task_factory_method_name = self::ALLOWED_ACTIONS[$action];
+
+            $action_result = 'executing';
+
+            $task = $this->taskFactory->$action_task_factory_method_name();
+
+            if (Task::STATUS_ERROR === $task->getStatus()) {
+                $action_result = 'error';
+            }
+
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
+        }
+
+        return $this->render('settings/action.html.twig', [
+            'controller_title' => 'Settings - '.$controller_title,
+            'controller_subtitle' => 'Please wait...',
+            'framework_ready' => $framework_ready,
+            'result' => $result,
+            'action' => $action,
+        ]);
+
     }
 
     /**
