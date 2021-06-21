@@ -204,6 +204,12 @@ class SettingsController extends AbstractController
             }
 
             $release_version = $this->systemHelper->getReleaseVersion();
+            $is_dashboard_public = $this->systemHelper->isDashboardPublic();
+            $public_dashboard_option = $this->optionRepository->findOneBy(['name' => 'PUBLIC_DASHBOARD']);
+            $dash_internet_url = "";
+            if (null != $public_dashboard_option && !empty($public_dashboard_option->getValue())) {
+                $dash_internet_url = $public_dashboard_option->getValue();
+            }
         }
 
         return $this->render('settings/index.html.twig', [
@@ -223,16 +229,35 @@ class SettingsController extends AbstractController
             'apps_list' => $edgeapps_list,
             'ip_address' => $ip_address,
             'release_version' => $release_version,
+            'is_dashboard_public' => $is_dashboard_public,
+            'dash_internet_url' => $dash_internet_url,
         ]);
     }
 
     /**
-     * @Route("/edgeapps/{action}/{edgeapp}", name="edgeapp_action")
+     * @Route("/settings/logout", name="settings_logout")
+     */
+    public function logout(): Response
+    {
+        $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
+
+        // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
+        $task = $this->taskFactory->createDisableTunnelTask();
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('settings');
+    }
+
+    /**
+     * @Route("/settings/{action}", name="settings_action")
      */
     public function action(string $action): Response
     {
         $controller_title = 'Invalid action';
         $action_result = 'invalid_action';
+
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
         $framework_ready = !empty($apps_list);
 
@@ -258,25 +283,10 @@ class SettingsController extends AbstractController
             'controller_title' => 'Settings - '.$controller_title,
             'controller_subtitle' => 'Please wait...',
             'framework_ready' => $framework_ready,
-            'result' => $result,
+            'result' => $action_result,
             'action' => $action,
         ]);
 
-    }
-
-    /**
-     * @Route("/settings/logout", name="settings_logout")
-     */
-    public function logout(): Response
-    {
-        $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
-
-        // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-        $task = $this->taskFactory->createDisableTunnelTask();
-        $this->entityManager->persist($task);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute('settings');
     }
 
     private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse

@@ -359,14 +359,46 @@
                             <p class="text-sm opacity-8">The following settings help you take action on setting up advanced features.</p>
                             <h6 class="text-uppercase text-body text-xs font-weight-bolder">Dashboard Public Access</h6>
                             <p class="text-sm opacity-8">Toggle between being able to access this dashboard via the internet, or only inside your home network.</p>
-                            {% if not release_version == 'cloud' %}
-                                <button class="btn btn-outline-danger">Disable</button>
+                            {% if release_version != 'cloud' %}
+                                {% if show_form and domain_name_config_step == '0' %}
+                                    <p class="text-sm opacity-8">
+                                        <br>
+                                        <br>
+                                        <div class="py-3 text-center">
+                                            <i class="ni ni-button-power ni-3x"></i>
+                                            <h4 class="text-gradient text-warning mt-4">Please login first</h4>
+                                            <p>To provide access to your dashboard through the internet, you need to <b>login using your <a target="_blank" href="https://edgebox.io">Edgebox.io</a> Account</b> or configure a custom domain first.</p>
+                                        </div>
+                                        <br>
+                                        <br>
+                                    </p>
+                                {% else %}
+                                    {% if is_dashboard_public %}
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <a href="/settings/disable_public_dashboard" class="btn btn-outline-danger">Disable</a>
+                                            </div>
+                                            <div class="col-8">
+                                                <p class="text-sm opacity-8 text-success" style="margin-top: 8px;"><i class="fas fa-exclamation-check"></i>  Available via <a href="https://{{dash_internet_url}}/" target="_blank">{{dash_internet_url}}</a></p>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <a href="/settings/enable_public_dashboard" class="btn btn-outline-success">Enable</a>
+                                            </div>
+                                            <div class="col-8">
+                                                <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-home"></i>  Currently only acessible in home-network</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
                             {% else %}
                                 <div class="row">
-                                    <div class="col-3">
+                                    <div class="col-4">
                                         <button type="button" class="btn btn-outline-light" >Disable</button>
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-8">
                                         <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-exclamation-triangle"></i>  Only available in the <a href="https://edgebox.io/product" target="_blank">self-hosted verisn</a></p>
                                     </div>
                                 </div>

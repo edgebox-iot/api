@@ -24,25 +24,25 @@
 
                 {% else %}
                     {% if result == "executing" %} 
-                        <h1><img src="/assets/img/spinner.gif"></h1>
+                        <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
                         <p><b>
                                 {% if action == "remove" %}
-                                    <h2>Removing {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Removing {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "install" %}
-                                    <h2>Installing {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Installing {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "stop" %}
-                                    <h2>Stopping {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Stopping {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "start" %}
-                                    <h2>Starting {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Starting {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "enable_online" %}
-                                    <h2>Enabling online access to {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Enabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "disable_online" %}
-                                    <h2>Disabling online access to {{edgeapp}} ... </h2><p>This can take a minute...</p>
+                                    <h2>Disabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                             </b></p>
 

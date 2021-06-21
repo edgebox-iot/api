@@ -143,6 +143,18 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
                 Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
             ],
+            'enable_public_dashboard' => [
+                Task::STATUS_CREATED => 'Waiting to enable online access to dashboard',
+                Task::STATUS_EXECUTING => 'Enabling Online access to the Dashboard',
+                Task::STATUS_FINISHED => 'Enabled Online access to the Dashboard',
+                Task::STATUS_ERROR => 'Failed to Enable Online access to the Dashboard',
+            ],
+            'disable_public_dashboard' => [
+                Task::STATUS_CREATED => 'Waiting to disable online access to dashboard',
+                Task::STATUS_EXECUTING => 'Disabling Online access to the Dashboard',
+                Task::STATUS_FINISHED => 'Disabled Online access to the Dashboard',
+                Task::STATUS_ERROR => 'Failed to Disable Online access to the Dashboard',
+            ],
             'unknown_action' => [
                 Task::STATUS_CREATED => 'Waiting to run action: %s %s',
                 Task::STATUS_EXECUTING => 'Running action: %s %s',
@@ -160,6 +172,8 @@ class HomeController extends AbstractController
             'disable_online' => 'scissors',
             'setup_tunnel' => 'planet',
             'disable_tunnel' => 'scissors',
+            'enable_public_dashboard' => 'ui-04',
+            'disable_public_dashboard' => 'ui-04',
             'unknown_action' => 'ui-04',
         ];
 

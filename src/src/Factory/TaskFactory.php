@@ -130,12 +130,12 @@ class TaskFactory
         return $task;
     }
 
-    public function enablePublicDashboard(): Task
+    public function createEnablePublicDashboardTask(): Task
     {
 
         $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
         if (null != $domain_option && !empty($domain_option->getValue())) {
-            $internet_url = sprintf('%s.%s', $id, $domain_option->getValue());
+            $internet_url = sprintf('%s', $domain_option->getValue());
         } else {
             $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
             $ip = '';
@@ -152,5 +152,14 @@ class TaskFactory
         $task->setArgs(json_encode(['internet_url' => $internet_url]));
 
         return $task;
+    }
+
+    public function createDisablePublicDashboardTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::DISABLE_PUBLIC_DASHBOARD);
+
+        return $task;
+
     }
 }

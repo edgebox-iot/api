@@ -71,4 +71,17 @@ class SystemHelper
 
         return $ip;
     }
+
+    public function isDashboardPublic(): bool
+    {
+        $result = false;
+
+        $public_dashboard_otpion = $this->optionRepository->findOneBy(['name' => 'PUBLIC_DASHBOARD']);
+
+        if (null != $public_dashboard_otpion && !empty($public_dashboard_otpion->getValue())) {
+            $result = true;
+        }
+
+        return $result;
+    }
 }

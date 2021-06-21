@@ -24,13 +24,13 @@
 
                 {% else %}
                     {% if result == "executing" %} 
-                        <h1><img src="/assets/img/spinner.gif"></h1>
+                        <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
                         <p><b>
                                 {% if action == "enable_public_dashboard" %}
-                                    <h2>Enabling public access to dashboard ... </h2><p>This can take a minute...</p>
+                                    <h2>Enabling public access to dashboard</h2><p>This can take a minute...</p>
                                 {% endif %}
                                 {% if action == "disable_public_dashboard" %}
-                                    <h2>Disabling public access to dashboard ... </h2><p>This can take a minute...</p>
+                                    <h2>Disabling public access to dashboard</h2><p>This can take a minute...</p>
                                 {% endif %}
                             </b></p>
 
