@@ -16,7 +16,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+* Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
+*
+* @IsGranted("IS_AUTHENTICATED_FULLY")
+*/
 class SettingsController extends AbstractController
 {
     private EdgeboxioApiConnector $edgeboxioApiConnector;
