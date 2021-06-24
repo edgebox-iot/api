@@ -15,7 +15,6 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class RegistrationController extends AbstractController
 {
-
     private UserRepository $userRepository;
 
     public function __construct(
@@ -29,8 +28,7 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
-
-        if($this->userRepository->hasUser() != null) {
+        if (null != $this->userRepository->hasUser()) {
             return $this->redirectToRoute('app_login');
         }
 

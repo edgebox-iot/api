@@ -10,9 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-
     private UserRepository $userRepository;
-
 
     public function __construct(
         UserRepository $userRepository
@@ -29,7 +27,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        if(!$this->userRepository->hasUser()) {
+        if (!$this->userRepository->hasUser()) {
             return $this->redirectToRoute('app_register');
         }
 

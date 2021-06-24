@@ -132,7 +132,6 @@ class TaskFactory
 
     public function createEnablePublicDashboardTask(): Task
     {
-
         $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
         if (null != $domain_option && !empty($domain_option->getValue())) {
             $internet_url = sprintf('%s', $domain_option->getValue());
@@ -160,6 +159,5 @@ class TaskFactory
         $task->setTask(self::DISABLE_PUBLIC_DASHBOARD);
 
         return $task;
-
     }
 }

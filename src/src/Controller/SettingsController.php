@@ -11,18 +11,18 @@ use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
-* Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
-*
-* @IsGranted("IS_AUTHENTICATED_FULLY")
-*/
+ * Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
+ *
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
+ */
 class SettingsController extends AbstractController
 {
     private EdgeboxioApiConnector $edgeboxioApiConnector;
@@ -212,7 +212,7 @@ class SettingsController extends AbstractController
             $release_version = $this->systemHelper->getReleaseVersion();
             $is_dashboard_public = $this->systemHelper->isDashboardPublic();
             $public_dashboard_option = $this->optionRepository->findOneBy(['name' => 'PUBLIC_DASHBOARD']);
-            $dash_internet_url = "";
+            $dash_internet_url = '';
             if (null != $public_dashboard_option && !empty($public_dashboard_option->getValue())) {
                 $dash_internet_url = $public_dashboard_option->getValue();
             }
@@ -268,7 +268,7 @@ class SettingsController extends AbstractController
 
         $valid_action = !empty(self::ALLOWED_ACTIONS[$action]);
 
-        if($valid_action) {
+        if ($valid_action) {
             $controller_title = self::ACTION_CONTROLLER_TITLES[$action];
             $action_task_factory_method_name = self::ALLOWED_ACTIONS[$action];
 
@@ -291,7 +291,6 @@ class SettingsController extends AbstractController
             'result' => $action_result,
             'action' => $action,
         ]);
-
     }
 
     private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse
