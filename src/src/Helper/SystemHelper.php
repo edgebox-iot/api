@@ -7,6 +7,10 @@ use App\Repository\OptionRepository;
 
 class SystemHelper
 {
+    public const VERSION_DEV = 'dev';
+    public const VERSION_PROD = 'prod';
+    public const VERSION_CLOUD = 'cloud';
+
     private OptionRepository $optionRepository;
 
     public function __construct(

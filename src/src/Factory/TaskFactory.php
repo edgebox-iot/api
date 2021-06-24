@@ -101,7 +101,7 @@ class TaskFactory
         } else {
             $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
             $ip = '';
-            if ('cloud' == $this->systemHelper->getReleaseVersion()) {
+            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
                 // Cloud version does not use bootnode but direct IP instead.
                 $ip = $this->systemHelper->getIP();
             }
@@ -138,7 +138,7 @@ class TaskFactory
         } else {
             $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
             $ip = '';
-            if ('cloud' == $this->systemHelper->getReleaseVersion()) {
+            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
                 // Cloud version does not use bootnode but direct IP instead.
                 $ip = $this->systemHelper->getIP();
             }

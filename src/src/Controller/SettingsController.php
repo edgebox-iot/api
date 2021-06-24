@@ -137,7 +137,7 @@ class SettingsController extends AbstractController
                     $status = 'Logged in to Edgebox.io but a problem is ocurring.';
                 } else {
                     $connection_details = $tunnelInfo['value'];
-                    if (!empty($release_version) && 'cloud' == $release_version) {
+                    if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD == $release_version) {
                         $connection_details = [
                             'assigned_address' => $this->systemHelper->getIP(),
                             'node_name' => $tunnelInfo['value']['node_name'],
@@ -146,7 +146,7 @@ class SettingsController extends AbstractController
                     $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
                 }
 
-                if (!empty($release_version) && 'cloud' != $release_version) {
+                if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD != $release_version) {
                     $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
 
                     if (null === $tunnelSetupTask) {
@@ -295,13 +295,13 @@ class SettingsController extends AbstractController
 
     private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse
     {
-        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : 'dev';
+        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : $this->systemHelper::VERSION_DEV;
 
         $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
         if ('success' === $apiToken['status']) {
             $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
 
-            if ($release_version = !'cloud') {
+            if ($release_version = !$this->systemHelper::VERSION_CLOUD) {
                 $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
 
                 if ('success' === $tunnelInfo['status']) {
