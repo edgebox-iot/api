@@ -132,9 +132,9 @@ class SettingsController extends AbstractController
                 if ('error' == $tunnelInfo['status']) {
                     $connection_details = [
                         'node_name' => 'Unavailable',
-                        'details' => $tunnelInfo['value']['message'],
+                        'details' => !empty($tunnelInfo['value']['message']) ? $tunnelInfo['value']['message'] : 'Server could not be reached!'
                     ];
-                    $status = 'Logged in to Edgebox.io but a problem is ocurring.';
+                    $status = 'An error ocurred with communication to Edgebox.io';
                 } else {
                     $connection_details = $tunnelInfo['value'];
                     if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD == $release_version) {

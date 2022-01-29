@@ -2,8 +2,10 @@
 
 namespace App\Helper;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 
 class EdgeboxioApiConnector
@@ -62,10 +64,15 @@ class EdgeboxioApiConnector
                     'Authorization' => sprintf('Bearer %s', $token),
                 ],
             ]);
-        } catch (ClientException $e) {
+        } catch (ClientException | RequestException $e) {
             return [
                 'status' => 'error',
                 'value' => json_decode($e->getResponse()->getBody(), true),
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'value' => ['message' => 'An unexpected error occured.']
             ];
         }
 

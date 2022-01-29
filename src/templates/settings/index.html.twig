@@ -44,7 +44,7 @@
                                 </li>
                             </ul>
                             <h6 class="text-uppercase text-body text-xs font-weight-bolder mt-0">Edgebox.io Account</h6>
-                            <p><span class="badge badge-pill badge-lg {% if not show_form %}bg-gradient-success{% else %}bg-gradient-secondary{% endif %}">{{ status }}</span></p>
+                            <p><span class="badge badge-pill badge-lg {% if not show_form and connection_details.node_name != "Unavailable" %}bg-gradient-success{% else %}bg-gradient-secondary{% endif %}">{{ status }}</span></p>
                             {% if (alert is not empty and alert.alert == 'edgeboxio_login') %}
 
                                 <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
