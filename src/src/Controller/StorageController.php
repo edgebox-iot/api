@@ -3,10 +3,16 @@
 namespace App\Controller;
 
 use App\Helper\StorageHelper;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
+ *
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
+ */
 class StorageController extends AbstractController
 {
     private StorageHelper $storageHelper;

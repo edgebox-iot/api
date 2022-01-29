@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 
 class TaskFactory
@@ -16,16 +17,21 @@ class TaskFactory
     public const STOP_EDGEAPP = 'stop_edgeapp';
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
+    public const ENABLE_PUBLIC_DASHBOARD = 'enable_public_dashboard';
+    public const DISABLE_PUBLIC_DASHBOARD = 'disable_public_dashboard';
 
     private OptionRepository $optionRepository;
     private EdgeAppsHelper $edgeAppsHelper;
+    private SystemHelper $systemHelper;
 
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeAppsHelper $edgeAppsHelper
+        EdgeAppsHelper $edgeAppsHelper,
+        SystemHelper $systemHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
+        $this->systemHelper = $systemHelper;
     }
 
     public function createSetupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
@@ -89,9 +95,18 @@ class TaskFactory
 
     public function createEnableOnlineTask(string $id): Task
     {
-        $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
-
-        $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id) : null;
+        $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
+        if (null != $domain_option && !empty($domain_option->getValue())) {
+            $internet_url = sprintf('%s.%s', $id, $domain_option->getValue());
+        } else {
+            $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+            $ip = '';
+            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
+                // Cloud version does not use bootnode but direct IP instead.
+                $ip = $this->systemHelper->getIP();
+            }
+            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
+        }
 
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
@@ -111,6 +126,37 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::DISABLE_ONLINE);
         $task->setArgs(json_encode(['id' => $id]));
+
+        return $task;
+    }
+
+    public function createEnablePublicDashboardTask(): Task
+    {
+        $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
+        if (null != $domain_option && !empty($domain_option->getValue())) {
+            $internet_url = sprintf('%s', $domain_option->getValue());
+        } else {
+            $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+            $ip = '';
+            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
+                // Cloud version does not use bootnode but direct IP instead.
+                $ip = $this->systemHelper->getIP();
+            }
+            $id = 'api';
+            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
+        }
+
+        $task = new Task();
+        $task->setTask(self::ENABLE_PUBLIC_DASHBOARD);
+        $task->setArgs(json_encode(['internet_url' => $internet_url]));
+
+        return $task;
+    }
+
+    public function createDisablePublicDashboardTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::DISABLE_PUBLIC_DASHBOARD);
 
         return $task;
     }

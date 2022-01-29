@@ -23,10 +23,6 @@ jobs:
         run: |
           cd src/
           XDEBUG_MODE=coverage ./vendor/bin/phpunit --debug --coverage-clover coverage.xml
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: src/coverage.xml
   phpstan:
     runs-on: ubuntu-latest
     steps:

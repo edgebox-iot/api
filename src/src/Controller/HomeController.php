@@ -7,10 +7,16 @@ use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
 use App\Repository\TaskRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
+ *
+ * @IsGranted("IS_AUTHENTICATED_FULLY")
+ */
 class HomeController extends AbstractController
 {
     private TaskRepository $taskRepository;
@@ -127,7 +133,7 @@ class HomeController extends AbstractController
             'disable_online' => [
                 Task::STATUS_CREATED => 'Waiting to restrict online access to %s',
                 Task::STATUS_EXECUTING => 'Restricting Online access to %s',
-                Task::STATUS_FINISHED => 'Restricting Online access to %s EdgeApp',
+                Task::STATUS_FINISHED => 'Restricted Online access to %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ],
             'setup_tunnel' => [
@@ -141,6 +147,18 @@ class HomeController extends AbstractController
                 Task::STATUS_EXECUTING => 'Disabling Online access to EdgeApps',
                 Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
                 Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
+            ],
+            'enable_public_dashboard' => [
+                Task::STATUS_CREATED => 'Waiting to enable online access to dashboard',
+                Task::STATUS_EXECUTING => 'Enabling Online access to the Dashboard',
+                Task::STATUS_FINISHED => 'Enabled Online access to the Dashboard',
+                Task::STATUS_ERROR => 'Failed to Enable Online access to the Dashboard',
+            ],
+            'disable_public_dashboard' => [
+                Task::STATUS_CREATED => 'Waiting to disable online access to dashboard',
+                Task::STATUS_EXECUTING => 'Disabling Online access to the Dashboard',
+                Task::STATUS_FINISHED => 'Disabled Online access to the Dashboard',
+                Task::STATUS_ERROR => 'Failed to Disable Online access to the Dashboard',
             ],
             'unknown_action' => [
                 Task::STATUS_CREATED => 'Waiting to run action: %s %s',
@@ -159,6 +177,8 @@ class HomeController extends AbstractController
             'disable_online' => 'scissors',
             'setup_tunnel' => 'planet',
             'disable_tunnel' => 'scissors',
+            'enable_public_dashboard' => 'ui-04',
+            'disable_public_dashboard' => 'ui-04',
             'unknown_action' => 'ui-04',
         ];
 

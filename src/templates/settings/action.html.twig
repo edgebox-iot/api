@@ -12,7 +12,7 @@
                 {% if not framework_ready %}
                     <h1><i class="fas fa-tools"></i></h1>
                     <h2>Framework Not Ready</h2>
-                    <p style="color: red;">The framework is currently not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
+                    <p style="color: red;">The framework is currnetly not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
                     <p>
                         <a href="/edgeapps">
                             <button class="btn btn-icon btn-3 btn-secondary" type="button">
@@ -26,23 +26,11 @@
                     {% if result == "executing" %} 
                         <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
                         <p><b>
-                                {% if action == "remove" %}
-                                    <h2>Removing {{edgeapp}} </h2><p>This can take a minute...</p>
+                                {% if action == "enable_public_dashboard" %}
+                                    <h2>Enabling public access to dashboard</h2><p>This can take a minute...</p>
                                 {% endif %}
-                                {% if action == "install" %}
-                                    <h2>Installing {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "stop" %}
-                                    <h2>Stopping {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "start" %}
-                                    <h2>Starting {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "enable_online" %}
-                                    <h2>Enabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "disable_online" %}
-                                    <h2>Disabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
+                                {% if action == "disable_public_dashboard" %}
+                                    <h2>Disabling public access to dashboard</h2><p>This can take a minute...</p>
                                 {% endif %}
                             </b></p>
 
@@ -50,27 +38,20 @@
 
                             redirectTimeout = 60000
 
-                            {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
-                            redirectTimeout = 90000
-                            {% endif %}
-
                             window.setTimeout(function(){
 
-                                // Move to the applications view...
-                                window.location.href = "/edgeapps";
+                                {% if action == "disable_public_dashboard" %}
+                                    // Disabling public access to the dashboard while using public access will result in a problem. So we must redirect to the local url
+                                    window.location.href = "/settings?alert=enable_public_dashboard&type=success";
+
+                                {% else %}
+                                    // Move to the settings view...
+                                    window.location.href = "/settings?alert={{action}}&type=success";
+                                {% endif %}
+
 
                             }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
                         </script>
-                    {% endif %}
-
-                    {% if result == "edgeapp_not_found" %}
-                        <h2 style="color: red;">Error: EdgeApp Not Found</h2>
-                        <a href="/edgeapps">
-                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
-                                <span class="btn-inner--text">Go Back</span>
-                            </button></p>
-                        </a>
                     {% endif %}
 
                     {% if result == "invalid_action" %}

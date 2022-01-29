@@ -3,6 +3,8 @@
 namespace App\Helper;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 
 class EdgeboxioApiConnector
@@ -54,11 +56,24 @@ class EdgeboxioApiConnector
         }
 
         $url = $this->api_url.'/myedgeapp/v1/bootnode';
-        $response = $this->client->get($url, [
-            RequestOptions::HEADERS => [
-                'Authorization' => sprintf('Bearer %s', $token),
-            ],
-        ]);
+
+        try {
+            $response = $this->client->get($url, [
+                RequestOptions::HEADERS => [
+                    'Authorization' => sprintf('Bearer %s', $token),
+                ],
+            ]);
+        } catch (ClientException | RequestException $e) {
+            return [
+                'status' => 'error',
+                'value' => json_decode($e->getResponse()->getBody(), true),
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'value' => ['message' => 'An unexpected error occured.'],
+            ];
+        }
 
         $response = json_decode($response->getBody(), true);
 
@@ -74,7 +89,7 @@ class EdgeboxioApiConnector
         ];
     }
 
-    public function register_apps(string $token, string $apps)
+    public function register_apps(string $token, string $apps, string $ip = '')
     {
         $token = empty($token) ? $this->token : $token;
 
@@ -85,11 +100,14 @@ class EdgeboxioApiConnector
             ];
         }
 
+        $request_options = [
+            'apps' => $apps,
+            'ip' => $ip,
+        ];
+
         $url = $this->api_url.'/myedgeapp/v1/apps/register';
         $response = $this->client->put($url, [
-            RequestOptions::JSON => [
-                'apps' => $apps,
-            ],
+            RequestOptions::JSON => $request_options,
             RequestOptions::HEADERS => [
                 'Authorization' => sprintf('Bearer %s', $token),
             ],
