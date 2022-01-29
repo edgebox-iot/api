@@ -2,7 +2,6 @@
 
 namespace App\Helper;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -72,7 +71,7 @@ class EdgeboxioApiConnector
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
-                'value' => ['message' => 'An unexpected error occured.']
+                'value' => ['message' => 'An unexpected error occured.'],
             ];
         }
 
