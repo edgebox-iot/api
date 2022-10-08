@@ -48,6 +48,7 @@ class HomeController extends AbstractController
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
+            'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
         ]);
     }
 
@@ -251,4 +252,29 @@ class HomeController extends AbstractController
 
         return $result;
     }
+
+    private function getQuickEdgeAppsAccessContainerVars(): array
+    {
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+
+        $result = [
+            'total' => 0,
+            'apps' => []
+        ];
+
+        if (!empty($apps_list)) {
+            foreach ($apps_list as $edgeapp) {
+                if ('on' == $edgeapp['status']['description'] && $edgeapp['internet_accessible']) {
+                    ++$result['total'];
+                    $result['apps'][] = [
+                        'id' => $edgeapp['id'],
+                        'url' => $edgeapp['internet_url']
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
 }
