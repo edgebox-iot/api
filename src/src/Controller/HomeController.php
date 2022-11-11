@@ -162,7 +162,7 @@ class HomeController extends AbstractController
             ],
         ];
 
-        $unknown_action_descriptions =[
+        $unknown_action_descriptions = [
             Task::STATUS_CREATED => 'Waiting to run action: %s %s',
             Task::STATUS_EXECUTING => 'Running action: %s %s',
             Task::STATUS_FINISHED => 'Action ran: %s %s',

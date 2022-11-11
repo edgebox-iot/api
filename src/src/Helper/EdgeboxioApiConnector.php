@@ -63,7 +63,7 @@ class EdgeboxioApiConnector
                     'Authorization' => sprintf('Bearer %s', $token),
                 ],
             ]);
-        } catch (ClientException | RequestException $e) {
+        } catch (ClientException|RequestException $e) {
             return [
                 'status' => 'error',
                 'value' => json_decode($e->getResponse()->getBody(), true),
