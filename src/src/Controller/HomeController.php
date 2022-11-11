@@ -160,12 +160,13 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Disabled Online access to the Dashboard',
                 Task::STATUS_ERROR => 'Failed to Disable Online access to the Dashboard',
             ],
-            'unknown_action' => [
-                Task::STATUS_CREATED => 'Waiting to run action: %s %s',
-                Task::STATUS_EXECUTING => 'Running action: %s %s',
-                Task::STATUS_FINISHED => 'Action ran: %s %s',
-                Task::STATUS_ERROR => 'Failed to run action: %s %s',
-            ],
+        ];
+
+        $unknown_action_descriptions =[
+            Task::STATUS_CREATED => 'Waiting to run action: %s %s',
+            Task::STATUS_EXECUTING => 'Running action: %s %s',
+            Task::STATUS_FINISHED => 'Action ran: %s %s',
+            Task::STATUS_ERROR => 'Failed to run action: %s %s',
         ];
 
         $action_icons = [
@@ -191,7 +192,7 @@ class HomeController extends AbstractController
 
             if (empty($action_descriptions[$task->getTask()])) {
                 // Indicates an action which is not documented in the descriptions.
-                $action_description = sprintf($action_descriptions['unknown_action'][$task->getStatus()], $task->getTask(), $task->getArgs());
+                $action_description = sprintf($unknown_action_descriptions[$task->getStatus()], $task->getTask(), $task->getArgs());
             } else {
                 if (!empty($action_args['id'])) {
                     $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
