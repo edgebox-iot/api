@@ -1,4 +1,4 @@
-FROM php:7.4.2-apache-buster
+FROM php:8.1-apache-bullseye
 
 # Surpresses debconf complaints of trying to install apt packages interactively
 # https://github.com/moby/moby/issues/4032#issuecomment-192327844
@@ -26,7 +26,7 @@ libicu-dev && \
 build-essential \
 git \
 curl \
-libonig-dev && \ 
+libonig-dev && \
     apt-get -y --no-install-recommends install --fix-missing libcurl4 \
 libcurl4-openssl-dev \
 zip unzip \
@@ -35,11 +35,11 @@ openssl && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install xdebug
-RUN pecl install xdebug-2.8.0 && \
+RUN pecl install xdebug-3.2.0 && \
     docker-php-ext-enable xdebug
 
 # Install redis
-RUN pecl install redis-5.1.1 && \
+RUN pecl install redis-5.3.3 && \
     docker-php-ext-enable redis
 
 # Install imagick
@@ -49,16 +49,14 @@ RUN apt-get update && \
     pecl install imagick && \
     docker-php-ext-enable imagick
 
-# Other PHP7 Extensions
+# Other PHP Extensions
 
 RUN docker-php-ext-install pdo_mysql && \
     docker-php-ext-install pdo_sqlite && \
     docker-php-ext-install mysqli && \
     docker-php-ext-install curl && \
-    docker-php-ext-install tokenizer && \
-    docker-php-ext-install json && \
     docker-php-ext-install zip && \
-    docker-php-ext-install -j$(nproc) intl && \
+    docker-php-ext-install intl && \
     docker-php-ext-install mbstring && \
     docker-php-ext-install gettext && \
     docker-php-ext-install exif
