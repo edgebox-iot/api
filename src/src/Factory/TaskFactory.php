@@ -10,6 +10,8 @@ use App\Repository\OptionRepository;
 class TaskFactory
 {
     public const SETUP_TUNNEL = 'setup_tunnel';
+    public const START_TUNNEL = 'start_tunnel';
+    public const STOP_TUNNEL = 'stop_tunnel';
     public const DISABLE_TUNNEL = 'disable_tunnel';
     public const INSTALL_EDGEAPP = 'install_edgeapp';
     public const REMOVE_EDGEAPP = 'remove_edgeapp';
@@ -34,16 +36,19 @@ class TaskFactory
         $this->systemHelper = $systemHelper;
     }
 
-    public function createSetupTunnelTask(string $bootnode_address, string $bootnode_token, string $assigned_address, string $node_name): Task
+    public function createSetupTunnelTask(): Task
     {
         $task = new Task();
         $task->setTask(self::SETUP_TUNNEL);
-        $task->setArgs(json_encode([
-            'bootnode_address' => $bootnode_address,
-            'bootnode_token' => $bootnode_token,
-            'assigned_address' => $assigned_address,
-            'node_name' => $node_name,
-        ]));
+        // $task->setArgs(json_encode({}));
+
+        // For cloudflare refactor, we don't need to pass any arguments to edgeboxctl
+        // $task->setArgs(json_encode([
+        //     'bootnode_address' => $bootnode_address,
+        //     'bootnode_token' => $bootnode_token,
+        //     'assigned_address' => $assigned_address,
+        //     'node_name' => $node_name,
+        // ]));
 
         return $task;
     }
@@ -52,7 +57,25 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
-        $task->setArgs(json_encode([]));
+        // $task->setArgs(json_encode({}));
+
+        return $task;
+    }
+
+    public function createStartTunnelTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::START_TUNNEL);
+        // $task->setArgs(json_encode());
+
+        return $task;
+    }
+
+    public function createStopTunnelTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::STOP_TUNNEL);
+        // $task->setArgs(json_encode({}));
 
         return $task;
     }

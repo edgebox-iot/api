@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
+use App\Helper\DashboardHelper;
 use App\Repository\TaskRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,17 +24,20 @@ class HomeController extends AbstractController
     private SystemHelper $systemHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private StorageHelper $storageHelper;
+    private DashboardHelper $dashboardHelper;
 
     public function __construct(
         TaskRepository $taskRepository,
         SystemHelper $systemHelper,
         EdgeAppsHelper $edgeAppsHelper,
-        StorageHelper $storageHelper
+        StorageHelper $storageHelper,
+        DashboardHelper $dashboardHelper
     ) {
         $this->taskRepository = $taskRepository;
         $this->systemHelper = $systemHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->storageHelper = $storageHelper;
+        $this->dashboardHelper = $dashboardHelper;
     }
 
     /**
@@ -48,6 +52,7 @@ class HomeController extends AbstractController
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
+            'dashboard_settings' => $this->dashboardHelper->getSettings()
         ]);
     }
 

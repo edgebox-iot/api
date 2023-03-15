@@ -71,4 +71,9 @@ class Option
 
         return $this;
     }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
 }
