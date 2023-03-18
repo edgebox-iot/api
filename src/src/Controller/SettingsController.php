@@ -91,7 +91,9 @@ class SettingsController extends AbstractController
     {
         $status = 'Waiting for Edgebox.io Account Credentials';
         $connection_status = 'Not connected';
-        $connection_details = [];
+        $connection_details = [
+            'message' => 'A connection is not properly established. Please initiate the configuration.',
+        ];
         $task_status = 0;
         $alert = [];
         $show_form = false;
@@ -129,7 +131,7 @@ class SettingsController extends AbstractController
             // $apiToken = $options->getValue();
 
             $tunnel_status = $this->tunnelHelper->getTunnelStatus();
-            $apiToken = $tunnel_status['status'];
+            $tunnel_status_code = $tunnel_status['status'];
 
             $show_form = true;
             $release_version = $this->systemHelper->getReleaseVersion();
@@ -147,8 +149,8 @@ class SettingsController extends AbstractController
     
                 if ('error' == $tunnel_status['status']) {
                     $connection_details = [
-                        'node_name' => 'Unavailable',
-                        'details' => !empty($tunnelInfo['value']['message']) ? $tunnelInfo['value']['message'] : 'Server could not be reached!',
+                        'status' => 'Setup Error',
+                        'details' => !empty($tunnel_status['message']) ? $tunnel_status['message'] : 'An unknown error occured. Please try again.',
                     ];
                     $status = 'An error ocurred with the connection to Cloudflare';
                 } elseif ('waiting' == $tunnel_status['status']) {
@@ -166,7 +168,7 @@ class SettingsController extends AbstractController
                             'node_name' => $tunnelInfo['value']['node_name'],
                         ];
                     }
-                    $status = 'Logged in to CloudFlare with domain '.$connection_details['node_name'];
+                    $status = 'Logged in to CloudFlare ('.$connection_details['status'].')';
                 }
 
                 if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD != $release_version) {
@@ -261,8 +263,12 @@ class SettingsController extends AbstractController
                             } elseif (!empty($tunnel_status['status']) && 'starting' == $tunnel_status['status']) {
                                 $connection_status = 'Tunnel is starting. Please wait.';
                             } else {
-                                // Unknown status. Should not happen.
+                                // Unknown status. Should not happen.   
                                 $connection_status = 'Unknown or inconsistent tunnel status. Please try again.';
+                                $connection_details = [
+                                    'status' => 'unknown',
+                                    'details' => 'Unknown or inconsistent tunnel status. Please try reconfiguring again.',
+                                ];
                             }
 
                             break;
@@ -279,9 +285,14 @@ class SettingsController extends AbstractController
             $options = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
             $domain_name = $options->getValue();
 
-            if (!empty($domain_name)) {
+            if (!empty($domain_name) && empty($tunnel_status_code)) {
                 // A custom domain was already inserted.
                 $domain_name_config_step = 1;
+            }
+
+            if (!empty($domain_name) && !empty($tunnel_status_code)) {
+                // A custom domain was already inserted and the tunnel setuo was made.
+                $domain_name_config_step = 2;
             }
 
             $ip_address = $this->systemHelper->getIP();
@@ -317,7 +328,7 @@ class SettingsController extends AbstractController
             'connection_status' => $connection_status,
             'connection_details' => $connection_details,
             'task_status' => $task_status,
-            'api_token' => $apiToken,
+            'tunnel_status_code' => $tunnel_status_code,
             'domain_name' => $domain_name,
             'domain_name_config_step' => $domain_name_config_step,
             'apps_online' => $apps_online,

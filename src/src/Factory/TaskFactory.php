@@ -36,19 +36,11 @@ class TaskFactory
         $this->systemHelper = $systemHelper;
     }
 
-    public function createSetupTunnelTask(): Task
+    public function createSetupTunnelTask(string $domain_name): Task
     {
         $task = new Task();
         $task->setTask(self::SETUP_TUNNEL);
-        // $task->setArgs(json_encode({}));
-
-        // For cloudflare refactor, we don't need to pass any arguments to edgeboxctl
-        // $task->setArgs(json_encode([
-        //     'bootnode_address' => $bootnode_address,
-        //     'bootnode_token' => $bootnode_token,
-        //     'assigned_address' => $assigned_address,
-        //     'node_name' => $node_name,
-        // ]));
+        $task->setArgs(json_encode(['domain_name' => $domain_name]));
 
         return $task;
     }
@@ -58,7 +50,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
         // $task->setArgs(json_encode({}));
-
+        
         return $task;
     }
 

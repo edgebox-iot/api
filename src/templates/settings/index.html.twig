@@ -148,6 +148,53 @@
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsTitleBarFloating" data-class="bg-white" onclick="navbarFloating(this); saveTopbarStyle(this);" {% if(dashboard_settings.topbar_style == "fixed") %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Fixed</label>
                             </div>
+                            <!-- Public Access -->
+                            <hr>
+                            <div class="mt-3">
+                            <h6 class="text-uppercase text-body text-xs font-weight-bolder">Dashboard Public Access</h6>
+                            </div>
+                            <p class="text-xs">Toggle between being able to access this dashboard via the internet, or only inside your home network.</p>
+                            {% if release_version != 'cloud' %}
+                                {% if show_form and domain_name_config_step == '0' %}
+                                    <p class="text-sm opacity-8">
+                                        
+                                        
+                                            <h7 class="text-gradient text-warning mt-3">But first things first... 👉</h4>
+                                            <p class="text-xs">To provide access to your dashboard through the internet, please setup the "domain name configuration" first.</b></p>
+                                      
+                                      
+                                    </p>
+                                {% else %}
+                                    {% if is_dashboard_public %}
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <a href="/settings/disable_public_dashboard" class="btn btn-outline-danger">Disable</a>
+                                            </div>
+                                            <div class="col-8">
+                                                <p class="text-sm opacity-8 text-success" style="margin-top: 8px;"><i class="fas fa-check"></i>  Available via <a href="https://{{dash_internet_url}}/" target="_blank">{{dash_internet_url}}</a></p>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <a href="/settings/enable_public_dashboard" class="btn btn-outline-success">Enable</a>
+                                            </div>
+                                            <div class="col-8">
+                                                <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-home"></i>  Currently only acessible in home-network</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                <div class="row">
+                                    <div class="col-4">
+                                        <button type="button" class="btn btn-outline-light" >Disable</button>
+                                    </div>
+                                    <div class="col-8">
+                                        <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-exclamation-triangle"></i>  Only available in the <a href="https://edgebox.io/product" target="_blank">self-hosted verisn</a></p>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -171,7 +218,7 @@
                                         {% endif %}
                                     </strong></span>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true"></span>
                                     </button>
                                 </div>
 
@@ -184,29 +231,32 @@
                             <div class="nav-wrapper position-relative end-0">
                                 <ul class="nav nav-pills nav-fill p-1" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <a href="#" class="nav-link mb-0 px-0 py-1 {% if domain_name_config_step == "0" %}active{% endif %}" id="pills-edgeboxio-account-tab" data-bs-toggle="pill" data-bs-target="#pills-edgeboxio-account" role="tab" aria-controls="pills-edgeboxio-account" aria-selected="{% if domain_name_config_step == "0" %}true{% else %}false{% endif %}">
+                                        <a href="#" class="nav-link mb-0 px-0 py-1 {% if domain_name_config_step == "0" or domain_name_config_step == "2" %}active{% endif %}" id="pills-edgeboxio-account-tab" data-bs-toggle="pill" data-bs-target="#pills-edgeboxio-account" role="tab" aria-controls="pills-edgeboxio-account" aria-selected="{% if domain_name_config_step == "0" or domain_name_config_step == "2" %}true{% else %}false{% endif %}">
                                         <b>Cloudflare</b>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a href="#" class="nav-link mb-0 px-0 py-1 {% if domain_name_config_step == "1" %}active{% endif %}" data-bs-toggle="pill" data-bs-target="#pills-custom-domain" role="tab" aria-controls="pills-custom-domain" aria-selected="{% if domain_name_config_step == "0" %}false{% else %}true{% endif %}">
+                                        <a href="#" class="nav-link mb-0 px-0 py-1 {% if domain_name_config_step == "1" %}active{% endif %}" data-bs-toggle="pill" data-bs-target="#pills-custom-domain" role="tab" aria-controls="pills-custom-domain" aria-selected="{% if domain_name_config_step == "0" or domain_name_config_step == 2 %}false{% else %}true{% endif %}">
                                         <b>Manual Setup</b>
                                         </a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="pills-tabContent">
-                                    <div class="tab-pane fade {% if domain_name_config_step == "0" %}show active{% endif %}" id="pills-edgeboxio-account" role="tabpanel" aria-labelledby="pills-edgeboxio-account-tab">
+                                    <div class="tab-pane fade {% if domain_name_config_step == "0" or domain_name_config_step == "2" %}show active{% endif %}" id="pills-edgeboxio-account" role="tabpanel" aria-labelledby="pills-edgeboxio-account-tab">
                                         <br>
                                             {% if show_form and domain_name_config_step == '0' %}
                                                 <p class="text-sm opacity-8">
                                                     <b>Configure Edgebox to allow receiving connections through Cloudflare.</b> Edgebox connects seamlessly with CloudFlare and your domain name, and will be running a secure connection in seconds, and making sure it is available. You can <a href="https://www.cloudflare.com/products/registrar/" target="_blank">buy a domain name</a> or <a href="https://developers.cloudflare.com/fundamentals/get-started/setup/add-site/" target="_blank">use one you already own.</a> You must have a domain configured with Cloudflare before continuing.
                                                 </p>
-                                                <br>
                                                 <p class="text-sm opacity-8">
+                                                    <div class="form-group">
+                                                        <label for="custom-domain-cloudflare" class="form-control-label">Type the Domain name you are going to authorize:</label>
+                                                        <input class="form-control" name="domain-cloudflare" type="text" value="" id="custom-domain-cloudflare">
+                                                    </div>
                                                     <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflare(this);">Start Connection with CloudFlare</button>
-                                                    <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -25px;">
+                                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: -5px;">
                                                         <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
-                                                        <span class="alert-text text-xs text-white"><i>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and choose the domain name you want to configure for this box.</i></span>
+                                                        <span class="alert-text text-xs text-white"><i><b>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and you must choose the same domain name you want to configure for this box.</i></b></span>
                                                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                                             <span aria-hidden="true"></span>
                                                         </button>
@@ -238,10 +288,10 @@
                                                     </ul>
                                                 </p>
                                                 {% if task_status < 2 %}
-                                                    {% if connection_details.status == "waiting" %}
+                                                    {% if connection_details.status is defined and connection_details.status == "waiting" %}
                                                         <p class="text-sm opacity-8">
                                                             <a href="{{connection_details.login_link}}" target="_blank" type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="continueCloudFlare(this);">Login with CloudFlare</a>
-                                                            <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -25px;">
+                                                            <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -5px;">
                                                                 <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
                                                                 <span class="alert-text text-xs text-white"><i>Click the button to open a CloudFlare page where you can login. The process will automatically proceed.</i></span>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -251,10 +301,14 @@
                                                         </p>
                                                     {% else %}
                                                         <p class="text-sm opacity-8">
+                                                            <div class="form-group">
+                                                                <label for="custom-domain-cloudflare" class="form-control-label">Domain name to authorize:</label>
+                                                                <input class="form-control" name="domain-cloudflare" type="text" value="" id="custom-domain-cloudflare">
+                                                            </div>
                                                             <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflare(this);">Retry Connection with CloudFlare</button>
-                                                            <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -25px;">
+                                                            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: -5px;">
                                                                 <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
-                                                                <span class="alert-text text-xs text-white"><i>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and choose the domain name you want to configure for this box.</i></span>
+                                                                <span class="alert-text text-xs text-white"><i><b>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and you must choose the same domain name you want to configure for this box.</i></b></span>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                                                     <span aria-hidden="true"></span>
                                                                 </button>
@@ -393,52 +447,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <h6 class="text-uppercase text-body text-xs font-weight-bolder">Dashboard Public Access</h6>
-                            <p class="text-sm opacity-8">Toggle between being able to access this dashboard via the internet, or only inside your home network.</p>
-                            {% if release_version != 'cloud' %}
-                                {% if show_form and domain_name_config_step == '0' %}
-                                    <p class="text-sm opacity-8">
-                                        <br>
-                                        <br>
-                                        <div class="py-3 text-center">
-                                            <h4 class="text-gradient text-warning mt-4">First things first...</h4>
-                                            <p>To provide access to your dashboard through the internet, please setup the "domain name configuration" first.</b></p>
-                                        </div>
-                                        <br>
-                                        <br>
-                                    </p>
-                                {% else %}
-                                    {% if is_dashboard_public %}
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <a href="/settings/disable_public_dashboard" class="btn btn-outline-danger">Disable</a>
-                                            </div>
-                                            <div class="col-8">
-                                                <p class="text-sm opacity-8 text-success" style="margin-top: 8px;"><i class="fas fa-check"></i>  Available via <a href="https://{{dash_internet_url}}/" target="_blank">{{dash_internet_url}}</a></p>
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <a href="/settings/enable_public_dashboard" class="btn btn-outline-success">Enable</a>
-                                            </div>
-                                            <div class="col-8">
-                                                <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-home"></i>  Currently only acessible in home-network</p>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                            {% else %}
-                                <div class="row">
-                                    <div class="col-4">
-                                        <button type="button" class="btn btn-outline-light" >Disable</button>
-                                    </div>
-                                    <div class="col-8">
-                                        <p class="text-sm opacity-8" style="margin-top: 8px;"><i class="fas fa-exclamation-triangle"></i>  Only available in the <a href="https://edgebox.io/product" target="_blank">self-hosted verisn</a></p>
-                                    </div>
-                                </div>
-                            {% endif %}
 
                         </div>
                         {# <div class="card-body p-3">

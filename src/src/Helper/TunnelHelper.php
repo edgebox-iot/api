@@ -33,10 +33,10 @@ class TunnelHelper
         $this->entityManager->flush();
     }
 
-    public function configureTunnel(): array
+    public function configureTunnel(string $domain_name): array
     {
         // This method issues a task so edgeboxctl can start the tunnel configuration
-        $task = $this->taskFactory->createSetupTunnelTask();
+        $task = $this->taskFactory->createSetupTunnelTask($domain_name);
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 
@@ -96,7 +96,6 @@ class TunnelHelper
         }
         
         $val = $tunnel_status_option->getValue();
-        // die($val);
 
         return json_decode($val, true);
     }

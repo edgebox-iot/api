@@ -84,8 +84,8 @@ class ApiController extends AbstractController
             $data = json_decode($jsonString, true);
 
             if (isset($data['op'])) {
-                if ($data['op'] == 'configure') {
-                    $data = $this->tunnelHelper->configureTunnel($data);
+                if ($data['op'] == 'configure' && isset($data['domain_name'])) {
+                    $data = $this->tunnelHelper->configureTunnel($data['domain_name']);
                 } else if ($data['op'] == 'start') {
                     $data = $this->tunnelHelper->startTunnel();
                 } else if ($data['op'] == 'stop') {

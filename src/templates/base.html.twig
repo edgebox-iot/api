@@ -585,6 +585,22 @@
   </script>
   <script>
     function setupCloudflare(elem) {
+      // Validate if the text input with id custom-domain-cloudflare is empty
+      var customDomainField = document.getElementById("custom-domain-cloudflare")
+      // Remove class is invalid from field, in case this is a re-submission:
+      customDomainField.classList.remove("is-invalid");
+
+      var customDomain = document.getElementById("custom-domain-cloudflare").value;
+      if (customDomain == "") {
+        console.log("Custom domain is empty");
+
+        // If it is empty, add the following classes to the input field: is-invalid
+        customDomainField.classList.add("is-invalid");
+        // Add placeholder text to the input field: "Please enter a custom domain"
+        customDomainField.setAttribute("placeholder", "Please enter a custom domain before proceeding");
+
+        return;
+      }
 
       // Replace button body with text saying "Connecting to CloudFlare" and a spinner.
       console.log(elem)
@@ -600,7 +616,7 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({op: "configure"})
+        body: JSON.stringify({op: "configure", domain_name: customDomain})
       })
 
       // Keep trying to call the GET API endpoint for cloudflare login link
@@ -649,6 +665,7 @@
       
     }
   </script>
+ 
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
