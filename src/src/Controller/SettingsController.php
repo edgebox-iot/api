@@ -392,7 +392,8 @@ class SettingsController extends AbstractController
             'framework_ready' => $framework_ready,
             'result' => $action_result,
             'action' => $action,
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 

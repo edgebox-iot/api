@@ -32,7 +32,8 @@ class BackupsController extends AbstractController
         return $this->render('not_available.html.twig', [
             'controller_title' => 'Backups',
             'controller_subtitle' => 'Safeguard Data',
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 }

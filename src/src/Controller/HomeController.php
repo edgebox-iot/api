@@ -52,7 +52,8 @@ class HomeController extends AbstractController
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
@@ -142,16 +143,28 @@ class HomeController extends AbstractController
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ],
             'setup_tunnel' => [
-                Task::STATUS_CREATED => 'Waiting to configure external access to EdgeApps',
-                Task::STATUS_EXECUTING => 'Configuring Online access to EdgeApps',
-                Task::STATUS_FINISHED => 'Configured Online access for EdgeApps',
-                Task::STATUS_ERROR => 'Failed to configure online access for EdgeApps',
+                Task::STATUS_CREATED => 'Waiting to configure access tunnel',
+                Task::STATUS_EXECUTING => 'Configuring access tunnel',
+                Task::STATUS_FINISHED => 'Configured access tunnel',
+                Task::STATUS_ERROR => 'Failed to configure access tunnel',
+            ],
+            'start_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to start access tunnel',
+                Task::STATUS_EXECUTING => 'Enabling access tunnel',
+                Task::STATUS_FINISHED => 'Enabled access tunnel',
+                Task::STATUS_ERROR => 'Failed to enable access tunnel',
+            ],
+            'stop_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to stop access tunnel',
+                Task::STATUS_EXECUTING => 'Stopping access tunnel',
+                Task::STATUS_FINISHED => 'Stopped access tunnel',
+                Task::STATUS_ERROR => 'Problem while stopping access tunnel',
             ],
             'disable_tunnel' => [
-                Task::STATUS_CREATED => 'Waiting to disable external access to EdgeApps',
-                Task::STATUS_EXECUTING => 'Disabling Online access to EdgeApps',
-                Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
-                Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
+                Task::STATUS_CREATED => 'Waiting to disable access tunnel',
+                Task::STATUS_EXECUTING => 'Disabling access tunnel',
+                Task::STATUS_FINISHED => 'Disabled access tunnel',
+                Task::STATUS_ERROR => 'Failed to disable access tunnel',
             ],
             'enable_public_dashboard' => [
                 Task::STATUS_CREATED => 'Waiting to enable online access to dashboard',

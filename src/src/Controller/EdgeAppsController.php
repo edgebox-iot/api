@@ -93,7 +93,8 @@ class EdgeAppsController extends AbstractController
             'apps_list' => $apps_list,
             'is_online_ready' => $this->systemHelper->isOnlineReady(),
             'tunnel_on' => $tunnel_on,
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
@@ -139,7 +140,8 @@ class EdgeAppsController extends AbstractController
             'framework_ready' => $framework_ready,
             'result' => $action_result,
             'action' => $action,
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 }

@@ -44,7 +44,8 @@ class StorageController extends AbstractController
             'controller_subtitle' => 'Buckets & Drives',
             'storage_ready' => $storage_ready,
             'storage_devices' => $storage_devices_list,
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
