@@ -51,7 +51,7 @@ class DashboardHelper
         $data = [
             'color_mood' => $color_mood_value,
             'sidebar_style' => $sidebar_style_value,
-            'topbar_style' => $topbar_style_value
+            'topbar_style' => $topbar_style_value,
         ];
 
         return $data;
