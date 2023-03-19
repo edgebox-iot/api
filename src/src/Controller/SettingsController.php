@@ -105,10 +105,6 @@ class SettingsController extends AbstractController
             // Find out with form to process and call the correct handler, which should return a RedirectResponse
 
             switch ($request->get('setting')) {
-                case 'edgeboxio_login':
-                    return $this->handleEdgeboxioLoginSetting($request);
-                    break;
-
                 case 'custom_domain':
                     return $this->handleCustomDomainSetting($request);
                     break;
@@ -125,27 +121,17 @@ class SettingsController extends AbstractController
             
             // GET Request. Should get latest setup_tunnel task status and display it.
 
-            // $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
-            
-            // TODO: DEPRECATE (repace with tunnel status)
-            // $apiToken = $options->getValue();
-
             $tunnel_status = $this->tunnelHelper->getTunnelStatus();
             $tunnel_status_code = $tunnel_status['status'];
 
             $show_form = true;
             $release_version = $this->systemHelper->getReleaseVersion();
 
-            //if (!empty($apiToken)) {
             if ('not_configured' != $tunnel_status['status']) {
                 // We have a status, which means that a previous tunnel setup was made.
                 // We can check the task status.
 
                 $show_form = false;
-
-                // Is already logged in, and not doing this request through post
-                // $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
-
     
                 if ('error' == $tunnel_status['status']) {
                     $connection_details = [
@@ -173,10 +159,7 @@ class SettingsController extends AbstractController
 
                 if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD != $release_version) {
 
-                    // This query fetches from all tasks
-                    // $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
-                    
-                    // we only need the last one
+                    // Fetch latest SETUP_TUNNEL task to check status
                     $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL], ['id' => 'DESC']);
 
                     if (null === $tunnelSetupTask) {
@@ -202,8 +185,6 @@ class SettingsController extends AbstractController
                         case 1:
                             // Task has been picked up by edgeboxctl and is now in progress...
                             $connection_status = 'Configuring cloudflare connection...';
-                            // TODO: Some sort of auto-reload when the status is this one could be very useful.
-                            // In this case we should pool for the status and update the page when it changes.
                             break;
 
                         case 2:
@@ -395,52 +376,6 @@ class SettingsController extends AbstractController
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'tunnel_status_code' => '',
         ]);
-    }
-
-    private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse
-    {
-        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : $this->systemHelper::VERSION_DEV;
-
-        $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
-        if ('success' === $apiToken['status']) {
-            $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
-
-            if ($release_version = !$this->systemHelper::VERSION_CLOUD) {
-                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
-
-                if ('success' === $tunnelInfo['status']) {
-                    // The response was successful. Save fetched information in options and issue setup_tunnel task.
-                    $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
-                    $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
-                    $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
-                    $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
-
-                    // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                    $task = $this->taskFactory->createSetupTunnelTask(
-                        $tunnelInfo['value']['bootnode_address'],
-                        $tunnelInfo['value']['bootnode_token'],
-                        $tunnelInfo['value']['assigned_address'],
-                        $tunnelInfo['value']['node_name']
-                    );
-                    $this->entityManager->persist($task);
-                    $this->entityManager->flush();
-
-                    $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
-                    $connection_details = $tunnelInfo['value'];
-
-                    return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-                }
-
-                // This return means that login was ok but there was an error getting bootnode information.
-                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'error']);
-            } else {
-                // Logged in successfully, no need to setup bootnode as this will receive direct connections.
-                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-            }
-        }
-
-        // Error Logging in.
-        return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'warning']);
     }
 
     private function handleCustomDomainSetting(Request $request): RedirectResponse
