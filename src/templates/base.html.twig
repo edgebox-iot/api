@@ -40,7 +40,7 @@
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
-  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-left ms-3" id="sidenav-main">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-left ms-3 {{dashboard_settings.sidebar_style}}" id="sidenav-main" data-color="{{dashboard_settings.color_mood}}">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href="/">
@@ -91,14 +91,14 @@
             <span class="nav-link-text ms-1">Storage</span>
           </a>
         </li>
-        <li class="nav-item">
+        {# <li class="nav-item">
           <a class="nav-link {% if controller_title == 'Sources' %}active{% endif %} " href="/sources">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-tag" style="{% if controller_title == 'Sources' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
             </div>
             <span class="nav-link-text ms-1">Sources</span>
           </a>
-        </li>
+        </li> #}
         <li class="nav-item">
           <a class="nav-link {% if controller_title == 'Backups' %}active{% endif %} " href="/backups">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -150,7 +150,7 @@
             <span class="nav-link-text ms-1">Settings</span>
           </a>
         </li>
-        <li class="nav-item mt-3">
+        {# <li class="nav-item mt-3">
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Other Resources</h6>
         </li>
         <li class="nav-item">
@@ -173,11 +173,11 @@
             </div>
             <span class="nav-link-text ms-1">Community</span>
           </a>
-        </li>
+        </li> #}
       </ul>
     </div>
     <div class="sidenav-footer mx-3 mt-3 pt-3">
-      <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
+      <div class="card card-background shadow-none card-background-mask-{{dashboard_settings.color_mood}}" id="sidenavCard">
         <div class="full-background" style="background-image: url('/assets/img/curved-images/white-curved.jpeg')"></div>
         <div class="card-body text-left p-3 w-100">
           <div class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
@@ -185,14 +185,14 @@
           </div>
           <h6 class="text-white up mb-0">Need help?</h6>
           <p class="text-xs font-weight-bold">Get bite- sized information here</p>
-          <a href="https://github.com/edgebox-iot/assets/tree/main/docs" target="_blank" class="btn btn-white btn-sm w-100 mb-0">Documentation</a>
+          <a href="https://docs.edgebox.io" target="_blank" class="btn btn-white btn-sm w-100 mb-0">Documentation</a>
         </div>
       </div>
     </div>
   </aside>
   <main class="main-content mt-1 border-radius-lg">
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="{% if(dashboard_settings.topbar_style == "fixed") %}false{% else %}true{% endif %}">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -246,19 +246,6 @@
                 made with <i class="fa fa-heart"></i> for a more private web.
               </div>
             </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="https://www.edgebox.io/about" class="nav-link text-muted" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="http://blog.edgebox.io" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="/licenses" class="nav-link pe-0 text-muted" target="_blank">Licenses</a>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       </footer>
@@ -308,8 +295,9 @@
             <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
           </div>
         </a>
+        {# 
         <!-- Sidenav Type -->
-        {# <div class="mt-3">
+        <div class="mt-3">
           <h6 class="mb-0">Sidenav Type</h6>
           <p class="text-sm">Choose between 2 different sidenav types.</p>
         </div>
@@ -317,14 +305,14 @@
           <button class="btn bg-gradient-primary w-100 px-3 mb-2 active" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
           <button class="btn bg-gradient-primary w-100 px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
         </div>
-        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p> #}
+        <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
         <!-- Navbar Fixed -->
         <div class="mt-3">
           <h6 class="mb-0">Floating Navbar</h6>
         </div>
         <div class="form-check form-switch ps-0">
           <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
-        </div>
+        </div> #}
         <hr class="horizontal dark my-sm-4">
         <a class="btn bg-gradient-dark w-100" href="/logout">Lock Session</a>
         <a class="btn btn-outline-dark w-100" href="/settings/restart">Restart Box</a>
@@ -336,7 +324,7 @@
   <script src="/assets/js/core/bootstrap.min.js"></script>
   <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/assets/js/soft-ui-dashboard.min.js?v=1.0.1"></script>
+  <script src="/assets/js/soft-ui-dashboard.js?v=1.0.1"></script>
   <script src="/assets/js/plugins/chartjs.min.js"></script>
   <script src="/assets/js/plugins/Chart.extension.js"></script>
   {% if controller_title == 'Dashboard' %}
@@ -450,6 +438,327 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
+  <script>
+    function changeDataClassForSideBarType(element) {
+      console.log(element)
+			var currentClass = element.getAttribute("data-class");
+
+			if (currentClass === "bg-white") {
+				element.setAttribute("data-class", "bg-transparent");
+			} else {
+				element.setAttribute("data-class", "bg-white");
+			}
+      console.log(currentClass)
+			// element.classList.toggle(currentClass);
+			// element.classList.toggle(element.getAttribute("data-class"));
+		}
+  </script>
+  <script>
+    // Set Navbar Floating
+    function navbarFloating(el) {
+
+      console.log(el.checked);
+
+      let classes = ['position-sticky', 'blur', 'shadow-blur', 'mt-4', 'left-auto', 'top-1', 'z-index-sticky'];
+      const navbar = document.getElementById('navbarBlur');
+
+      if (!el.checked) {
+        console.log("Setting navbar floating");
+        navbar.classList.add(...classes);
+        navbar.setAttribute('navbar-scroll', 'true');
+        navbarBlurOnScroll('navbarBlur');
+        el.setAttribute("checked", "true");
+      } else {
+        console.log("Setting navbar fixed");
+        navbar.classList.remove(...classes);
+        navbar.setAttribute('navbar-scroll', 'false');
+        navbarBlurOnScroll('navbarBlur');
+        el.removeAttribute("checked");
+      }
+    };
+  </script>
+  <script>
+    //Set Sidebar Color
+    function sidebarColorPick(a) {
+      console.log("Setting sidebar color");
+      var parent = a.parentElement.children;
+      var color = a.getAttribute("data-color");
+
+      console.log(color);
+
+      for (var i = 0; i < parent.length; i++) {
+        parent[i].classList.remove('active');
+      }
+
+      if (!a.classList.contains('active')) {
+        console.log("setting active");
+        console.log(a);
+        a.classList.add('active');
+      } else {
+        a.classList.remove('active');
+      }
+
+      var sidebar = document.querySelector('.sidenav');
+      sidebar.setAttribute("data-color", color);
+
+      var sidenavCard = document.querySelector('#sidenavCard');
+      let sidenavCardClasses = ['card', 'card-background', 'shadow-none', 'card-background-mask-' + color];
+      sidenavCard.className = '';
+      sidenavCard.classList.add(...sidenavCardClasses);
+
+      // var sidenavCardIcon = document.querySelector('#sidenavCardIcon');
+      // let sidenavCardIconClasses = ['ni', 'ni-diamond', 'text-gradient', 'text-lg', 'top-0', 'text-' + color];
+      // sidenavCardIcon.className = '';
+      // sidenavCardIcon.classList.add(...sidenavCardIconClasses);
+
+    }
+  </script>
+  <script>
+    // Saving data for dashboard settings
+    // Reads value from data-class and sends it to API
+    function saveColorMood(elem) {
+
+      var color = elem.getAttribute("data-color");
+
+      const data = {
+        color_mood: color 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+    }
+
+    function saveSidebarStyle(elem) {
+
+      var style = elem.getAttribute("data-class");
+
+      const data = {
+        sidebar_style: style 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+
+    }
+
+    function saveTopbarStyle(elem) {
+
+      var style = "floating"
+
+      if (elem.checked) {
+        console.log("Setting navbar fixed");
+        style = "fixed";
+      }
+
+      const data = {
+        topbar_style: style 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+      
+    }
+  </script>
+  <script>
+    function fetchCloudFlareTunnelStatus() {
+      // Keep trying to call the GET API endpoint for cloudflare login link
+      console.log("Fetching Cloudflare Tunnel Status");
+      var opened = false;
+      var interval = setInterval(function() {
+        fetch('/api/settings/tunnel')
+        .then(response => response.json())
+        .then(data => {
+          console.log("Current redended status: {{tunnel_status_code}}")
+          console.log(data);
+          if (data.status == "waiting") {
+            console.log("CloudFlare login link received");
+            // Open the link in a new tab
+            if(!opened) {
+              window.open(data.login_link, '_blank');
+              opened = true;
+            }
+          }
+          if(data.status != "{{ tunnel_status_code }}" && "{{ tunnel_status_code }}" != "not_configured") {
+            console.log("CloudFlare tunnel status is different from the rendered status. Refreshing");
+            // wait 5 seconds
+            setTimeout(function() {
+              // Refresh the page
+              location.reload();
+            }, 1000);
+          }
+          if ((data.status == "success" || data.status == "connected") && "{{ tunnel_status_code }}" != "connected") {
+            console.log("CloudFlare setup finished");
+            clearInterval(interval);
+            // Refresh the page
+            location.reload();
+          }
+          if (data.status == "error") {
+            console.log("CloudFlare setup failed");
+            clearInterval(interval);
+            
+            // Refresh the page
+            location.reload();
+          }
+          if("{{tunnel_status_code}}" == "not_configured" && data.status == "starting") {
+            // Get button with class .btn-cloudflare-connect
+            var elem = document.querySelector(".btn-cloudflare-connect");
+            elem.innerHTML = "Starting Cloudflare Tunnel <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+          }
+          
+        })
+        .catch(error => console.error(error));
+      }, 5000);
+    }
+
+    function setupCloudflareTunnel(elem) {
+      // Validate if the text input with id custom-domain-cloudflare is empty
+      var customDomainField = document.getElementById("custom-domain-cloudflare")
+      // Remove class is invalid from field, in case this is a re-submission:
+      customDomainField.classList.remove("is-invalid");
+
+      var customDomain = document.getElementById("custom-domain-cloudflare").value;
+      if (customDomain == "") {
+        console.log("Custom domain is empty");
+
+        // If it is empty, add the following classes to the input field: is-invalid
+        customDomainField.classList.add("is-invalid");
+        // Add placeholder text to the input field: "Please enter a custom domain"
+        customDomainField.setAttribute("placeholder", "Please enter a custom domain before proceeding");
+
+        return;
+      }
+
+      // Replace button body with text saying "Connecting to CloudFlare" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Connecting to CloudFlare, please wait <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "configure", domain_name: customDomain})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+    function startCloudflareTunnel(elem) {
+      // Replace button body with text saying "Starting" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Starting <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "start"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+    function stopCloudflareTunnel(elem) {
+      // Replace button body with text saying "Starting" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Stopping <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "stop"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+    function removeCloudflareTunnel(elem) {
+      // Replace button body with text saying "Removing" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Removing <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "disable"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+
+    {% if tunnel_status_code is defined %}
+      {% if tunnel_status_code == "starting" or tunnel_status_code == "stopping" or tunnel_status_code == "waiting" %}
+        // If the tunnel status is starting or stopping, call the fetchCloudFlareTunnelStatus function
+        fetchCloudFlareTunnelStatus();
+      {% endif %}
+    {% endif %}
+    
+
+  </script>
+  
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>

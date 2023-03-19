@@ -76,4 +76,4 @@ jobs:
       - name: Run php-cs-fixer
         run: |
           cd src/
-          ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
+          ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --dry-run --stop-on-violation --using-cache=no

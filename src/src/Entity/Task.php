@@ -46,7 +46,6 @@ class Task
 
     /**
      * @var \DateTime
-     *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -54,7 +53,6 @@ class Task
 
     /**
      * @var ?\DateTime
-     *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */

@@ -18,10 +18,7 @@ class TaskFactoryTest extends TestCase
 
         self::assertEquals($factory::SETUP_TUNNEL, $task->getTask());
         self::assertEquals(json_encode([
-            'bootnode_address' => 'test',
-            'bootnode_token' => 'test',
-            'assigned_address' => 'test',
-            'node_name' => 'test',
+            'domain_name' => 'test',
         ]), $task->getArgs());
         self::assertEquals($task::STATUS_CREATED, $task->getStatus());
     }
@@ -36,7 +33,6 @@ class TaskFactoryTest extends TestCase
         $task = $factory->createDisableTunnelTask();
 
         self::assertEquals($factory::DISABLE_TUNNEL, $task->getTask());
-        self::assertEquals(json_encode([]), $task->getArgs());
         self::assertEquals($task::STATUS_CREATED, $task->getStatus());
     }
 

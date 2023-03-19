@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
@@ -26,6 +27,7 @@ class EdgeAppsController extends AbstractController
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
     private TaskFactory $taskFactory;
+    private DashboardHelper $dashboardHelper;
 
     /**
      * @var array
@@ -56,13 +58,15 @@ class EdgeAppsController extends AbstractController
         EntityManagerInterface $entityManager,
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemHelper,
-        TaskFactory $taskFactory
+        TaskFactory $taskFactory,
+        DashboardHelper $dashboardHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
         $this->taskFactory = $taskFactory;
+        $this->dashboardHelper = $dashboardHelper;
     }
 
     /**
@@ -89,6 +93,8 @@ class EdgeAppsController extends AbstractController
             'apps_list' => $apps_list,
             'is_online_ready' => $this->systemHelper->isOnlineReady(),
             'tunnel_on' => $tunnel_on,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
@@ -134,6 +140,8 @@ class EdgeAppsController extends AbstractController
             'framework_ready' => $framework_ready,
             'result' => $action_result,
             'action' => $action,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 }

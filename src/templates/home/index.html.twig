@@ -18,7 +18,7 @@
 
     {{ include('partials/_col_card_number.html.twig', {title: 'Storage', info: container_storage_summary.percentage, indicator: container_storage_summary.free, icon: 'ni ni-credit-card'})}}
     
-    {{ include('partials/_col_card_number.html.twig', {title: 'Working Sources', info: '3', indicator: '+10 entries', icon: 'ni ni-paper-diploma'})}}
+    {{ include('partials/_col_card_number.html.twig', {title: 'Last Backup', info: 'Never', indicator: '', icon: 'ni ni-paper-diploma'})}}
     
     {% if (container_working_edgeapps.online > 0) and not (container_working_edgeapps.total == container_working_edgeapps.online) %}
 
@@ -52,7 +52,7 @@
                 </div>
               </div>
               <div class="col-lg-5 ms-auto text-center mt-5 mt-lg-0">
-                <div class="bg-gradient-primary border-radius-lg h-100">
+                <div class="bg-gradient-secondary border-radius-lg h-100">
                   <img src="/assets/img/shapes/waves-white.svg" class="position-absolute h-100 w-50 top-0 d-lg-block d-none" alt="waves">
                   <div class="position-relative d-flex align-items-center justify-content-center h-100">
                     <img class="w-100 position-relative z-index-2 pt-4" src="/assets/img/illustrations/rocket-white.png">
@@ -63,7 +63,10 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-5">
+      <div class="col-lg-5 col-md-12 container-actions-overview">
+        {{ include('partials/_container_actions_overview.html.twig', {actions: container_actions_overview})}}
+      </div>
+      {# <div class="col-lg-5">
         <div class="card h-100 p-3">
           <div class="overflow-hidden position-relative border-radius-lg bg-cover h-100" style="background-image: url('/assets/img/ivancik.jpg');">
             <span class="mask bg-gradient-dark"></span>
@@ -77,13 +80,13 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> #}
   </div>
   <div class="row mt-4">
-      <div class="col-lg-5 col-md-12 container-actions-overview">
+      {# <div class="col-lg-5 col-md-12 container-actions-overview">
         {{ include('partials/_container_actions_overview.html.twig', {actions: container_actions_overview})}}
-      </div>
-      <div class="col-lg-7 col-md-12 container-storage-overview">
+      </div> #}
+      {# <div class="col-lg-7 col-md-12 container-storage-overview">
         <div class="card h-100">
           <div class="card-header pb-0">
             <h6>Storage usage overview</h6>
@@ -98,6 +101,6 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> #}
   </div>
 {% endblock content %}
