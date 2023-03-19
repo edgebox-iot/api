@@ -151,7 +151,6 @@ class SettingsController extends AbstractController
                     if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD == $release_version) {
                         $connection_details = [
                             'assigned_address' => $this->systemHelper->getIP(),
-                            'node_name' => $tunnelInfo['value']['node_name'],
                         ];
                     }
                     $status = 'Logged in to CloudFlare ('.$connection_details['status'].')';
