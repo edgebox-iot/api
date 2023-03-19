@@ -5,10 +5,10 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\SystemHelper;
-use App\Helper\DashboardHelper;
 use App\Helper\TunnelHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
@@ -118,7 +118,6 @@ class SettingsController extends AbstractController
                     break;
             }
         } else {
-            
             // GET Request. Should get latest setup_tunnel task status and display it.
 
             $tunnel_status = $this->tunnelHelper->getTunnelStatus();
@@ -132,7 +131,7 @@ class SettingsController extends AbstractController
                 // We can check the task status.
 
                 $show_form = false;
-    
+
                 if ('error' == $tunnel_status['status']) {
                     $connection_details = [
                         'status' => 'Setup Error',
@@ -144,7 +143,7 @@ class SettingsController extends AbstractController
                     $connection_details = [
                         'status' => 'waiting',
                         'details' => 'Please login with your Cloudflare account to finish the setup.',
-                        'login_link' => $tunnel_status['login_link']
+                        'login_link' => $tunnel_status['login_link'],
                     ];
                 } else {
                     $connection_details = $tunnel_status;
@@ -157,7 +156,6 @@ class SettingsController extends AbstractController
                 }
 
                 if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD != $release_version) {
-
                     // Fetch latest SETUP_TUNNEL task to check status
                     $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL], ['id' => 'DESC']);
 
@@ -204,7 +202,7 @@ class SettingsController extends AbstractController
                             $tunnel_status = $tunnel_status_option->getValue();
                             $tunnel_status_creation_date = $tunnel_status_option->getCreated();
 
-                            if( !empty($tunnel_status) ) {
+                            if (!empty($tunnel_status)) {
                                 $tunnel_status = json_decode($tunnel_status, true);
                             } else {
                                 $tunnel_status = [];
@@ -243,7 +241,7 @@ class SettingsController extends AbstractController
                             } elseif (!empty($tunnel_status['status']) && 'starting' == $tunnel_status['status']) {
                                 $connection_status = 'Tunnel is starting. Please wait.';
                             } else {
-                                // Unknown status. Should not happen.   
+                                // Unknown status. Should not happen.
                                 $connection_status = 'Unknown or inconsistent tunnel status. Please try again.';
                                 $connection_details = [
                                     'status' => 'unknown',
@@ -317,7 +315,7 @@ class SettingsController extends AbstractController
             'release_version' => $release_version,
             'is_dashboard_public' => $is_dashboard_public,
             'dash_internet_url' => $dash_internet_url,
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
     }
 

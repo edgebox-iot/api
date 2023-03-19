@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Helper\StorageHelper;
 use App\Helper\DashboardHelper;
+use App\Helper\StorageHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +57,7 @@ class StorageController extends AbstractController
         return $this->render('storage/device/new.html.twig', [
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Add new device',
-            'dashboard_settings' => $this->dashboardHelper->getSettings()
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
     }
 }

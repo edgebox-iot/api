@@ -50,7 +50,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
         // $task->setArgs(json_encode({}));
-        
+
         return $task;
     }
 

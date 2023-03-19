@@ -43,7 +43,7 @@ class TunnelHelper
         return [
             'task_id' => $task->getId(),
             'task_status' => $task->getStatus(),
-            'task_args' => $task->getArgs()
+            'task_args' => $task->getArgs(),
         ];
     }
 
@@ -52,10 +52,11 @@ class TunnelHelper
         $task = $this->taskFactory->createStopTunnelTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
+
         return [
             'task_id' => $task->getId(),
             'task_status' => $task->getStatus(),
-            'task_args' => $task->getArgs()
+            'task_args' => $task->getArgs(),
         ];
     }
 
@@ -64,10 +65,11 @@ class TunnelHelper
         $task = $this->taskFactory->createStartTunnelTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
+
         return [
             'task_id' => $task->getId(),
             'task_status' => $task->getStatus(),
-            'task_args' => $task->getArgs()
+            'task_args' => $task->getArgs(),
         ];
     }
 
@@ -76,10 +78,11 @@ class TunnelHelper
         $task = $this->taskFactory->createDisableTunnelTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
+
         return [
             'task_id' => $task->getId(),
             'task_status' => $task->getStatus(),
-            'task_args' => $task->getArgs()
+            'task_args' => $task->getArgs(),
         ];
     }
 

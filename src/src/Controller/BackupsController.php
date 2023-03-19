@@ -15,7 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BackupsController extends AbstractController
 {
-
     private DashboardHelper $dashboardHelper;
 
     public function __construct(

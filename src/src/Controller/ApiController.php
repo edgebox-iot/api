@@ -2,16 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Option;
-use App\Repository\OptionRepository;
 use App\Helper\DashboardHelper;
 use App\Helper\TunnelHelper;
+use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,7 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ApiController extends AbstractController
 {
-
     private OptionRepository $optionRepository;
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
@@ -45,8 +42,9 @@ class ApiController extends AbstractController
     public function index(): JsonResponse
     {
         $data = [
-            'status' => 'ok'
+            'status' => 'ok',
         ];
+
         return new JsonResponse($data);
     }
 
@@ -56,17 +54,13 @@ class ApiController extends AbstractController
     public function settingsDashboard(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
-            
             // Need to still look at body and such...
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);
 
             $data = $this->dashboardHelper->setSettings($data);
-
         } else {
-
             $data = $this->dashboardHelper->getSettings();
-
         }
 
         return new JsonResponse($data);
@@ -78,37 +72,33 @@ class ApiController extends AbstractController
     public function settingsTunnel(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
-            
             // Need to still look at body and such...
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);
 
             if (isset($data['op'])) {
-                if ($data['op'] == 'configure' && isset($data['domain_name'])) {
+                if ('configure' == $data['op'] && isset($data['domain_name'])) {
                     $data = $this->tunnelHelper->configureTunnel($data['domain_name']);
-                } else if ($data['op'] == 'start') {
+                } elseif ('start' == $data['op']) {
                     $data = $this->tunnelHelper->startTunnel();
-                } else if ($data['op'] == 'stop') {
+                } elseif ('stop' == $data['op']) {
                     $data = $this->tunnelHelper->stopTunnel();
-                } else if ($data['op'] == 'disable') {
+                } elseif ('disable' == $data['op']) {
                     $data = $this->tunnelHelper->disableTunnel();
                 } else {
                     $data = [
                         'status' => 'error',
-                        'message' => 'Invalid operation'
+                        'message' => 'Invalid operation',
                     ];
                 }
             } else {
                 $data = [
                     'status' => 'error',
-                    'message' => 'Invalid operation'
+                    'message' => 'Invalid operation',
                 ];
             }
-
         } else {
-
             $data = $this->tunnelHelper->getTunnelStatus();
-
         }
 
         return new JsonResponse($data);
