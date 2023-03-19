@@ -45,7 +45,6 @@ class TunnelHelper
             'task_status' => $task->getStatus(),
             'task_args' => $task->getArgs()
         ];
-
     }
 
     public function stopTunnel(): array
@@ -94,7 +93,7 @@ class TunnelHelper
                 'message' => 'Tunnel is not configured',
             ];
         }
-        
+
         $val = $tunnel_status_option->getValue();
 
         return json_decode($val, true);

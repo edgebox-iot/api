@@ -73,5 +73,4 @@ class DashboardHelper
 
         return $data;
     }
-
 }
