@@ -209,7 +209,7 @@ class SettingsController extends AbstractController
                         case 2:
                             // Task is complete and has result. In this, the authentication process with cloudflare is guaranteed to have started
                             // To follow the complete status, we need to check the option TUNNEL_STATUS
-                            $connection_status = 'Successfully configured Cloudflare!';
+                            $connection_status = 'Cloudflare tunnel is connected is active';
                             $tunnel_status_option = $this->optionRepository->findOneBy(['name' => 'TUNNEL_STATUS']) ?? new Option();
 
                             // Six options here:
@@ -256,7 +256,7 @@ class SettingsController extends AbstractController
                                 ];
                             } elseif (!empty($tunnel_status['status']) && 'connected' == $tunnel_status['status']) {
                                 // The authentication process was successful and the tunnel is up and running.
-                                $connection_status = 'Successfully configured Cloudflare!';
+                                $connection_status = 'Cloudflare Tunnel is connected and active 🚀';
                             } elseif (!empty($tunnel_status['status']) && 'stopped' == $tunnel_status['status']) {
                                 // The tunnel was stopped by the user. Can be started again.
                                 $connection_status = 'Tunnel stopped by user. Can be started again.';

@@ -253,7 +253,7 @@
                                                         <label for="custom-domain-cloudflare" class="form-control-label">Type the Domain name you are going to authorize:</label>
                                                         <input class="form-control" name="domain-cloudflare" type="text" value="" id="custom-domain-cloudflare">
                                                     </div>
-                                                    <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflare(this);">Start Connection with CloudFlare</button>
+                                                    <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflareTunnel(this);">Start Connection with CloudFlare</button>
                                                     <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: -5px;">
                                                         <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
                                                         <span class="alert-text text-xs text-white"><i><b>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and you must choose the same domain name you want to configure for this box.</i></b></span>
@@ -288,7 +288,7 @@
                                                     </ul>
                                                 </p>
                                                 {% if task_status < 2 %}
-                                                    {% if connection_details.status is defined and connection_details.status == "waiting" %}
+                                                    {% if tunnel_status_code == "waiting" and connection_details.status != "expired" %}
                                                         <p class="text-sm opacity-8">
                                                             <a href="{{connection_details.login_link}}" target="_blank" type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="continueCloudFlare(this);">Login with CloudFlare</a>
                                                             <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -5px;">
@@ -299,13 +299,17 @@
                                                                 </button>
                                                             </div>
                                                         </p>
-                                                    {% else %}
+                                                    {% endif %}
+                                                    {% if connection_details.status == "expired" %}
+                                                        <p class="text-sm opacity-8">{{connection_details.details}}</p>
+                                                    {% endif %}
+                                                    {% if tunnel_status_code == "error" or connection_details.status == "expired" %}
                                                         <p class="text-sm opacity-8">
                                                             <div class="form-group">
                                                                 <label for="custom-domain-cloudflare" class="form-control-label">Domain name to authorize:</label>
                                                                 <input class="form-control" name="domain-cloudflare" type="text" value="" id="custom-domain-cloudflare">
                                                             </div>
-                                                            <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflare(this);">Retry Connection with CloudFlare</button>
+                                                            <button type="button" class="btn btn-outline-dark btn-cloudflare-connect" onclick="setupCloudflareTunnel(this);">Retry Connection with CloudFlare</button>
                                                             <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: -5px;">
                                                                 <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
                                                                 <span class="alert-text text-xs text-white"><i><b>Once you click, wait a few seconds while the connection is prepared. A new tab will open where you can authenticate and you must choose the same domain name you want to configure for this box.</i></b></span>
@@ -315,94 +319,86 @@
                                                             </div>
                                                         </p>
                                                     {% endif %}
+                                                    <br>
+                                                    {% if tunnel_status_code == "connected" %}
+                                                        <!-- Insert some buttons here to allow the user to stop or disconnect the tunnel -->
+                                                        <button type="button" class="btn btn-outline-secondary btn-cloudflare-connect" onclick="stopCloudflareTunnel(this);"><span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-button-pause"></i></span><span class="btn-inner--text">Stop Tunnel</span></button>
+                                                        <button type="button" class="btn btn-outline-warning btn-cloudflare-connect" onclick="removeCloudflareTunnel(this);"><span class="btn-inner--icon"></span><span class="btn-inner--text">Remove Tunnel</span></button>
+                                                    {% endif %}
+
+                                                    {% if tunnel_status_code == "stopped" %}
+                                                        <button type="button" class="btn btn-outline-success btn-cloudflare-connect" onclick="startCloudflareTunnel(this);"><span class="btn-inner--icon"  style="margin-right: 10px;"><i class="ni ni-button-play"></i></span><span class="btn-inner--text">Start Tunnel</span></button>
+                                                        <button type="button" class="btn btn-outline-warning btn-cloudflare-connect" onclick="removeCloudflareTunnel(this);"><span class="btn-inner--icon"></span><span class="btn-inner--text">Remove Tunnel</span></button>
+
+                                                    {% endif %}
+                        
                                                 {% endif %}
                                             {% endif %}
 
                                     </div>
-                                    <hr>
                                     <div class="tab-pane fade {% if domain_name_config_step == "1" %}show active{% endif %}" id="pills-custom-domain" role="tabpanel" aria-labelledby="pills-custom-domain-tab">
                                         <br>
-                                        <p class="text-sm opacity-8">
-                                            <b>Configure Edgebox to allow receiving connections through a custom domain name you own.</b> This is an advanced setting and requires you to know how to setup a domain name and potentially how to configure security certificates.
-                                        </p>
-                                        <br>
-
-                                        {% if (alert is not empty and alert.alert == 'custom_domain') %}
-
-                                            <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
-                                                <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-                                                <span class="alert-text"><strong>
-                                                    {% if alert.type == 'success' %}
-                                                        Domain setup!
-                                                    {% elseif alert.type == 'warning' %}
-                                                        Problem. Domain not valid.
-                                                    {% else %}
-                                                        Unknown error ocurred. Please try again.
-                                                    {% endif %}
-                                                </strong></span>
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-
-                                        {% endif %}
-                                        
-                                        {% if domain_name_config_step == "0" %}
+                                        {% if tunnel_status_code == "not_configured" %}
                                             <p class="text-sm opacity-8">
-                                                <b>Step 1: </b>Insert the domain name below (for example "mydomain.com"). Edgebox will configure itself to accept connections from this domain.
+                                                <b>Configure Edgebox to allow receiving connections through a custom domain name you own.</b> This is an advanced setting and requires you to know how to setup a domain name and potentially how to configure security certificates.
                                             </p>
-                                            <form action="" method="POST">
-                                                <input type="hidden" name="setting" value="custom_domain">
-                                                <div class="form-group">
-                                                    <label for="custom-domain-domain" class="form-control-label">Domain name:</label>
-                                                    <input class="form-control" name="domain" type="text" value="" id="custom-domain-domain">
-                                                </div>
-                                                <div class="form-group">
-                                                    <button class="btn btn-outline-secondary">Continue</button>
-                                                </div>
-                                            </form>
-                                        {% endif %}
-                                        
-                                        {% if domain_name_config_step != "0" %}
-                                            <p class="text-sm opacity-8">
-                                                <b class="text-success" >Step 1: </b>Add domain name (<b>{{domain_name}}</b>) ✔️
-                                            </p>
-                                            <p class="text-sm opacity-8">
-                                                <b>Step 2: </b>Go to the domain name control panel of your provider, and set the following records:                                                
-                                                <div class="card">
-                                                    <div class="table-responsive">
-                                                        <table class="table align-items-center mb-0">
-                                                        <thead>
-                                                            <tr>
-                                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
-                                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Value</th>
-                                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Destination</th>
-                                                            {# <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th> #}
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            
-                                                            <tr>
-                                                            <td>
-                                                                <div class="d-flex px-2 py-1">
-                                                                <div class="d-flex flex-column justify-content-center">
-                                                                    <h6 class="mb-0 text-xs">A</h6>
-                                                                </div>
-                                                                </div>
-                                                            </td>
-                                                            <td>
-                                                                <p class="text-xs font-weight-bold mb-0">@</p>
-                                                            </td>
-                                                            <td class="align-middle text-center">
-                                                                <span class="text-secondary text-xs font-weight-bold">{{ip_address}}</span>
-                                                            </td>
-                                                            {# <td class="align-middle text-center text-sm">
-                                                                <span class="badge badge-sm badge-success">Online</span>
-                                                            </td> #}
-                                                            </tr>
+                                            <br>
 
-                                                            {% for appkey,appinfo in apps_list %}
-                                                                {% if appinfo.status.description == 'on' or appinfo.status.description == 'off' %}
+                                            {% if (alert is not empty and alert.alert == 'custom_domain') %}
+
+                                                <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
+                                                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                                                    <span class="alert-text"><strong>
+                                                        {% if alert.type == 'success' %}
+                                                            Domain setup!
+                                                        {% elseif alert.type == 'warning' %}
+                                                            Problem. Domain not valid.
+                                                        {% else %}
+                                                            Unknown error ocurred. Please try again.
+                                                        {% endif %}
+                                                    </strong></span>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+
+                                            {% endif %}
+                                            
+                                            {% if domain_name_config_step == "0" %}
+                                                <p class="text-sm opacity-8">
+                                                    <b>Step 1: </b>Insert the domain name below (for example "mydomain.com"). Edgebox will configure itself to accept connections from this domain.
+                                                </p>
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="setting" value="custom_domain">
+                                                    <div class="form-group">
+                                                        <label for="custom-domain-domain" class="form-control-label">Domain name:</label>
+                                                        <input class="form-control" name="domain" type="text" value="" id="custom-domain-domain">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-outline-secondary">Continue</button>
+                                                    </div>
+                                                </form>
+                                            {% endif %}
+                                            
+                                            {% if domain_name_config_step != "0" %}
+                                                <p class="text-sm opacity-8">
+                                                    <b class="text-success" >Step 1: </b>Add domain name (<b>{{domain_name}}</b>) ✔️
+                                                </p>
+                                                <p class="text-sm opacity-8">
+                                                    <b>Step 2: </b>Go to the domain name control panel of your provider, and set the following records:                                                
+                                                    <div class="card">
+                                                        <div class="table-responsive">
+                                                            <table class="table align-items-center mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Type</th>
+                                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Value</th>
+                                                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Destination</th>
+                                                                {# <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th> #}
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                
                                                                 <tr>
                                                                 <td>
                                                                     <div class="d-flex px-2 py-1">
@@ -412,37 +408,73 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <p class="text-xs font-weight-bold mb-0">{{appinfo.id}}.{{domain_name}}</p>
+                                                                    <p class="text-xs font-weight-bold mb-0">@</p>
                                                                 </td>
                                                                 <td class="align-middle text-center">
                                                                     <span class="text-secondary text-xs font-weight-bold">{{ip_address}}</span>
                                                                 </td>
                                                                 {# <td class="align-middle text-center text-sm">
-                                                                    <span class="badge badge-sm bg-success">Online</span>
+                                                                    <span class="badge badge-sm badge-success">Online</span>
                                                                 </td> #}
                                                                 </tr>
-                                                                {% endif %}
-                                                            {% endfor %}
 
-                                                        </tbody>
-                                                        </table>
+                                                                {% for appkey,appinfo in apps_list %}
+                                                                    {% if appinfo.status.description == 'on' or appinfo.status.description == 'off' %}
+                                                                    <tr>
+                                                                    <td>
+                                                                        <div class="d-flex px-2 py-1">
+                                                                        <div class="d-flex flex-column justify-content-center">
+                                                                            <h6 class="mb-0 text-xs">A</h6>
+                                                                        </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p class="text-xs font-weight-bold mb-0">{{appinfo.id}}.{{domain_name}}</p>
+                                                                    </td>
+                                                                    <td class="align-middle text-center">
+                                                                        <span class="text-secondary text-xs font-weight-bold">{{ip_address}}</span>
+                                                                    </td>
+                                                                    {# <td class="align-middle text-center text-sm">
+                                                                        <span class="badge badge-sm bg-success">Online</span>
+                                                                    </td> #}
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                {% endfor %}
+
+                                                            </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <br>
+
+                                                    <i class="text-sm opacity-8"><b>Note:</b> You only need to set A records for the EdgeApps you want to access online. When possible to setup a wildcard subdomain, you can do so as well.</i>
+                                                </p>
+                                                <p class="text-sm opacity-8">
+                                                    <b {% if apps_online > 0 %}class="text-success"{% endif %}>Step 3: </b>Go to the EdgeApps screen and switch online access to each individual app you want accessible. {% if apps_online > 0 %}✔️{% endif %}
+                                                </p>
+                                                <br>
+                                                <form action="" method="POST">
+                                                    <input type="hidden" name="setting" value="remove_custom_domain">
+                                                    <div class="form-group">
+                                                        <button class="btn btn-outline-danger">Remove Custom Domain</button>
+                                                    </div>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="card bg-cover text-center" style="background-image: url('/assets/img/coming-soon-bg.jpg')">
+                                                        <div class="card-body z-index-2 py-9">
+                                                            <h4 class="text-white">Tunnel is Configured</h2>
+                                                                <p class="text-white">
+                                                                    Please remove the tunnel configuration first to be able to do a Manual Setup</a>
+                                                                </p>
+                                                        </div>
+                                                        <div class="mask bg-gradient-secondary border-radius-lg"></div>
                                                     </div>
                                                 </div>
-                                                <br>
-                                                <br>
-
-                                                <i class="text-sm opacity-8"><b>Note:</b> You only need to set A records for the EdgeApps you want to access online. When possible to setup a wildcard subdomain, you can do so as well.</i>
-                                            </p>
-                                            <p class="text-sm opacity-8">
-                                                <b {% if apps_online > 0 %}class="text-success"{% endif %}>Step 3: </b>Go to the EdgeApps screen and switch online access to each individual app you want accessible. {% if apps_online > 0 %}✔️{% endif %}
-                                            </p>
-                                            <br>
-                                            <form action="" method="POST">
-                                                <input type="hidden" name="setting" value="remove_custom_domain">
-                                                <div class="form-group">
-                                                    <button class="btn btn-outline-danger">Remove Custom Domain</button>
-                                                </div>
-                                            </form>
+                                            </div>
                                         {% endif %}
                                     </div>
                                 </div>

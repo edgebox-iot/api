@@ -584,7 +584,57 @@
     }
   </script>
   <script>
-    function setupCloudflare(elem) {
+    function fetchCloudFlareTunnelStatus() {
+      // Keep trying to call the GET API endpoint for cloudflare login link
+      console.log("Fetching Cloudflare Tunnel Status");
+      var opened = false;
+      var interval = setInterval(function() {
+        fetch('/api/settings/tunnel')
+        .then(response => response.json())
+        .then(data => {
+          console.log("Current redended status: {{tunnel_status_code}}")
+          console.log(data);
+          if (data.status == "waiting") {
+            console.log("CloudFlare login link received");
+            // Open the link in a new tab
+            if(!opened) {
+              window.open(data.login_link, '_blank');
+              opened = true;
+            }
+          }
+          if(data.status != "{{ tunnel_status_code }}" && "{{ tunnel_status_code }}" != "not_configured") {
+            console.log("CloudFlare tunnel status is different from the rendered status. Refreshing");
+            // wait 5 seconds
+            setTimeout(function() {
+              // Refresh the page
+              location.reload();
+            }, 1000);
+          }
+          if ((data.status == "success" || data.status == "connected") && "{{ tunnel_status_code }}" != "connected") {
+            console.log("CloudFlare setup finished");
+            clearInterval(interval);
+            // Refresh the page
+            location.reload();
+          }
+          if (data.status == "error") {
+            console.log("CloudFlare setup failed");
+            clearInterval(interval);
+            
+            // Refresh the page
+            location.reload();
+          }
+          if("{{tunnel_status_code}}" == "not_configured" && data.status == "starting") {
+            // Get button with class .btn-cloudflare-connect
+            var elem = document.querySelector(".btn-cloudflare-connect");
+            elem.innerHTML = "Starting Cloudflare Tunnel <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+          }
+          
+        })
+        .catch(error => console.error(error));
+      }, 5000);
+    }
+
+    function setupCloudflareTunnel(elem) {
       // Validate if the text input with id custom-domain-cloudflare is empty
       var customDomainField = document.getElementById("custom-domain-cloudflare")
       // Remove class is invalid from field, in case this is a re-submission:
@@ -619,53 +669,96 @@
         body: JSON.stringify({op: "configure", domain_name: customDomain})
       })
 
-      // Keep trying to call the GET API endpoint for cloudflare login link
-      console.log("Waiting for CloudFlare login link");
-      var opened = false;
-      var interval = setInterval(function() {
-        fetch('/api/settings/tunnel')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          if (data.status == "waiting") {
-            console.log("CloudFlare login link received");
-            // Open the link in a new tab
-            if(!opened) {
-              window.open(data.login_link, '_blank');
-              opened = true;
-            }
-          }
-          if(data.status == "starting") {
-            console.log("CloudFlare tunnel is starting");
-            // wait 5 seconds
-            setTimeout(function() {
-              // Refresh the page
-              location.reload();
-            }, 5000);
-          }
-          if (data.status == "success") {
-            console.log("CloudFlare setup finished");
-            clearInterval(interval);
-            // Refresh the page
-            location.reload();
-          }
-          if (data.status == "error") {
-            console.log("CloudFlare setup failed");
-            clearInterval(interval);
-            
-            // Refresh the page
-            location.reload();
-          }
-          
-        })
-        .catch(error => console.error(error));
-      }, 5000);
-      
       // Keep pooling the API endpoint to check when setup is finished
-      
+      fetchCloudFlareTunnelStatus();
     }
+
+    function startCloudflareTunnel(elem) {
+      // Replace button body with text saying "Starting" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Starting <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "start"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+    function stopCloudflareTunnel(elem) {
+      // Replace button body with text saying "Starting" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Stopping <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "stop"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+    function removeCloudflareTunnel(elem) {
+      // Replace button body with text saying "Removing" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Removing <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class .btn-cloudflare-connect
+      var buttons = document.getElementsByClassName("btn-cloudflare-connect");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/tunnel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "disable"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchCloudFlareTunnelStatus();
+    }
+
+
+    {% if tunnel_status_code is defined %}
+      {% if tunnel_status_code == "starting" or tunnel_status_code == "stopping" or tunnel_status_code == "waiting" %}
+        // If the tunnel status is starting or stopping, call the fetchCloudFlareTunnelStatus function
+        fetchCloudFlareTunnelStatus();
+      {% endif %}
+    {% endif %}
+    
+
   </script>
- 
+  
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
