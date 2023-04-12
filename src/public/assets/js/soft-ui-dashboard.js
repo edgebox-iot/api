@@ -52,11 +52,11 @@ if (document.querySelector('.fixed-plugin')) {
     }
   }
 
-  if (navbar) {
-    if (navbar.getAttribute('navbar-scroll') == 'true') {
-      buttonNavbarFixed.setAttribute("checked", "true");
-    }
-  }
+  // if (navbar) {
+  //   if (navbar.getAttribute('navbar-scroll') == 'true') {
+  //     buttonNavbarFixed.setAttribute("checked", "true");
+  //   }
+  // }
 
 }
 
