@@ -15,4 +15,4 @@ services:
       - ${APACHE_LOG_DIR-../ws/appdata/api/api-ws/log/apache2}:/var/log/apache2
       - ${SYMFONY_VAR_DIR-../ws/appdata/api/api-ws/data/symfony}:/var/www/html/var
     environment:
-      VIRTUAL_HOST: edgebox,api.edgebox.local${INTERNET_URL}
+      VIRTUAL_HOST: edgebox,edgebox.local,api.edgebox.local${INTERNET_URL}
