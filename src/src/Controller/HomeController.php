@@ -283,11 +283,11 @@ class HomeController extends AbstractController
 
         if (!empty($apps_list)) {
             foreach ($apps_list as $edgeapp) {
-                if ('on' == $edgeapp['status']['description'] && $edgeapp['internet_accessible']) {
+                if ('on' == $edgeapp['status']['description']) {
                     ++$result['total'];
                     $result['apps'][] = [
                         'id' => $edgeapp['id'],
-                        'url' => $edgeapp['internet_url']
+                        'url' => $edgeapp['internet_accessible'] ? $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url']
                     ];
                 }
             }
