@@ -45,16 +45,14 @@ class Task
     private $result;
 
     /**
-     * @var DateTime
-     *
+     * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @var ?DateTime
-     *
+     * @var ?\DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -121,12 +119,12 @@ class Task
         return $this;
     }
 
-    public function getCreated(): DateTime
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
 
-    public function getUpdated(): ?DateTime
+    public function getUpdated(): ?\DateTime
     {
         return $this->updated;
     }

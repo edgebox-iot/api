@@ -29,7 +29,6 @@ class Option
 
     /**
      * @var \DateTime
-     *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -37,7 +36,6 @@ class Option
 
     /**
      * @var \DateTime
-     *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -70,5 +68,10 @@ class Option
         $this->value = $value;
 
         return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
     }
 }

@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\SystemHelper;
+use App\Helper\TunnelHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +34,8 @@ class SettingsController extends AbstractController
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
     private EntityManagerInterface $entityManager;
+    private DashboardHelper $dashboardHelper;
+    private TunnelHelper $tunnelHelper;
 
     /**
      * @var array
@@ -56,7 +60,9 @@ class SettingsController extends AbstractController
         TaskFactory $taskFactory,
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemhelper,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        DashboardHelper $dashboardHelper,
+        TunnelHelper $tunnelHelper
     ) {
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->optionRepository = $optionRepository;
@@ -65,6 +71,8 @@ class SettingsController extends AbstractController
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemhelper;
         $this->entityManager = $entityManager;
+        $this->dashboardHelper = $dashboardHelper;
+        $this->tunnelHelper = $tunnelHelper;
     }
 
     private function setOptionValue(string $name, string $value): void
@@ -83,7 +91,9 @@ class SettingsController extends AbstractController
     {
         $status = 'Waiting for Edgebox.io Account Credentials';
         $connection_status = 'Not connected';
-        $connection_details = [];
+        $connection_details = [
+            'message' => 'A connection is not properly established. Please initiate the configuration.',
+        ];
         $task_status = 0;
         $alert = [];
         $show_form = false;
@@ -95,10 +105,6 @@ class SettingsController extends AbstractController
             // Find out with form to process and call the correct handler, which should return a RedirectResponse
 
             switch ($request->get('setting')) {
-                case 'edgeboxio_login':
-                    return $this->handleEdgeboxioLoginSetting($request);
-                    break;
-
                 case 'custom_domain':
                     return $this->handleCustomDomainSetting($request);
                     break;
@@ -114,84 +120,157 @@ class SettingsController extends AbstractController
         } else {
             // GET Request. Should get latest setup_tunnel task status and display it.
 
-            $options = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']) ?? new Option();
-            $apiToken = $options->getValue();
+            $tunnel_status = $this->tunnelHelper->getTunnelStatus();
+            $tunnel_status_code = $tunnel_status['status'];
+
             $show_form = true;
             $release_version = $this->systemHelper->getReleaseVersion();
 
-            if (!empty($apiToken)) {
-                // We have an API token, which means that a previous login and tunnel setup was made.
+            if ('not_configured' != $tunnel_status['status']) {
+                // We have a status, which means that a previous tunnel setup was made.
                 // We can check the task status.
 
                 $show_form = false;
 
-                // Is already logged in, and not doing this request through post
-
-                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info($apiToken);
-
-                if ('error' == $tunnelInfo['status']) {
+                if ('error' == $tunnel_status['status']) {
                     $connection_details = [
-                        'node_name' => 'Unavailable',
-                        'details' => !empty($tunnelInfo['value']['message']) ? $tunnelInfo['value']['message'] : 'Server could not be reached!',
+                        'status' => 'Setup Error',
+                        'details' => !empty($tunnel_status['message']) ? $tunnel_status['message'] : 'An unknown error occured. Please try again.',
                     ];
-                    $status = 'An error ocurred with communication to Edgebox.io';
+                    $status = 'An error ocurred with the connection to Cloudflare';
+                } elseif ('waiting' == $tunnel_status['status']) {
+                    $status = 'Waiting for authorization from CloudFlare';
+                    $connection_details = [
+                        'status' => 'waiting',
+                        'details' => 'Please login with your Cloudflare account to finish the setup.',
+                        'login_link' => $tunnel_status['login_link'],
+                    ];
                 } else {
-                    $connection_details = $tunnelInfo['value'];
+                    $connection_details = $tunnel_status;
                     if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD == $release_version) {
                         $connection_details = [
                             'assigned_address' => $this->systemHelper->getIP(),
-                            'node_name' => $tunnelInfo['value']['node_name'],
                         ];
                     }
-                    $status = 'Logged in to Edgebox.io as '.$connection_details['node_name'];
+                    $status = 'Logged in to CloudFlare ('.$connection_details['status'].')';
                 }
 
                 if (!empty($release_version) && $this->systemHelper::VERSION_CLOUD != $release_version) {
-                    $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL]);
+                    // Fetch latest SETUP_TUNNEL task to check status
+                    $tunnelSetupTask = $this->taskRepository->findOneBy(['task' => TaskFactory::SETUP_TUNNEL], ['id' => 'DESC']);
 
                     if (null === $tunnelSetupTask) {
                         // Setup task was not found. This is an inconsistent state.
                         $tunnel_setup_status = -1;
+                        $connection_details = [
+                            'status' => 'Inconsistent',
+                            'details' => 'Setup task and status is inconsistent. Try again',
+                        ];
                     } else {
                         $tunnel_setup_status = $tunnelSetupTask->getStatus();
                     }
 
                     switch ($tunnel_setup_status) {
                         case -1:
-                            $connection_status = 'Problem with tunnel setup task. Please re-login.';
+                            $connection_status = 'Problem with tunnel setup task. Please try again.';
                             break;
                         case 0:
                             // Task has not yet been picked up by edgeboxctl...
-                            $connection_status = 'Waiting for Edgebox to start executing the setup...';
+                            $connection_status = 'Waiting to start configuration with Cloudflare, please wait';
                             break;
 
                         case 1:
-                            // Task has been picked up by edgeboxctl and is not in progress...
-                            $connection_status = 'Configuring tunnel network for '.$connection_details['node_name'].'...';
-                            // TODO: Some sort of auto-reload when the status is this one could be very useful.
+                            // Task has been picked up by edgeboxctl and is now in progress...
+                            $connection_status = 'Configuring cloudflare connection...';
                             break;
 
                         case 2:
-                            // Task is complete and has result. In this, case the apps we will allow registration in the myedge.app service.
-                            $connection_status = 'Successfully configured myedge.app Service';
+                            // Task is complete and has result. In this, the authentication process with cloudflare is guaranteed to have started
+                            // To follow the complete status, we need to check the option TUNNEL_STATUS
+                            $connection_status = 'Cloudflare tunnel is connected is active';
+                            $tunnel_status_option = $this->optionRepository->findOneBy(['name' => 'TUNNEL_STATUS']) ?? new Option();
+
+                            // Six options here:
+                            // - The status is "waiting" but the creation date is older than 5 minutes. This means the authentication process failed. Should be restarted.
+                            // - The status is "waiting", which means an authentication process is underway. We should show the link to the user.
+                            // - The status is "error", which means the authentication process failed. Should be restarted
+                            // - The status is "connected", which means the authentication process was successful and the tunnel is up and running.
+                            // - The status is "stopped", which means the tunnel was stopped by the user. Can be started again.
+                            // - The status is "not_configured", which means the tunnel is not configured or was disabled. Should be configured.
+                            // - The status is "starting", which means authentication was successfull, and the tunnel is starting.
+
+                            $tunnel_status = $tunnel_status_option->getValue();
+                            $tunnel_status_creation_date = $tunnel_status_option->getCreated();
+
+                            if (!empty($tunnel_status)) {
+                                $tunnel_status = json_decode($tunnel_status, true);
+                            } else {
+                                $tunnel_status = [];
+                            }
+
+                            if (!empty($tunnel_status['status']) && 'waiting' == $tunnel_status['status']) {
+                                // Check if the creation date is older than 5 minutes. If so, the authentication process failed.
+                                $now = new \DateTime();
+                                $now->sub(new \DateInterval('PT5M'));
+                                if ($tunnel_status_creation_date < $now) {
+                                    // The authentication process failed. Should be restarted.
+                                    $connection_status = 'Authentication process failed. Please try again.';
+                                    // We can fill in the details of the error here.
+                                    $connection_details = [
+                                        'status' => 'expired',
+                                        'details' => 'The authentication process expired and needs to be restarted. Please try again.',
+                                    ];
+                                } else {
+                                    // The authentication process is underway. Show the link to the user.
+                                    $connection_status = 'Waiting for authorization from CloudFlare';
+                                }
+                            } elseif (!empty($tunnel_status['status']) && 'error' == $tunnel_status['status']) {
+                                // The authentication process failed. Should be restarted.
+                                $connection_status = 'Authentication process failed. Please try again.';
+                                // We can fill in the details of the error here.
+                                $connection_details = [
+                                    'status' => 'expired',
+                                    'details' => 'The authentication process expired and needs to be restarted. Please try again.',
+                                ];
+                            } elseif (!empty($tunnel_status['status']) && 'connected' == $tunnel_status['status']) {
+                                // The authentication process was successful and the tunnel is up and running.
+                                $connection_status = 'Cloudflare Tunnel is connected and active 🚀';
+                            } elseif (!empty($tunnel_status['status']) && 'stopped' == $tunnel_status['status']) {
+                                // The tunnel was stopped by the user. Can be started again.
+                                $connection_status = 'Tunnel stopped by user. Can be started again.';
+                            } elseif (!empty($tunnel_status['status']) && 'starting' == $tunnel_status['status']) {
+                                $connection_status = 'Tunnel is starting. Please wait.';
+                            } else {
+                                // Unknown status. Should not happen.
+                                $connection_status = 'Unknown or inconsistent tunnel status. Please try again.';
+                                $connection_details = [
+                                    'status' => 'unknown',
+                                    'details' => 'Unknown or inconsistent tunnel status. Please try reconfiguring again.',
+                                ];
+                            }
 
                             break;
 
                         default:
                             // Error occurred and should be shown to the user.
-                            $connection_status = json_decode($tunnelSetupTask->getResult())['value'];
+                            $connection_status = json_encode($tunnelSetupTask->getResult());
                     }
                 } else {
-                    $connection_status = 'Connected to the myedge.app service.';
+                    $connection_status = 'Feature not available in this release.';
                 }
             }
 
             $options = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']) ?? new Option();
             $domain_name = $options->getValue();
 
-            if (!empty($domain_name)) {
+            if (!empty($domain_name) && empty($tunnel_status_code)) {
                 // A custom domain was already inserted.
                 $domain_name_config_step = 1;
+            }
+
+            if (!empty($domain_name) && !empty($tunnel_status_code)) {
+                // A custom domain was already inserted and the tunnel setuo was made.
+                $domain_name_config_step = 2;
             }
 
             $ip_address = $this->systemHelper->getIP();
@@ -227,7 +306,7 @@ class SettingsController extends AbstractController
             'connection_status' => $connection_status,
             'connection_details' => $connection_details,
             'task_status' => $task_status,
-            'api_token' => $apiToken,
+            'tunnel_status_code' => $tunnel_status_code,
             'domain_name' => $domain_name,
             'domain_name_config_step' => $domain_name_config_step,
             'apps_online' => $apps_online,
@@ -236,6 +315,7 @@ class SettingsController extends AbstractController
             'release_version' => $release_version,
             'is_dashboard_public' => $is_dashboard_public,
             'dash_internet_url' => $dash_internet_url,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
     }
 
@@ -290,53 +370,9 @@ class SettingsController extends AbstractController
             'framework_ready' => $framework_ready,
             'result' => $action_result,
             'action' => $action,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
-    }
-
-    private function handleEdgeboxioLoginSetting(Request $request): RedirectResponse
-    {
-        $release_version = !empty($this->systemHelper->getReleaseVersion()) ? $this->systemHelper->getReleaseVersion() : $this->systemHelper::VERSION_DEV;
-
-        $apiToken = $this->edgeboxioApiConnector->get_token($request->get('username'), $request->get('password'));
-        if ('success' === $apiToken['status']) {
-            $this->setOptionValue('EDGEBOXIO_API_TOKEN', $apiToken['value']);
-
-            if ($release_version = !$this->systemHelper::VERSION_CLOUD) {
-                $tunnelInfo = $this->edgeboxioApiConnector->get_bootnode_info();
-
-                if ('success' === $tunnelInfo['status']) {
-                    // The response was successful. Save fetched information in options and issue setup_tunnel task.
-                    $this->setOptionValue('BOOTNODE_ADDRESS', $tunnelInfo['value']['bootnode_address']);
-                    $this->setOptionValue('BOOTNODE_TOKEN', $tunnelInfo['value']['bootnode_token']);
-                    $this->setOptionValue('BOOTNODE_ASSIGNED_ADDRESS', $tunnelInfo['value']['assigned_address']);
-                    $this->setOptionValue('NODE_NAME', $tunnelInfo['value']['node_name']);
-
-                    // Issue tasks for SysCtl to setup the tunnel connection to myedge.app service.
-                    $task = $this->taskFactory->createSetupTunnelTask(
-                        $tunnelInfo['value']['bootnode_address'],
-                        $tunnelInfo['value']['bootnode_token'],
-                        $tunnelInfo['value']['assigned_address'],
-                        $tunnelInfo['value']['node_name']
-                    );
-                    $this->entityManager->persist($task);
-                    $this->entityManager->flush();
-
-                    $connection_status = 'Configuring tunnel network for '.$tunnelInfo['value']['node_name'].'...';
-                    $connection_details = $tunnelInfo['value'];
-
-                    return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-                }
-
-                // This return means that login was ok but there was an error getting bootnode information.
-                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'error']);
-            } else {
-                // Logged in successfully, no need to setup bootnode as this will receive direct connections.
-                return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'success']);
-            }
-        }
-
-        // Error Logging in.
-        return $this->redirectToRoute('settings', ['alert' => 'edgeboxio_login', 'type' => 'warning']);
     }
 
     private function handleCustomDomainSetting(Request $request): RedirectResponse

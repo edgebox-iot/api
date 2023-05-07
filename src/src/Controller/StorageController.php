@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Helper\DashboardHelper;
 use App\Helper\StorageHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +17,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class StorageController extends AbstractController
 {
     private StorageHelper $storageHelper;
+    private DashboardHelper $dashboardHelper;
 
     public function __construct(
-        StorageHelper $storageHelper
+        StorageHelper $storageHelper,
+        DashboardHelper $dashboardHelper
     ) {
         $this->storageHelper = $storageHelper;
+        $this->dashboardHelper = $dashboardHelper;
     }
 
     /**
@@ -40,6 +44,8 @@ class StorageController extends AbstractController
             'controller_subtitle' => 'Buckets & Drives',
             'storage_ready' => $storage_ready,
             'storage_devices' => $storage_devices_list,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
@@ -51,6 +57,7 @@ class StorageController extends AbstractController
         return $this->render('storage/device/new.html.twig', [
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Add new device',
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
@@ -23,17 +24,20 @@ class HomeController extends AbstractController
     private SystemHelper $systemHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private StorageHelper $storageHelper;
+    private DashboardHelper $dashboardHelper;
 
     public function __construct(
         TaskRepository $taskRepository,
         SystemHelper $systemHelper,
         EdgeAppsHelper $edgeAppsHelper,
-        StorageHelper $storageHelper
+        StorageHelper $storageHelper,
+        DashboardHelper $dashboardHelper
     ) {
         $this->taskRepository = $taskRepository;
         $this->systemHelper = $systemHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->storageHelper = $storageHelper;
+        $this->dashboardHelper = $dashboardHelper;
     }
 
     /**
@@ -49,6 +53,8 @@ class HomeController extends AbstractController
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
             'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
         ]);
     }
 
@@ -138,16 +144,28 @@ class HomeController extends AbstractController
                 Task::STATUS_ERROR => 'Failed to restrict online access to %s EdgeApp',
             ],
             'setup_tunnel' => [
-                Task::STATUS_CREATED => 'Waiting to configure external access to EdgeApps',
-                Task::STATUS_EXECUTING => 'Configuring Online access to EdgeApps',
-                Task::STATUS_FINISHED => 'Configured Online access for EdgeApps',
-                Task::STATUS_ERROR => 'Failed to configure online access for EdgeApps',
+                Task::STATUS_CREATED => 'Waiting to configure access tunnel',
+                Task::STATUS_EXECUTING => 'Configuring access tunnel',
+                Task::STATUS_FINISHED => 'Configured access tunnel',
+                Task::STATUS_ERROR => 'Failed to configure access tunnel',
+            ],
+            'start_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to start access tunnel',
+                Task::STATUS_EXECUTING => 'Enabling access tunnel',
+                Task::STATUS_FINISHED => 'Enabled access tunnel',
+                Task::STATUS_ERROR => 'Failed to enable access tunnel',
+            ],
+            'stop_tunnel' => [
+                Task::STATUS_CREATED => 'Waiting to stop access tunnel',
+                Task::STATUS_EXECUTING => 'Stopping access tunnel',
+                Task::STATUS_FINISHED => 'Stopped access tunnel',
+                Task::STATUS_ERROR => 'Problem while stopping access tunnel',
             ],
             'disable_tunnel' => [
-                Task::STATUS_CREATED => 'Waiting to disable external access to EdgeApps',
-                Task::STATUS_EXECUTING => 'Disabling Online access to EdgeApps',
-                Task::STATUS_FINISHED => 'Disabled Online access for EdgeApps',
-                Task::STATUS_ERROR => 'Failed to disable online access for EdgeApps',
+                Task::STATUS_CREATED => 'Waiting to disable access tunnel',
+                Task::STATUS_EXECUTING => 'Disabling access tunnel',
+                Task::STATUS_FINISHED => 'Disabled access tunnel',
+                Task::STATUS_ERROR => 'Failed to disable access tunnel',
             ],
             'enable_public_dashboard' => [
                 Task::STATUS_CREATED => 'Waiting to enable online access to dashboard',
@@ -161,12 +179,13 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Disabled Online access to the Dashboard',
                 Task::STATUS_ERROR => 'Failed to Disable Online access to the Dashboard',
             ],
-            'unknown_action' => [
-                Task::STATUS_CREATED => 'Waiting to run action: %s %s',
-                Task::STATUS_EXECUTING => 'Running action: %s %s',
-                Task::STATUS_FINISHED => 'Action ran: %s %s',
-                Task::STATUS_ERROR => 'Failed to run action: %s %s',
-            ],
+        ];
+
+        $unknown_action_descriptions = [
+            Task::STATUS_CREATED => 'Waiting to run action: %s %s',
+            Task::STATUS_EXECUTING => 'Running action: %s %s',
+            Task::STATUS_FINISHED => 'Action ran: %s %s',
+            Task::STATUS_ERROR => 'Failed to run action: %s %s',
         ];
 
         $action_icons = [
@@ -192,7 +211,7 @@ class HomeController extends AbstractController
 
             if (empty($action_descriptions[$task->getTask()])) {
                 // Indicates an action which is not documented in the descriptions.
-                $action_description = sprintf($action_descriptions['unknown_action'][$task->getStatus()], $task->getTask(), $task->getArgs());
+                $action_description = sprintf($unknown_action_descriptions[$task->getStatus()], $task->getTask(), $task->getArgs());
             } else {
                 if (!empty($action_args['id'])) {
                     $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
