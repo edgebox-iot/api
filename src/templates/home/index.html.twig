@@ -4,7 +4,10 @@
     Web Dashboard
 {% endblock title %}
 {% block content %}
-  <div class="row">
+
+  {{ include('partials/_container_quick_edgeapps_access.html.twig', {apps_quickaccess: container_apps_quickaccess.apps})}}
+
+  <div class="row mt-4">
 
     {% if container_system_uptime == '100 days' or container_system_uptime == '365 days' %}
     
