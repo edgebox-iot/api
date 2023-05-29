@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Helper\DashboardHelper;
 use App\Helper\TunnelHelper;
+use App\Helper\BackupsHelper;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -23,17 +24,20 @@ class ApiController extends AbstractController
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
+    private BackupsHelper $backupsHelper;
 
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
-        TunnelHelper $tunnelHelper
+        TunnelHelper $tunnelHelper,
+        BackupsHelper $backupsHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
+        $this->backupsHelper = $backupsHelper;
     }
 
     /**
@@ -99,6 +103,65 @@ class ApiController extends AbstractController
             }
         } else {
             $data = $this->tunnelHelper->getTunnelStatus();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/api/backups", name="api_backups")
+     */
+    public function backups(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            // Need to still look at body and such...
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+
+            if (isset($data['op'])) {
+
+                if($data['op'] != 'remove' && $data['op'] != 'stop' && $this->backupsHelper->isBackupsRunning()) {
+                    $data['op'] = 'working';
+                }
+
+                if ('configure' == $data['op'] && $this->backupsHelper->validateArgs($data)) {
+                    $data = $this->backupsHelper->configureBackups(
+                        $data['service'],
+                        $data['access_key_id'],
+                        $data['secret_access_key'],
+                        $data['repository_name'],
+                        $data['repository_password'],
+                    );
+                } elseif ('backup' == $data['op']) {
+                    $data = $this->backupsHelper->startBackup();
+                } elseif ('stop' == $data['op']) {
+                    $data = $this->backupsHelper->stopBackup();
+                } elseif ('disable' == $data['op']) {
+                    $data = $this->backupsHelper->disableBackups();
+                } elseif ('restore' == $data['op']) {
+                    $data = $this->backupsHelper->restoreBackups();
+                } elseif ('remove' == $data['op']) {
+                    $data = $this->backupsHelper->removeBackupsConfig();
+                } elseif ('working' == $data['op']) {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'The Backups System is currently doing some work. Try again later.',
+                    ];
+                } else {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'Invalid operation',
+                    ];
+                }
+            } else {
+                $data = [
+                    'status' => 'error',
+                    'message' => 'Invalid operation',
+                ];
+            }
+        } else {
+            $data = $this->backupsHelper->getBackupsStatus();
         }
 
         return new JsonResponse($data);

@@ -9,6 +9,10 @@ use App\Repository\OptionRepository;
 
 class TaskFactory
 {
+    public const SETUP_BACKUPS = 'setup_backups';
+    public const START_BACKUP = 'start_backup';
+    public const RESTORE_BACKUP = 'restore_backup';
+    public const DISABLE_BACKUPS = 'disable_backups';
     public const SETUP_TUNNEL = 'setup_tunnel';
     public const START_TUNNEL = 'start_tunnel';
     public const STOP_TUNNEL = 'stop_tunnel';
@@ -34,6 +38,47 @@ class TaskFactory
         $this->optionRepository = $optionRepository;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
+    }
+
+    public function createSetupBackupsTask(string $service, string $access_key_id, string $secret_access_key, string $repository_name, string $repository_password): Task
+    {
+        $task = new Task();
+        $task->setTask(self::SETUP_BACKUPS);
+        $task->setArgs(json_encode([
+            'service' => $service,
+            'access_key_id' => $access_key_id,
+            'secret_access_key' => $secret_access_key,
+            'repository_name' => $repository_name,
+            'repository_password' => $repository_password
+        ]));
+
+        return $task;
+    }
+
+    public function createStartBackupTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::START_BACKUP);
+        // $task->setArgs(json_encode());
+
+        return $task;
+    }
+
+    public function createRestoreBackupTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::RESTORE_BACKUP);
+
+        return $task;
+    }
+
+    public function createDisableBackupsTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::DISABLE_BACKUPS);
+        // $task->setArgs(json_encode({}));
+
+        return $task;
     }
 
     public function createSetupTunnelTask(string $domain_name): Task

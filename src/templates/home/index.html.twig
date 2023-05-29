@@ -21,7 +21,7 @@
 
     {{ include('partials/_col_card_number.html.twig', {title: 'Storage', info: container_storage_summary.percentage, indicator: container_storage_summary.free, icon: 'ni ni-credit-card'})}}
     
-    {{ include('partials/_col_card_number.html.twig', {title: 'Last Backup', info: 'Never', indicator: '', icon: 'ni ni-paper-diploma'})}}
+    {{ include('partials/_col_card_number.html.twig', {title: 'Last Backup', info: container_backups_last_run, indicator: '', icon: 'ni ni-paper-diploma'})}}
     
     {% if (container_working_edgeapps.online > 0) and not (container_working_edgeapps.total == container_working_edgeapps.online) %}
 

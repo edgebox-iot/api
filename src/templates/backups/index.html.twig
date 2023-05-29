@@ -1,0 +1,367 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Backups
+{% endblock title %}
+{% block content %}
+
+    {% if backup_status.status == 'working' %}
+        <div class="">
+            <div class="" style="margin-top: -25px;">
+                {{ include('partials/_row_title_block.html.twig', {main_title: 'Your Backups', sub_title: 'See the current status and availability of your secure data backups.'}) }}
+                <div class="row" style="margin-top: -25px;">
+                    <div class="col-md-10" style="margin-left: 20px;">
+                        <div id="backup-status-alert" class="alert alert-success text-white" role="alert">
+                            <strong>Backups system is healthy!</strong> Edgebox will automatically backup your data every hour.
+                        </div>
+                        <div id="backup-error-alert" style="display: none;" class="alert alert-danger text-white" role="alert">
+                            <strong>Error!</strong> This is a placeholder for an error message
+                        </div>
+                        <div class="row mt-4">
+                            {{ include('partials/_col_card_number.html.twig', {title: 'Last Backup', info: backup_status.last_run, icon: 'ni ni-time-alarm'})}}
+                            {{ include('partials/_col_card_number.html.twig', {title: 'Snapshots', info: backup_status.stats.processed_snapshots, icon: 'ni ni-archive-2'})}}
+                            {{ include('partials/_col_card_number.html.twig', {title: 'Backup Size', info: backup_status.stats.total_size, icon: 'ni ni-box-2'})}}                        </row>
+                            {{ include('partials/_col_card_number.html.twig', {title: 'Total Files', info: backup_status.stats.total_file_count, icon: 'ni ni-folder-17'})}}
+                        </row>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-backup.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-backup" class="btn bg-gradient-success btn-backups-backup" onclick="startBackup(this);">Start Backup</button>
+                                    <p>
+                                    This will create a snapshot backup of your current data. Think of it like a restore point in time.
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-delete.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-remove" class="btn bg-gradient-danger btn-backups-remove" onclick="removeBackupConfig(this);">Remove Configuration</button>
+                                    <p>
+                                    This will remove the backups configuration from edgebox and allow you to configure again.
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+    {% if backup_status.status == 'not_configured' %}
+
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row mx-2">
+                <div class="col-md-12">
+                    <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_L6eLYC.json"  background="transparent"  speed="1"  style="max-width: 250px; width: 100%; height: auto;"  loop autoplay></lottie-player>
+                    <h2>Ready to Setup your Backups?</h2>
+                    <p>Edgebox allows you to configure a backup destination, so your can redundantly save your data.<br/>This data is encrypted before being sent to the destination you choose, so you can be sure no one else but you can access it!</p>
+                    <p>Start by answering the following questions:</p>
+                    <div class="alert alert-info text-white" role="alert">
+                        <strong>Need Help?</strong> This functionality works with any S3 Compatible storage provider. <br>Check <a href="https://docs.edgebox.io/overview/#backups" target="_blank">the documentation</a> for more information on what providers to consider and how to get the configuration options to fill below.
+                    </div>
+                    <div id="backup-error-alert" style="display: none;" class="alert alert-danger text-white" role="alert">
+                        <strong>Error!</strong> This is a placeholder for an error message
+                    </div>
+
+                    <p class="text-sm opacity-8">
+                        <div class="form-setup-backups" id="form-backups-setup">
+                            <div class="form-group">
+                                <label for="backup-service" class="form-control-label">Service to use for Backups:</label>
+                                <select class="form-control" name="backup-service" id="backup-service">
+                                    <option value="s3">Amazon S3</option>
+                                    <option value="b2">BackBlaze B2</option>
+                                    <option value="wasabi">Wasabi</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="backup-access-key-id" class="form-control-label">Access Key ID:</label>
+                                <input class="form-control" name="backup-access-key-id" type="text" value="" id="backup-access-key-id">
+                            </div>
+                            <div class="form-group">
+                                <label for="backup-secret-access-key" class="form-control-label">Secret Access key:</label>
+                                <input class="form-control" name="backup-secret-access-key" type="text" value="" id="backup-secret-access-key">
+                            </div>
+                            <div class="form-group">
+                                <label for="backup-repository-name" class="form-control-label">Repository ID:</label>
+                                <input class="form-control" name="backup-repository-name" type="text" value="edgebox" id="backup-repository-name">
+                            </div>
+                            <div class="form-group">
+                                <label for="backup-repository-password" class="form-control-label">Encryption Password:</label>
+                                <input class="form-control" name="backup-repository-password" type="text" value="" id="backup-repository-password">
+                            </div>
+                            <button type="button" class="btn btn-outline-dark btn-backups-setup" onclick="setupBackups(this);">Start Backups Configuration</button>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert" style="margin-top: -5px;">
+                                <span class="alert-text text-xs text-white"><i><b>Please note that knowledge of your password is required to restore your backup at a later date. <br>Losing your password means that your data is irrecoverably lost!</i></b></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+    {% if backup_status.status == 'initiated' %}
+
+        <div class="">
+            <div class="" style="margin-top: -25px;">
+                {{ include('partials/_row_title_block.html.twig', {main_title: 'Your Backups', sub_title: 'See the current status and availability of your secure data backups.'}) }}
+                <div class="row" style="margin-top: -25px;">
+                    <div class="col-md-10" style="margin-left: 20px;">
+                        <div id="backup-status-alert" class="alert alert-info text-white" role="alert">
+                            <strong>Repository is initialized!</strong> Please choose an action below.<br>{{backup_status.status}}
+                        </div>
+                        <div id="backup-error-alert" style="display: none;" class="alert alert-danger text-white" role="alert">
+                            <strong>Error!</strong> This is a placeholder for an error message
+                        </div>
+                        <p>
+                            You can now start backing up your data to the repository you configured, or restore data from it. <br>Choose one of the below options to proceed.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-backup.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-backup" class="btn bg-gradient-success btn-backups-backup" onclick="startBackup(this);">Start Backup</button>
+                                    <p>
+                                    This will make the initial backup of your data and configure to automatically backup every hour.
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-restore.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-restore" class="btn bg-gradient-warning btn-backups-restore" onclick="restoreBackup(this);">Restore Data</button>
+                                    <p>
+                                    This will read the backups repository and restore the data, overwriting the current data here!
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-delete.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-remove" class="btn bg-gradient-danger btn-backups-remove" onclick="removeBackupConfig(this);">Remove Configuration</button>
+                                    <p>
+                                    This will remove the backups configuration from edgebox and allow you to configure again.
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {% endif %}
+
+    {% if backup_status.status == 'error' %}
+
+        <div class="">
+            <div class="" style="margin-top: -25px;">
+                {{ include('partials/_row_title_block.html.twig', {main_title: 'Backups is having an issue!', sub_title: 'There seems to be a problem with your backups configuration.'}) }}
+                <div class="row" style="margin-top: -25px;">
+                    <div class="col-md-10" style="margin-left: 20px;">
+                        <div id="backup-error-alert" class="alert alert-danger text-white" role="alert">
+                            <strong>Error!</strong> {{backup_status.message}}
+                        </div>
+                        <p>
+                            This should not have happened 🥲 <br>You can choose one of the options below to help you solve the issue:
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-backup.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-backup" class="btn bg-gradient-success btn-backups-backup" onclick="startBackup(this, 'error');">Restart Backup</button>
+                                    <p>
+                                    This will attemp to redo a backup with the current configuration. Always worth a try 😉
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-delete.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-remove" class="btn bg-gradient-danger btn-backups-remove" onclick="removeBackupConfig(this);">Remove Configuration</button>
+                                    <p>
+                                    This will remove the backups configuration from edgebox and allow you to configure again.
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card">
+                                <img class="card-img-top" src="/assets/img/illustrations/small-card-backups-help.png">
+                                <div class="position-relative" style="height: 50px;overflow: hidden;margin-top: -50px;z-index:2;position: relative;">
+                                    <div class="position-absolute w-100 top-0" style="z-index: 1;">
+                                        <svg class="waves waves-sm" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40" preserveAspectRatio="none" shape-rendering="auto">
+                                        <defs>
+                                            <path id="card-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+                                        </defs>
+                                        <g class="moving-waves">
+                                            <use xlink:href="#card-wave" x="48" y="-1" fill="rgba(255,255,255,0.30"></use>
+                                            <use xlink:href="#card-wave" x="48" y="3" fill="rgba(255,255,255,0.35)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="5" fill="rgba(255,255,255,0.25)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="8" fill="rgba(255,255,255,0.20)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="13" fill="rgba(255,255,255,0.15)"></use>
+                                            <use xlink:href="#card-wave" x="48" y="16" fill="rgba(255,255,255,0.99)"></use>
+                                        </g>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <button type="button" id="btn-backups-restore" class="btn bg-gradient-warning btn-backups-restore" onclick="restoreBackup(this);">Ask for Help</button>
+                                    <p>
+                                    Open a issue in our project so someone can help you understand and possibly fix it!
+                                    </p>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+
+{% endblock content %}

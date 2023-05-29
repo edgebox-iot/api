@@ -7,6 +7,7 @@ use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
+use App\Helper\BackupsHelper;
 use App\Repository\TaskRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,19 +26,22 @@ class HomeController extends AbstractController
     private EdgeAppsHelper $edgeAppsHelper;
     private StorageHelper $storageHelper;
     private DashboardHelper $dashboardHelper;
+    private BackupsHelper $backupsHelper;
 
     public function __construct(
         TaskRepository $taskRepository,
         SystemHelper $systemHelper,
         EdgeAppsHelper $edgeAppsHelper,
         StorageHelper $storageHelper,
-        DashboardHelper $dashboardHelper
+        DashboardHelper $dashboardHelper,
+        BackupsHelper $backupsHelper
     ) {
         $this->taskRepository = $taskRepository;
         $this->systemHelper = $systemHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->storageHelper = $storageHelper;
         $this->dashboardHelper = $dashboardHelper;
+        $this->backupsHelper = $backupsHelper;
     }
 
     /**
@@ -51,6 +55,7 @@ class HomeController extends AbstractController
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
+            'container_backups_last_run' => $this->getLastBackupRunContainerVar(),
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
             'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
@@ -102,6 +107,11 @@ class HomeController extends AbstractController
         }
 
         return $uptime.' seconds';
+    }
+
+    private function getLastBackupRunContainerVar(): string
+    {
+        return $this->backupsHelper->getLastBackupRunTime();
     }
 
     private function getActionsOverviewContainerVars(): array

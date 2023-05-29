@@ -590,7 +590,7 @@
         fetch('/api/settings/tunnel')
         .then(response => response.json())
         .then(data => {
-          console.log("Current redended status: {{tunnel_status_code}}")
+          console.log("Current rendered status: {{tunnel_status_code}}")
           console.log(data);
           if (data.status == "waiting") {
             console.log("CloudFlare login link received");
@@ -755,6 +755,315 @@
     {% endif %}
     
 
+  </script>
+
+  <script>
+    // Handling Backups Setup and Data Update
+
+    function fetchBackupsStatus(original_status = 'not_configured'){
+      
+      console.log("Fetching backup status with last status being: " + original_status);
+      // Send API request to /api/settings/backups to get the status of the backups
+      // Sleep for a couple seconds here (to give time to edgeboxctl to pick up)
+
+
+      fetch('/api/backups', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+
+        if(original_status != data.status && data.status == 'error') {
+
+          // Show the error
+          alert = document.getElementById("backup-error-alert")
+          alert.innerHTML = 'There was a problem setting up backups. <a href="#" onClick="location.reload();">Click here to troubleshoot.</a><br><br>' + data.message;
+          alert.style.display = "block";
+          
+        }
+        else if(original_status != data.status && !data.is_running) {
+          // Reload the page after 5 seconds
+          console.log("Reload1");
+          location.reload();
+        } else {
+          console.log("Is running: " + data.is_running)
+          if(!data.is_running) {
+            console.log("Reload2");
+            location.reload();
+          }
+        }
+
+        setTimeout(fetchBackupsStatus, 5000, original_status);
+
+      });
+
+    }
+
+    function setupBackups(elem) {
+      // Getting a list of the ids of all <input> elements with class .form-control inside the <div> element with id form-backups-setup
+      var inputs = document.querySelectorAll("#form-backups-setup .form-control");
+      var invalid_value_detected = false;
+      // Looping through all the inputs
+      var data = {};
+      for (var i = 0; i < inputs.length; i++) {
+        // Getting the id and value of the inputs
+        var id = inputs[i].id.replace("backup-", "").replace(/-/g, "_");
+
+        var value = inputs[i].value;
+
+        // Remove class is invalid from field, in case this is a re-submission
+        // Remove the work backup- from the id
+        inputs[i].classList.remove("is-invalid");
+
+        // Validate if the input value is empty
+        if (value == "") {
+          // Add class is invalid to field
+          inputs[i].classList.add("is-invalid");
+          invalid_value_detected = true;
+
+          // Log Warn about field being empty
+          console.warn("Field " + id + " is empty");
+        }
+
+        // Adding the value to the data object
+        data[id] = value;
+
+      }
+
+      // Adding the op key with value "configure" to the data object so the API knows what to do
+      data['op'] = "configure";
+
+      // Log input data
+      console.log("Input data:");
+      console.log(data);
+
+      // If an invalid value was detected, stop the function
+      if (invalid_value_detected) {
+        return;
+      }
+
+      // Replace button body with text saying "Setting up" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Setting Up <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/backups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Setup Backups Configuration", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Setup Backups Configuration"
+            elem.innerHTML = "Setup Backups Configuration";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log(data);
+          });
+        }
+      )
+
+      // Wait around 5 seconds before polling the API endpoint to check when setup is finished
+      setTimeout(fetchBackupsStatus, 5000, 'not_configured');
+
+    }
+
+    function startBackup(elem, original_status = "working") {
+
+      console.log("Initiating backup attempt with original status: " + original_status);
+      var data = {};
+      data['op'] = "backup";
+
+      // Replace button body with text saying "Starting Backup" and a spinner.
+      elem.innerHTML = "Backing up... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Load elements with id btn-backups-restore and btn-backups-remove
+      var btn_backups_restore = document.getElementById("btn-backups-restore");
+      var btn_backups_remove = document.getElementById("btn-backups-remove");
+
+      if(btn_backups_restore) {
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_restore.setAttribute("aria-disabled", "true");
+        btn_backups_restore.classList.add("disabled");
+      }
+
+      if(btn_backups_remove) {
+        // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_remove.setAttribute("aria-disabled", "true");
+        btn_backups_remove.classList.add("disabled");
+      }
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/backups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Start Backup"
+            elem.innerHTML = "Start Backup";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log(data);
+            if(data.status == "error" && !data.is_working) {
+              // Replace button body with text saying "Start Backup"
+              elem.innerHTML = "Start Backup";
+
+              // Set aria-disabled=false and remove disabled class so the button is clickable again.
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              if(btn_backups_restore) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                btn_backups_restore.setAttribute("aria-disabled", "false");
+                btn_backups_restore.classList.remove("disabled");
+              }
+
+              if(btn_backups_remove) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                btn_backups_remove.setAttribute("aria-disabled", "false");
+                btn_backups_remove.classList.remove("disabled");
+              }
+
+              // Show the error message
+              document.getElementById("backup-error-alert").innerHTML = data.message;
+              document.getElementById("backup-error-alert").style.display = "block";
+
+              
+            } else {
+              // Hide the error message
+              document.getElementById("backup-error-alert").style.display = "none";
+            }
+          });
+        }
+      )
+
+      timeout_time = 5000;
+      if(original_status == 'error') {
+        timeout_time = 15000;
+      }
+      // Keep pooling the API endpoint to check when setup is finished
+      setTimeout(fetchBackupsStatus, timeout_time, original_status);
+
+    }
+
+    function removeBackupConfig(elem) {
+
+      var data = {};
+      data['op'] = "remove";
+
+      // Replace button body with text saying "Starting Backup" and a spinner.
+      elem.innerHTML = "Removing Configuration... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Load elements with id btn-backups-restore and btn-backups-remove
+      var btn_backups_restore = document.getElementById("btn-backups-restore");
+      var btn_backups_backup = document.getElementById("btn-backups-backup");
+
+      if(btn_backups_restore) 
+      {
+        // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_restore.setAttribute("aria-disabled", "true");
+        btn_backups_restore.classList.add("disabled");
+      }
+      
+      if(btn_backups_backup) 
+      {
+        // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_backup.setAttribute("aria-disabled", "true");
+        btn_backups_backup.classList.add("disabled");
+      }
+    
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/backups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            document.getElementById("backup-status-alert").style.display = "none";
+
+            // Show the error message
+            document.getElementById("backup-error-alert").innerHTML = "API responded with error " + response.status;
+            document.getElementById("backup-error-alert").style.display = "block";
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log(data);
+            if(data.status == "error") {
+
+              // Show the error message
+              document.getElementById("backup-status-alert").style.display = "none";
+              document.getElementById("backup-error-alert").innerHTML = data.message;
+              document.getElementById("backup-error-alert").style.display = "block";
+
+            } else {
+              // Hide the error message
+              document.getElementById("backup-error-alert").style.display = "none";
+              // document.getElementById("backup-status-alert").style.display = "block";
+
+            }
+          });
+
+        }
+
+      )
+
+      // Keep pooling the API endpoint to check when setup is finished
+      setTimeout(fetchBackupsStatus, 3000, 'error');
+
+    }
   </script>
   
   <!-- Github buttons -->
