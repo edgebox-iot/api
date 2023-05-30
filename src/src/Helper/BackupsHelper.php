@@ -59,11 +59,11 @@ class BackupsHelper
         }
 
         if ($hours >= 2) {
-            return (int) $hours.' h. ago';
+            return (int) $hours.'h ago';
         }
 
         if ($minutes >= 1) {
-            return (int) $minutes.' min. ago';
+            return (int) $minutes.'m ago';
         }
 
         return "Just now";
@@ -126,6 +126,19 @@ class BackupsHelper
     public function startBackup(): array
     {
         $task = $this->taskFactory->createStartBackupTask();
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return [
+            'task_id' => $task->getId(),
+            'task_status' => $task->getStatus(),
+            'task_args' => $task->getArgs(),
+        ];
+    }
+
+    public function restoreBackups(): array
+    {
+        $task = $this->taskFactory->createRestoreBackupsTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 

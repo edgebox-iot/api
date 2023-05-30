@@ -986,6 +986,103 @@
 
     }
 
+    function restoreBackup(elem, original_status = "working") {
+
+      console.log("Initiating restore attempt with original status: " + original_status);
+      var data = {};
+      data['op'] = "restore";
+
+      // Replace button body with text saying "Starting Backup" and a spinner.
+      elem.innerHTML = "Restoring Last Backup... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Load elements with id btn-backups-restore and btn-backups-remove
+      var btn_backups_backup = document.getElementById("btn-backups-backup");
+      var btn_backups_remove = document.getElementById("btn-backups-remove");
+
+      if(btn_backups_backup) {
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_backup.setAttribute("aria-disabled", "true");
+        btn_backups_backup.classList.add("disabled");
+      }
+
+      if(btn_backups_remove) {
+        // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        btn_backups_remove.setAttribute("aria-disabled", "true");
+        btn_backups_remove.classList.add("disabled");
+      }
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/backups', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Start Backup"
+            elem.innerHTML = "Restore Backup";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log(data);
+            if(data.status == "error" && !data.is_working) {
+              // Replace button body with text saying "Start Backup"
+              elem.innerHTML = "Restore Backup";
+
+              // Set aria-disabled=false and remove disabled class so the button is clickable again.
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              if(btn_backups_backup) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                btn_backups_backup.setAttribute("aria-disabled", "false");
+                btn_backups_backup.classList.remove("disabled");
+              }
+
+              if(btn_backups_remove) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                btn_backups_remove.setAttribute("aria-disabled", "false");
+                btn_backups_remove.classList.remove("disabled");
+              }
+
+              // Show the error message
+              document.getElementById("backup-error-alert").innerHTML = data.message;
+              document.getElementById("backup-error-alert").style.display = "block";
+
+              
+            } else {
+              // Hide the error message
+              document.getElementById("backup-error-alert").style.display = "none";
+            }
+          });
+        }
+      )
+
+      timeout_time = 5000;
+      if(original_status == 'error') {
+        timeout_time = 15000;
+      }
+      // Keep pooling the API endpoint to check when setup is finished
+      setTimeout(fetchBackupsStatus, timeout_time, original_status);
+
+    }
+
     function removeBackupConfig(elem) {
 
       var data = {};

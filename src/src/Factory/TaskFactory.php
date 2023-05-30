@@ -64,7 +64,7 @@ class TaskFactory
         return $task;
     }
 
-    public function createRestoreBackupTask(): Task
+    public function createRestoreBackupsTask(): Task
     {
         $task = new Task();
         $task->setTask(self::RESTORE_BACKUP);
