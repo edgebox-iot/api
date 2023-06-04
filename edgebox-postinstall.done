@@ -1,4 +1,0 @@
--T -w /var/www/html api-ws composer install
--T api-ws ./bin/console doctrine:database:create -n
--T api-ws ./bin/console doctrine:migrations:migrate -n
--T api-ws chmod -R 777 /var/www/html/var
