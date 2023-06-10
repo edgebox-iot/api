@@ -297,7 +297,7 @@ class HomeController extends AbstractController
                     ++$result['total'];
                     $result['apps'][] = [
                         'id' => $edgeapp['id'],
-                        'url' => $edgeapp['internet_accessible'] ? $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url']
+                        'url' => $edgeapp['internet_accessible'] ? 'https://' . $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url']
                     ];
                 }
             }
