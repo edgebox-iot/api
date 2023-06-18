@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Helper\DashboardHelper;
 use App\Helper\BackupsHelper;
+use App\Helper\DashboardHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +18,8 @@ class BackupsController extends AbstractController
 {
     private DashboardHelper $dashboardHelper;
 
+    private BackupsHelper $backupsHelper;
+
     public function __construct(
         DashboardHelper $dashboardHelper,
         BackupsHelper $backupsHelper
@@ -31,8 +33,6 @@ class BackupsController extends AbstractController
      */
     public function index(): Response
     {
-        // var_dump($this->backupsHelper->getBackupsStatus());
-
         return $this->render('backups/index.html.twig', [
             'controller_title' => 'Backups',
             'controller_subtitle' => 'Safeguard Data',
