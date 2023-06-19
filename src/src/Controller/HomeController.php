@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
-use App\Helper\BackupsHelper;
 use App\Repository\TaskRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -288,7 +288,7 @@ class HomeController extends AbstractController
 
         $result = [
             'total' => 0,
-            'apps' => []
+            'apps' => [],
         ];
 
         if (!empty($apps_list)) {
@@ -297,7 +297,7 @@ class HomeController extends AbstractController
                     ++$result['total'];
                     $result['apps'][] = [
                         'id' => $edgeapp['id'],
-                        'url' => $edgeapp['internet_accessible'] ? 'https://' . $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url']
+                        'url' => $edgeapp['internet_accessible'] ? 'https://'.$edgeapp['internet_url'] : 'http://'.$edgeapp['network_url'],
                     ];
                 }
             }
@@ -305,5 +305,4 @@ class HomeController extends AbstractController
 
         return $result;
     }
-
 }

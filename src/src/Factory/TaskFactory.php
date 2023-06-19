@@ -49,7 +49,7 @@ class TaskFactory
             'access_key_id' => $access_key_id,
             'secret_access_key' => $secret_access_key,
             'repository_name' => $repository_name,
-            'repository_password' => $repository_password
+            'repository_password' => $repository_password,
         ]));
 
         return $task;

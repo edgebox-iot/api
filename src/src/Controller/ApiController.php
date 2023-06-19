@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\TunnelHelper;
-use App\Helper\BackupsHelper;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -118,10 +118,8 @@ class ApiController extends AbstractController
             $jsonString = $request->getContent();
             $data = json_decode($jsonString, true);
 
-
             if (isset($data['op'])) {
-
-                if($data['op'] != 'remove' && $data['op'] != 'stop' && $this->backupsHelper->isBackupsRunning()) {
+                if ('remove' != $data['op'] && 'stop' != $data['op'] && $this->backupsHelper->isBackupsRunning()) {
                     $data['op'] = 'working';
                 }
 

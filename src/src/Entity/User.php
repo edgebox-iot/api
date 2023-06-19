@@ -9,13 +9,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ *
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
 class User implements UserInterface
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -32,7 +35,7 @@ class User implements UserInterface
 
     /**
      * @var string The hashed password
-     * 
+     *
      * @ORM\Column(type="string")
      */
     private $password;

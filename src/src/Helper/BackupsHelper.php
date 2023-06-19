@@ -17,7 +17,7 @@ class BackupsHelper
     public const SUPPORTED_SERVICES = [
         'b2',
         's3',
-        'wasabi'
+        'wasabi',
     ];
 
     public function __construct(
@@ -43,12 +43,12 @@ class BackupsHelper
     {
         $backups_last_run_option = $this->optionRepository->findOneBy(['name' => 'BACKUP_LAST_RUN']) ?? new Option();
         if (null === $backups_last_run_option->getValue() || 'null' === $backups_last_run_option->getValue()) {
-            return "Never";
+            return 'Never';
         } else {
             $last_run = $backups_last_run_option->getValue();
         }
 
-        $total_seconds = time() - (int)$last_run;
+        $total_seconds = time() - (int) $last_run;
 
         $days = $total_seconds / (60 * 60 * 24);
         $hours = $total_seconds / (60 * 60);
@@ -66,10 +66,8 @@ class BackupsHelper
             return (int) $minutes.'m ago';
         }
 
-        return "Just now";
+        return 'Just now';
     }
-
-    
 
     public function validateArgs(array $args): bool
     {
@@ -136,6 +134,11 @@ class BackupsHelper
         ];
     }
 
+    public function stopBackup(): array
+    {
+        return [];
+    }
+
     public function restoreBackups(): array
     {
         $task = $this->taskFactory->createRestoreBackupsTask();
@@ -164,13 +167,12 @@ class BackupsHelper
 
     public function removeBackupsConfig(): array
     {
-        $this->setOptionValue("BACKUP_STATUS", "");
+        $this->setOptionValue('BACKUP_STATUS', '');
 
         return [
             'status' => 'not_configured',
             'message' => 'Backups are not configured',
         ];
-        
     }
 
     public function getBackupsStatus(): array
@@ -212,6 +214,7 @@ class BackupsHelper
         } elseif ('error' === $val) {
             // An caught error was found, fetch the message
             $backups_status_error = $this->optionRepository->findOneBy(['name' => 'BACKUP_ERROR_MESSAGE']) ?? new Option();
+
             return [
                 'status' => 'error',
                 'message' => $backups_status_error->getValue(),
@@ -231,11 +234,12 @@ class BackupsHelper
         $backups_stats_option = $this->optionRepository->findOneBy(['name' => 'BACKUP_STATS']) ?? new Option();
 
         if (null === $backups_stats_option->getValue() || 'null' === $backups_stats_option->getValue()) {
-           return "NO STATS";
+            return [
+                'processed_snapshots' => 0,
+                'total_file_count' => 0,
+                'total_size' => '0 B',
+            ];
         }
-
-        
- 
 
         $logString = $backups_stats_option->getValue();
 
@@ -253,9 +257,9 @@ class BackupsHelper
         $parsed_stats = [
             'processed_snapshots' => $snapshotsProcessed,
             'total_file_count' => $totalFileCount,
-            'total_size' => $totalSize . " " . $sizeUnit,
+            'total_size' => $totalSize.' '.$sizeUnit,
         ];
-        
+
         return $parsed_stats;
     }
 
@@ -264,12 +268,12 @@ class BackupsHelper
         $backups_status_option = $this->optionRepository->findOneBy(['name' => 'BACKUP_IS_WORKING']) ?? new Option();
 
         if (null === $backups_status_option->getValue() || 'null' === $backups_status_option->getValue()) {
-           return false;
+            return false;
         }
 
         $val = $backups_status_option->getValue();
 
-        if($val == '1') {
+        if ('1' == $val) {
             return true;
         }
 
