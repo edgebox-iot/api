@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        if: startsWith(github.ref, 'refs/heads/master')
+        if: startsWith(github.ref, 'refs/heads/main')
         name: Set image tag for master builds
         run: echo "REGISTRY_IMAGE_TAG=${{ env.REGISTRY_IMAGE }}:dev" >> $GITHUB_ENV
       -
