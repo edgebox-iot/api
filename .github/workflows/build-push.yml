@@ -2,10 +2,8 @@ name: Build and push Docker image
 
 on:
   push:
-    branches:
-      - 'main'
     tags:
-      - 'v*.*.*'
+      - '*.*.*'
 
 permissions: 
   packages: write
@@ -19,12 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        if: startsWith(github.ref, 'refs/heads/main')
-        name: Set image tag for master builds
-        run: echo "REGISTRY_IMAGE_TAG=${{ env.REGISTRY_IMAGE }}:dev" >> $GITHUB_ENV
-      -
-        if: startsWith(github.ref, 'refs/tags/v')
-        name: Set image tag for tagged builds
+        name: Set image tags
         run: echo "REGISTRY_IMAGE_TAG=${{ env.REGISTRY_IMAGE }}:${{ github.ref_name }},${{ env.REGISTRY_IMAGE }}:latest" >> $GITHUB_ENV
       -
         name: Checkout
