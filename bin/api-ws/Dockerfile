@@ -50,5 +50,8 @@ RUN docker-php-ext-install \
 # Enable apache modules
 # RUN a2enmod rewrite headers
 
+# Layering Composer binary
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
 # Cleanup
 RUN rm -rf /usr/src/*
