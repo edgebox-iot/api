@@ -92,6 +92,7 @@ class SettingsController extends AbstractController
         $status = 'Waiting for Edgebox.io Account Credentials';
         $connection_status = 'Not connected';
         $connection_details = [
+            'status' => 'not_connected',
             'message' => 'A connection is not properly established. Please initiate the configuration.',
         ];
         $task_status = 0;
