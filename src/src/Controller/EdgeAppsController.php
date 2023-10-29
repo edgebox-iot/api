@@ -145,17 +145,19 @@ class EdgeAppsController extends AbstractController
 
         $logs = [];
 
-        // Fetch the logs for this app for each service
-        foreach ($edgeapp_config['services'] as $service) {
-            $id = $service['id'];
-            try {
-                $service_logs = file_get_contents('/var/www/html/syslogs/'.$id.'.log');
-                $logs[$service['id']] = $service_logs;
-            } catch (\ErrorException $e) {
-                // die(var_dump('/var/www/html/syslogs/'.$id.'.log'));
-                // throw $e;
+        if(!empty($edgeapp_config['services'])) {
+            // Fetch the logs for this app for each service
+            foreach ($edgeapp_config['services'] as $service) {
+                $id = $service['id'];
+                try {
+                    $service_logs = file_get_contents('/var/www/html/syslogs/'.$id.'.log');
+                    $logs[$service['id']] = $service_logs;
+                } catch (\ErrorException $e) {
+                    // throw $e;
+                }
             }
         }
+        
 
         return $this->render('edgeapps/details.html.twig', [
             'controller_title' => 'EdgeApps',
