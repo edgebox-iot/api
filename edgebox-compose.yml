@@ -4,8 +4,9 @@ services:
   # API Service
   ##############
   api-ws:
-    build:  
-      context: ../api/bin/api-ws
+    image: ghcr.io/edgebox-iot/api:latest
+    # build:  
+    #  context: ../api/bin/api-ws
     container_name: '${COMPOSE_PROJECT_NAME}-api-ws'
     restart: always
     volumes:
@@ -14,5 +15,6 @@ services:
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
       - ${APACHE_LOG_DIR-../ws/appdata/api/api-ws/log/apache2}:/var/log/apache2
       - ${SYMFONY_VAR_DIR-../ws/appdata/api/api-ws/data/symfony}:/var/www/html/var
+      - ${EDGEBOX_LOGS_DIR-../logger/outputs}:/var/www/html/syslogs
     environment:
       VIRTUAL_HOST: ${HOSTNAME-edgebox},${HOSTNAME-edgebox}.local,${LOCAL_URL-api.edgebox.local}${INTERNET_URL}
