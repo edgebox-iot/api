@@ -46,7 +46,7 @@
                                         {% endif %}
                                         </p>
                                     </div>
-                                    <h5 class="font-weight-bolder">{{appinfo.name}}</h5>
+                                    <h5 class="font-weight-bolder"><a href="/edgeapps/details/{{ appinfo.id }}">{{appinfo.name}} {% if not appinfo.needs_config %}<i class="fas fa-cog font-small-2 me-1" style="font-size: 15px;"></i>{% endif %}</a></h5>
                                     {% if appinfo.status.description == 'on' %}
                                         <div class="internet-access">
                                             {% if appinfo.internet_accessible %}
@@ -145,7 +145,13 @@
                                         {% if appinfo.status.description == 'not-installed' %}
 
                                             <br><br>
-                                            <a href="/edgeapps/install/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Install &amp; Run <i class="fas fa-play-circle text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            {# We now check if needsConfig is true. If so, user needs to add information before app starts #}
+                                            {% if appinfo.needs_config %}
+                                                <a href="/edgeapps/details/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Configure <i class="fas fa-cog text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            {% else %}
+                                                <a href="/edgeapps/install/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Install &amp; Run <i class="fas fa-play-circle text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            {% endif %}
+                                            
 
                                         {% endif %}
 

@@ -1,0 +1,271 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    App Details
+{% endblock title %}
+{% block content %}
+
+    <div class="card">
+        <div class="card-body p-3">
+            <div class="row" style="margin-left: 15px;">
+                <div class="col-md-12">
+
+                    {% if not framework_ready %}
+
+                        <h1><i class="fas fa-tools"></i></h1>
+                        <h2>Framework Not Ready</h2>
+                        <p style="color: red;">The framework is currently not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
+                        <p>
+                            <a href="/edgeapps">
+                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
+                                    <span class="btn-inner--text">Go back</span>
+                                </button>
+                            </a>
+                        </p>
+
+                    {% else %}
+                        
+                        <div class="row">
+                            <div class="col-md-2" style="width: 19.666667%;">
+                                <div class="col-12 col-lg-12 ms-auto text-center mt-4 mt-lg-4">
+                                    <div class="bg-gradient-{{ dashboard_settings.color_mood }} border-radius-lg h-100">
+                                        <div class="position-relative d-flex align-items-center justify-content-center h-100">
+                                            <img class="w-100 position-relative z-index-2" src="/assets/img/edgeapps/{{edgeapp.id}}.png">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-10" style="width: 80.333333%;">
+                                <div style="margin-top: -2rem;">
+                                    {{ include('partials/_row_title_block.html.twig', {main_title: edgeapp.name, sub_title: edgeapp.description}) }}
+                                </div>
+                                <div class="row my-5" style="margin-top: -3rem !important; margin-bottom: 0px !important;">
+                                    {% if edgeapp.status.description == 'on' %}
+                                        <div class="internet-access">
+                                            {% if edgeapp.internet_accessible %}
+                                                <p><span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="right" title="{{edgeapp.internet_url}}">Online</span><span></span></p>
+                                            {% elseif release_version == 'cloud' %}
+                                                <p><span class="badge badge-sm bg-gradient-secondary data-bs-toggle="tooltip" data-bs-placement="right" title="Application running but not accessible online"">Offline</span></p>
+                                            {% else %}
+                                                <p><span class="badge badge-sm bg-gradient-secondary">Home-Only</span></p>
+                                            {% endif %}
+                                        </div>
+                                    {% elseif edgeapp.status.description == 'off' %}
+                                        <p><span class="badge badge-sm bg-gradient-danger">Off</span></p>
+                                    {% elseif edgeapp.status.description == 'not-installed' %}
+                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
+                                    {% else %}
+                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
+                                    {% endif %}
+
+                                    <div class="action-btns">
+
+                                        {% if edgeapp.status.description == 'on' %}
+                                            {% if edgeapp.internet_accessible %}
+
+                                                {% if release_version == 'cloud' %}
+                                                    <a href="/edgeapps/disable_online/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Block Online Access<i class="fas fa-lock text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% else %}
+                                                    <a href="/edgeapps/disable_online/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to home only<i class="fas fa-home text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                {% endif %}                                                
+
+                                                <a href="http://{{edgeapp.internet_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            
+                                            
+                                            {% else %}
+
+                                                {% if is_online_ready %}
+                                                    {% if release_version == 'cloud' %}
+                                                        <a href="/edgeapps/enable_online/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% else %}
+                                                        <a href="/edgeapps/enable_online/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                        <a href="http://{{edgeapp.network_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if release_version == 'cloud' %}
+                                                        <br>
+                                                        <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% else %}
+                                                        <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                        <a href="http://{{edgeapp.network_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                    {% endif %}
+                                                    <div class="modal fade" id="modal-not-online" tabindex="-1" role="dialog" aria-labelledby="modal-not-online" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                                            <div class="modal-content">
+                                                            <div class="modal-body p-0">
+                                                                <div class="card card-plain">
+                                                                <div class="card-header pb-0 text-left">
+                                                                    <h3 class="font-weight-bolder text-warning text-gradient">One more thing...</h3>
+                                                                    <p class="mb-0">To be able to access your EdgeApps from anywhere online, you first need to configure online access in the setting screen.</p>
+                                                                    <p class="mb-0">Either login with your Edgebox.io account (simple), or configure a domain name (advanced), and try again.<p>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="text-center">
+                                                                        <a href="/settings" class="btn bg-gradient-warning btn-lg w-100 mt-4 mb-0">Go to settings</a>
+                                                                        <a href="" class="btn bg-gradient-secondary btn-lg w-100 mt-4 mb-0">I'll do this later</a>
+
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                            <a href="/edgeapps/stop/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Stop <i class="fas fa-stop text-sm ms-1" aria-hidden="true"></i></a><br>
+
+                                        {% endif %}
+
+                                        {% if edgeapp.status.description == 'off' %}
+
+                                            <br>
+                                            <br>
+                                            <a href="/edgeapps/start/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Enable <i class="fas fa-play text-sm ms-1" aria-hidden="true"></i></a><br>
+
+                                        {% endif %}
+
+                                        {% if edgeapp.status.description == 'error' %}
+                                            <br>
+                                            <br>
+                                            <a href="/edgeapps/fix/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Attempt Fix <i class="fas fa-wrench text-sm ms-1" aria-hidden="true"></i></a><br>
+
+                                        {% endif %}
+
+                                        {% if edgeapp.status.description == 'not-installed' %}
+
+                                            <br><br>
+                                            {# We now check if needsConfig is true. If so, user needs to add information before app starts #}
+                                            {% if edgeapp.needs_config %}
+                                                <a href="/edgeapps/details/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Configure <i class="fas fa-cog text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            {% else %}
+                                                <a href="/edgeapps/install/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Install &amp; Run <i class="fas fa-play-circle text-sm ms-1" aria-hidden="true"></i></a><br>
+                                            {% endif %}
+                                            
+
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mt-5">
+                                <!-- <h4>Actions</h4>
+                                <p>Perform actions on this app:</p>
+                                <button type="button" class="btn bg-gradient-success">Start App</button>
+                                <button type="button" class="btn bg-gradient-danger">Reset App</button>
+                                -->
+                                <div id="options-secondary-alert" class="alert alert-secondary" role="alert" style="display: none; color: white; {% if edgeapp.needs_config %}display: block;{% endif %}">
+                                    <strong>This app needs some information!</strong> Please add it below to start the app.
+                                </div>
+                                {% if edgeapp.options is not empty %}
+                                    <div id="options-error-alert" class="alert alert-danger" role="alert" style="color: white; display: none;">
+                                        <strong>Error</strong>.
+                                    </div>
+                                    <h4>Settings</h4>
+                                    <p>Change the behavior of this app through the following settings:</p>
+                                    <form id="app-options-form">
+                                        <input type="hidden" class="form-control" id="id-input" value="{{edgeapp.id}}">
+                                        {% for option in edgeapp.options %}
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="{{option.key}}-input">{{option.title}}</label>
+                                                <div class="input-group">
+                                                    {# If format is BOOL show a dropdown with true and false options, otherwise show text field #}
+                                                    {% if option.format == 'bool' %}
+                                                        <select {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %} class="form-control" id="{{option.key}}-input">
+                                                            <option value="true" {% if option.value == 'true' %} selected {% endif %}>Yes {% if option.description != '' %} - {{option.description}}{% endif %}</option>
+                                                            <option value="false" {% if option.value == 'false' %} selected {% endif %}>No</option>
+                                                        </select>
+                                                    {% else %}
+                                                        <div class="input-group">
+                                                            {% if option.is_secret %}
+                                                                <input {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %} type="password" class="form-control {% if option.is_install_locked %}btn-tooltip{% endif %}" {% if option.is_install_locked %}data-bs-toggle="tooltip" data-bs-placement="top" title="This option can only be set before the first installation!" data-container="body" data-animation="true"{% endif %} placeholder="{{option.description}}" value="{% if option.value != "" %}{{option.value}}{% else %}{{option.default_value}}{% endif %}" id="{{option.key}}-input" aria-label="{{option.description}}" aria-describedby="{{option.description}}">
+                                                                <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
+                                                                <button class="btn btn-outline-secondary mb-0 {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %}" data-input-id="{{option.key}}-input" type="button" onclick="generateAppOptionsSecret(this);" >Generate</button>
+                                                                {# <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button> #}
+                                                            {% else %}
+                                                                <input {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %} type="text" class="form-control {% if option.is_install_locked %}btn-tooltip{% endif %}" {% if option.is_install_locked %}data-bs-toggle="tooltip" data-bs-placement="top" title="This option can only be set before the first installation!" data-container="body" data-animation="true"{% endif %} placeholder="{{option.description}}" value="{% if option.value != "" %}{{option.value}}{% else %}{{option.default_value}}{% endif %}" id="{{option.key}}-input" aria-label="{{option.description}}" aria-describedby="{{option.description}}">
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        <p class="mt-25">
+                                            <a href="/edgeapps">
+                                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
+                                                    <span class="btn-inner--text">Go back</span>
+                                                </button>
+                                            </a>
+                                            <button class="btn btn-icon btn-3 btn-success" type="button" onclick="saveAppOptions(this);">
+                                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-check-bold"></i></span>
+                                                <span class="btn-inner--text">Save</span>
+                                            </button>
+                                        </p>
+                                    </form>
+                                {% endif %}
+                                    
+                                <h4>Advanced</h4>
+                                <p>Troubleshoot and perform advanced actions:</p>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <a class="btn bg-gradient-info w-100" data-bs-toggle="collapse" href="#collapseAdvancedEdgeappOptions" role="button" aria-expanded="false" aria-controls="collapseAdvancedEdgeappOptions">
+                                            Logs
+                                        </a>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <p class="mt-0 text-xs" style="padding-top: 10px;"><b><i>See the lastest log messages from this application services.</i></b></p>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="collapseAdvancedEdgeappOptions">
+                                    <div class="card card-body mb-5">
+
+                                        {% if edgeapp_logs is empty %}
+                                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                                <span class="alert-icon text-white"><i class="ni ni-app"></i></span>
+                                                <span class="alert-text text-white"><strong>No Logs Found</strong> Once this app is running, logs will be displayed.</span>
+                                            </div>
+                                        {% else %}
+                                            <div class="form-group">
+                                                {% for service, log in edgeapp_logs %}
+                                                    <label class="form-control-label" for="logs-{{service}}">{{service}}:</label>
+                                                    <div class="input-group">
+                                                        <textarea class="form-control" id="logs-{{service}}" rows="10" readonly>{{log}}</textarea>
+                                                    </div>
+                                                    <script>
+                                                        window.setInterval(function(){
+                                                            var logsTextarea = document.getElementById("logs-{{service}}");
+                                                            var logsTextareaScrollPosition = logsTextarea.scrollTop;
+                                                            logsTextarea.scrollTop = logsTextarea.scrollHeight;
+                                                        }, 1000);
+                                                    </script>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn bg-gradient-danger w-100 disabled">Reset App (soon...)</button>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <p class="mt-1 text-xs" style="padding-top: 10px;"><b><i>This will delete all previously saved data for this application.</b></i></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

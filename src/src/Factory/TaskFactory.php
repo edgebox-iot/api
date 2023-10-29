@@ -21,6 +21,7 @@ class TaskFactory
     public const REMOVE_EDGEAPP = 'remove_edgeapp';
     public const START_EDGEAPP = 'start_edgeapp';
     public const STOP_EDGEAPP = 'stop_edgeapp';
+    public const SET_EDGEAPP_OPTIONS = 'set_edgeapp_options';
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
     public const ENABLE_PUBLIC_DASHBOARD = 'enable_public_dashboard';
@@ -149,6 +150,15 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::STOP_EDGEAPP);
         $task->setArgs(json_encode(['id' => $id]));
+
+        return $task;
+    }
+
+    public function createSetEdgeappOptionsTask(string $id, array $options): Task
+    {
+        $task = new Task();
+        $task->setTask(self::SET_EDGEAPP_OPTIONS);
+        $task->setArgs(json_encode(['id' => $id, 'options' => $options]));
 
         return $task;
     }

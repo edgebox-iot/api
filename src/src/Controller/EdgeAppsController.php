@@ -12,6 +12,7 @@ use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -93,6 +94,77 @@ class EdgeAppsController extends AbstractController
             'apps_list' => $apps_list,
             'is_online_ready' => $this->systemHelper->isOnlineReady(),
             'tunnel_on' => $tunnel_on,
+            'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'tunnel_status_code' => '',
+        ]);
+    }
+
+    /**
+     * @Route("/edgeapps/details/{edgeapp}", name="edgeapp_details")
+     */
+    public function details(Request $request, string $edgeapp): Response
+    {
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+        $framework_ready = !empty($apps_list);
+
+        // We need to find the app with the same id as the one we are looking for. Don't loop through the array, instead leverage PHP for this.
+        $edgeapp_config = array_filter($apps_list, function ($app) use ($edgeapp) {
+            return $app['id'] === $edgeapp;
+        });
+
+        // We need to get the first element of the array, which is the app we are looking for
+        $edgeapp_config = array_shift($edgeapp_config);
+
+        // For each arraay element in the $edgeapp_config['options'] array, we need to add a field to prettify the title
+        $edgeapp_options = [];
+        foreach ($edgeapp_config['options'] as $option) {
+            // The title should convert something like "EXAMPLE_TITLE_THING" to "Title thing"
+            $title = strtolower(str_replace('_', ' ', $option['key']));
+            // Remove first word
+            $title = preg_replace('/^[a-z]+/', '', $title);
+            // Capitalize first letter
+            $title = ucwords($title);
+            $option['title'] = $title;
+            $edgeapp_options[] = $option;
+        }
+
+        // Invert the array ot maintain the order
+        //$edgeapp_options = array_reverse($edgeapp_options);
+
+        $edgeapp_config['options'] = $edgeapp_options;
+
+        if ($request->isMethod('post')) {
+            // $this->edgeAppsHelper->saveEdgeAppConfig($edgeapp, $request->request->all());
+            // We read each field from the form and issue a task to update the config
+            $task = $this->taskFactory->createUpdateEdgeappConfigTask($edgeapp, $request->request->all());
+        } else {
+            
+            // Do nothing?
+
+        }
+
+        $logs = [];
+
+        // Fetch the logs for this app for each service
+        foreach ($edgeapp_config['services'] as $service) {
+            $id = $service['id'];
+            try {
+                $service_logs = file_get_contents('/var/www/html/syslogs/'.$id.'.log');
+                $logs[$service['id']] = $service_logs;
+            } catch (\ErrorException $e) {
+                // die(var_dump('/var/www/html/syslogs/'.$id.'.log'));
+                // throw $e;
+            }
+        }
+
+        return $this->render('edgeapps/details.html.twig', [
+            'controller_title' => 'EdgeApps',
+            'controller_subtitle' => 'Application details',
+            'release_version' => $this->systemHelper->getReleaseVersion(),
+            'framework_ready' => $framework_ready,
+            'is_online_ready' => $this->systemHelper->isOnlineReady(),
+            'edgeapp' => $edgeapp_config,
+            'edgeapp_logs' => $logs,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'tunnel_status_code' => '',
         ]);

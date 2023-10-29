@@ -4,15 +4,18 @@ namespace App\Helper;
 
 use App\Entity\Option;
 use App\Repository\OptionRepository;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
     private EdgeboxioApiConnector $edgeboxioApiConnector;
 
+
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeboxioApiConnector $edgeboxioApiConnector
+        EdgeboxioApiConnector $edgeboxioApiConnector,
     ) {
         $this->optionRepository = $optionRepository;
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
@@ -26,7 +29,9 @@ class EdgeAppsHelper
             return [];
         }
 
-        return json_decode($apps_list_option->getValue(), true);
+        $apps = json_decode($apps_list_option->getValue(), true);
+
+        return $apps;
     }
 
     public function edgeAppExists(string $app_id): bool

@@ -1163,6 +1163,264 @@
     }
   </script>
   
+  <script>
+    // Handling app details screen and options
+    function generateAppOptionsSecret(elem){
+      var input = document.getElementById(elem.getAttribute("data-input-id"));
+
+      var rand = function() {
+        return Math.random().toString(36).substr(2); // remove `0.`
+      };
+
+      var token = function() {
+        return rand() + rand() + rand() + "-" + rand() + rand() + rand(); // to make it longer
+      };
+
+      var token = token();
+      console.log("Generated secret: " + token);
+
+      input.value = token;
+
+      return token;
+    }
+
+    function toogleAppOptionSecretVisibility(elem) {
+      var input = document.getElementById(elem.getAttribute("data-input-id"));
+      if (input.type === "password") {
+        input.type = "text";
+        elem.innerHTML = "Hide";
+      } else {
+        input.type = "password";
+        elem.innerHTML = "Show";
+      }
+
+    }
+
+    function copyAppOptionToClipboard(elem) {
+      // Create a temporary input element
+      var element = document.createElement("textarea");
+
+      var input = document.getElementById(elem.getAttribute("data-input-id"));
+
+      // Set the value of the temporary input element to the value of the specified element
+      element.value = input.value;
+
+      // Append the temporary input element to the HTML body
+      document.body.appendChild(element);
+
+      // Select the text within the temporary input element
+      element.select();
+
+      // Execute the "copy" command to copy the selected text to the clipboard
+      document.execCommand("copy");
+
+      // Remove the temporary input element from the HTML body
+      document.body.removeChild(element);
+    }
+
+    function saveAppOptions(elem) {
+
+      console.log("Initiating tasks to save app options");
+      var data = {};
+      data['op'] = "options";
+
+      // Replace button body with text saying "Starting Backup" and a spinner.
+      elem.innerHTML = "Saving... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Load elements with id btn-backups-restore and btn-backups-remove
+      // var btn_backups_backup = document.getElementById("btn-backups-backup");
+      // var btn_backups_remove = document.getElementById("btn-backups-remove");
+
+      // if(btn_backups_backup) {
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        // btn_backups_backup.setAttribute("aria-disabled", "true");
+        // btn_backups_backup.classList.add("disabled");
+      // }
+
+      // if(btn_backups_remove) {
+        // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+        // btn_backups_remove.setAttribute("aria-disabled", "true");
+        // btn_backups_remove.classList.add("disabled");
+      // }
+
+      var options = {};
+
+      // Fetch form with id app-options-form
+      var form = document.getElementById("app-options-form");
+
+      // Getting a list of the ids of all <input> elements with class .form-control inside the <div> element with id form-backups-setup
+      var inputs = form.querySelectorAll(".form-control");
+      var invalid_value_detected = false;
+
+      // Looping through all the inputs
+      for (var i = 0; i < inputs.length; i++) {
+        // Getting the id and value of the inputs
+        var id = inputs[i].id.replace("-input", "");
+
+        console.log(id);
+
+        var value = inputs[i].value;
+
+        // Remove class is invalid from field, in case this is a re-submission
+        // Remove the work backup- from the id
+        inputs[i].classList.remove("is-invalid");
+
+        // Validate if the input value is empty
+        if (value == "") {
+          // Add class is invalid to field
+          inputs[i].classList.add("is-invalid");
+          invalid_value_detected = true;
+
+          // Log Warn about field being empty
+          console.warn("Field " + id + " is empty");
+
+          // Set aria-disabled=false and remove disabled class so the button is clickable again.
+          elem.setAttribute("aria-disabled", "false");
+          elem.classList.remove("disabled");
+          elem.innerHTML = "Save";
+
+          return;
+        }
+
+        if(id == "id") {
+          data['id'] = value;
+          // Skip the id field
+          continue;
+        }
+        // Adding the value to the data object
+        options[id] = value;
+
+      }
+
+      data['op'] = 'options';
+      data['options'] = options;
+
+      console.log(form);
+
+      console.log(data);
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/edgeapps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Start Backup"
+            elem.innerHTML = "Save";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log(data);
+
+            
+
+            if(data.status == "error") {
+              // Replace button body with text saying "Start Backup"
+              elem.innerHTML = "Save";
+
+              // Set aria-disabled=false and remove disabled class so the button is clickable again.
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              // if(btn_backups_backup) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                // btn_backups_backup.setAttribute("aria-disabled", "false");
+                // btn_backups_backup.classList.remove("disabled");
+              // }
+
+              // if(btn_backups_remove) {
+                // Restore aria-disabled to false and remove disabled class so the button is clickable again.
+                // btn_backups_remove.setAttribute("aria-disabled", "false");
+                // btn_backups_remove.classList.remove("disabled");
+              // }
+
+              // Hide the "options-secondary-alert element
+              // document.getElementById("options-secondary-alert").style.display = "none";
+
+              // Show the error message
+              document.getElementById("options-error-alert").innerHTML = data.message;
+              document.getElementById("options-error-alert").style.display = "block";
+
+              
+            } else {
+              // Hide the error message
+              document.getElementById("options-error-alert").style.display = "none";
+
+              // document.getElementById("options-secondary-alert").style.display = "block";
+
+              timeout_time = 2000;
+              // Keep pooling the API endpoint to check when setup is finished
+              setTimeout(checkSavedOptions, timeout_time, data['task_id'], elem);
+
+            }
+          });
+        }
+      )
+    }
+
+    function checkSavedOptions(task_id, button_elem) {      
+      console.log("Fetching task status with task id: " + task_id);
+
+      fetch('/api/tasks/' + task_id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        console.log(button_elem)
+        if(data.status == 3) { // error
+
+          // Hide the "options-secondary-alert element
+          // document.getElementById("options-secondary-alert").style.display = "none";
+
+          // Show the error
+          alert = document.getElementById("options-error-alert")
+          alert.innerHTML = '<strong>There was a problem saving these options: </strong>' + data.result;
+          alert.style.display = "block";
+
+          // Replace button body with text saying "Save"
+          button_elem.innerHTML = "Save";
+
+          // Set aria-disabled=false and remove disabled class so the button is clickable again.
+          button_elem.setAttribute("aria-disabled", "false");
+          button_elem.classList.remove("disabled");
+
+          return;
+          
+        }
+        else if(data.status == 2) { // finished
+          console.log("Reload1");
+          location.reload();
+        }
+
+        setTimeout(checkSavedOptions, 2000, task_id);
+
+      });
+
+    }
+  </script>
+  
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>

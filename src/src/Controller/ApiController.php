@@ -5,7 +5,10 @@ namespace App\Controller;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\TunnelHelper;
+use App\Helper\EdgeAppsHelper;
 use App\Repository\OptionRepository;
+use App\Factory\TaskFactory;
+use App\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,19 +28,26 @@ class ApiController extends AbstractController
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
     private BackupsHelper $backupsHelper;
+    private EdgeAppsHelper $edgeappsHelper;
+    private TaskFactory $taskFactory;
+
 
     public function __construct(
         OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
-        BackupsHelper $backupsHelper
+        BackupsHelper $backupsHelper,
+        EdgeAppsHelper $edgeappsHelper,
+        TaskFactory $taskFactory,
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
         $this->backupsHelper = $backupsHelper;
+        $this->edgeappsHelper = $edgeappsHelper;
+        $this->taskFactory = $taskFactory;
     }
 
     /**
@@ -160,6 +170,230 @@ class ApiController extends AbstractController
             }
         } else {
             $data = $this->backupsHelper->getBackupsStatus();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/api/tasks", name="api_tasks")
+     */
+    public function tasks(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            // Need to still look at body and such...
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+            if (isset($data['op'])) {
+                if ('remove' == $data['op'] && isset($data['id'])) {
+                    $task = $this->entityManager->getRepository(Task::class)->find($data['id']);
+
+                    if (null === $task) {
+                        $data = [
+                            'status' => 'error',
+                            'message' => 'Task not found',
+                        ];
+                    } else {
+                        $this->entityManager->remove($task);
+                        $this->entityManager->flush();
+
+                        $data = [
+                            'status' => 'ok',
+                            'message' => 'Task removed',
+                        ];
+                    }
+                } else {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'Invalid operation',
+                    ];
+                }
+            } else {
+                $data = [
+                    'status' => 'error',
+                    'message' => 'Invalid operation',
+                ];
+            }
+        } else {
+            $tasks = $this->entityManager->getRepository(Task::class)->findAll();
+            $data = [];
+            foreach ($tasks as $task) {
+                $data[] = [
+                    'id' => $task->getId(),
+                    'task' => $task->getTask(),
+                    'args' => $task->getArgs(),
+                    'status' => $task->getStatus(),
+                    'result' => $task->getResult(),
+                    'created' => $task->getCreated(),
+                ];
+            }
+        }
+
+        return new JsonResponse($data);
+    }
+
+
+    /**
+     * @Route("/api/tasks/{id}", name="api_tasks_id")
+     */
+    public function tasks_id(Request $request, int $id): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            // Need to still look at body and such...
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+            if (isset($data['op'])) {
+                if ('remove' == $data['op']) {
+                    $task = $this->entityManager->getRepository(Task::class)->find($id);
+
+                    if (null === $task) {
+                        $data = [
+                            'status' => 'error',
+                            'message' => 'Task not found',
+                        ];
+                    } else {
+                        $this->entityManager->remove($task);
+                        $this->entityManager->flush();
+
+                        $data = [
+                            'status' => 'ok',
+                            'message' => 'Task removed',
+                        ];
+                    }
+                } else {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'Invalid operation',
+                    ];
+                }
+            } else {
+                $data = [
+                    'status' => 'error',
+                    'message' => 'Invalid operation',
+                ];
+            }
+        } else {
+            // Find the task with id=$id
+            $task = $this->entityManager->getRepository(Task::class)->find($id);
+            $data = [
+                'id' => $task->getId(),
+                'task' => $task->getTask(),
+                'args' => $task->getArgs(),
+                'status' => $task->getStatus(),
+                'result' => $task->getResult(),
+                'created' => $task->getCreated(),
+            ];
+        }
+
+        return new JsonResponse($data);
+    }
+    
+
+
+    /**
+     * @Route("/api/edgeapps", name="api_edgeapps")
+     */
+    public function edgeapps(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+            if (isset($data['op'])) {
+                if ('options' == $data['op'] && isset($data['id'])) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'App not found',
+                    ];
+
+                    if ($this->edgeappsHelper->edgeAppExists($data['id'])) {
+                        $apps_list = $this->edgeappsHelper->getEdgeAppsList();
+                        // die(var_dump($apps_list));
+                        // $current_options = $apps_list[$data['id']]['options'];
+
+                        // Find the array entry that is the app we are looking for
+                        // Entries in the array are like:
+                        // ['id' => 'app_id', 'options' => ['key' => 'value']]
+
+                        $edgeapp = null;
+                        foreach ($apps_list as $app) {
+                            if ($app['id'] == $data['id']) {
+                                $edgeapp = $app;
+                                break;
+                            }
+                        }
+
+                        $current_options = $edgeapp['options'];
+                    
+                        // Check if all keys in the $data array exist as keys in the $current_options array.
+                        // If not, error out.
+                        $data_keys = array_keys($data['options']);
+                        // die(var_dump($data_keys));
+
+                        // current_options has the following format
+                        // [['key' => 'option_key', 'value' => 'test', ...], ...]
+                        $current_options_keys = [];
+                        foreach ($current_options as $key => $option) {
+                            $current_options_keys[] = $option['key'];
+                        }
+
+                        $diff = array_diff($data_keys, $current_options_keys);
+                        if (!empty($diff)) {
+                            // die(var_dump($diff));
+                            $response = [
+                                'status' => 'error',
+                                'message' => 'Invalid options',
+                            ];
+                        } else {
+                            // If all keys exist, then convert options to task format and issue a task
+                            $task_options = [];
+                            foreach ($data['options'] as $option_key => $option_value) {
+                                $task_options[] = [
+                                    'key' => $option_key,
+                                    'value' => $option_value,
+                                ];
+                            }
+                            $task = $this->taskFactory->createSetEdgeappOptionsTask($data['id'], $task_options);
+                            
+                            if (Task::STATUS_ERROR === $task->getStatus()) {
+                                $response = [
+                                    'status' => 'error',
+                                    'message' => 'Task creation failed',
+                                ];
+
+                                return $response;
+                            }
+                
+                            $this->entityManager->persist($task);
+                            $this->entityManager->flush();
+
+                            $response = [
+                                'status' => 'executing',
+                                'message' => 'Task created',
+                                'task_id' => $task->getId(),
+                            ];
+                        }
+                    }
+
+                    $data = $response;
+                } elseif ('start' == $data['op']) {
+                    $data = $this->edgeappsHelper->startApp($data['id']);
+                } else {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'Invalid operation',
+                    ];
+                }
+            } else {
+                $data = [
+                    'status' => 'error',
+                    'message' => 'Invalid operation',
+                ];
+            }
+        } else {
+            $data = $this->edgeappsHelper->getEdgeAppsList();
         }
 
         return new JsonResponse($data);

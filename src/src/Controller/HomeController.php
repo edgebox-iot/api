@@ -189,6 +189,18 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Disabled Online access to the Dashboard',
                 Task::STATUS_ERROR => 'Failed to Disable Online access to the Dashboard',
             ],
+            'start_backups' => [
+                Task::STATUS_CREATED => 'Waiting to start a manual backup',
+                Task::STATUS_EXECUTING => 'Starting manual backup',
+                Task::STATUS_FINISHED => 'Started a manual system backup',
+                Task::STATUS_ERROR => 'Failed to start a manual backup',
+            ],
+            'set_edgeapp_options' => [
+                Task::STATUS_CREATED => 'Waiting to set options for %s EdgeApp',
+                Task::STATUS_EXECUTING => 'Setting options for %s EdgeApp',
+                Task::STATUS_FINISHED => 'Updated options for %s EdgeApp',
+                Task::STATUS_ERROR => 'Failed to set options for %s EdgeApp',
+            ],
         ];
 
         $unknown_action_descriptions = [
