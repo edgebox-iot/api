@@ -101,7 +101,10 @@ class EdgeAppsController extends AbstractController
                 $task_code = $ongoing_task->getTask();
                 if(in_array($task_code, $app_tasks)) {
                     $app_id = json_decode($ongoing_task->getArgs(), true)['id'];
-                    $ongoing_apps_and_statuses[$app_id] = $task_code;
+                    $ongoing_apps_and_statuses[$app_id] = [
+                        'task_code' => $task_code,
+                        'task_id' => $ongoing_task->getId()
+                    ];
                 }
             }
 
@@ -110,7 +113,8 @@ class EdgeAppsController extends AbstractController
                 if(!empty($ongoing_apps_and_statuses[$app_id])) {
                     $apps_list[$app_key]['status'] = [
                         "id" => 4,
-                        "description" => $ongoing_apps_and_statuses[$app_id]
+                        "description" => $ongoing_apps_and_statuses[$app_id]['task_code'],
+                        "task_id" => $ongoing_apps_and_statuses[$app_id]['task_id']
                     ];
                 }
             }

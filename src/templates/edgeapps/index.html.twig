@@ -93,36 +93,43 @@
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Installing</span></p>
                                     {% elseif appinfo.status.description == 'start_edgeapp' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Starting</span></p>
                                     {% elseif appinfo.status.description == 'stop_edgeapp' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Stopping</span></p>
                                     {% elseif appinfo.status.description == 'remove_edgeapp' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Removing</span></p>
                                     {% elseif appinfo.status.description == 'enable_online' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Public Access</span></p>
                                     {% elseif appinfo.status.description == 'disable_online' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Restricting Access</span></p>
                                     {% elseif appinfo.status.description == 'set_edgeapp_options' %}
                                         <br>
                                         <br>
                                         <br>
+                                        <pre style="display: none;">{{appinfo.status.task_id}}</pre>
                                         <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Options</span></p>
                                     {% else %}
                                         <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
@@ -146,6 +153,7 @@
 
                                                 {% if is_online_ready %}
                                                     {% if release_version == 'cloud' %}
+                                                        <br>
                                                         <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
                                                     {% else %}
                                                         <a href="/edgeapps/enable_online/{{ appinfo.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
@@ -239,6 +247,47 @@
             {% endfor %}
 
         </div>
+
+        <script>
+            function checkEdgeAppTaskStatusPool() {      
+                console.log("Fetching task statuses for apps ongoing");
+
+                let elements = Array.from(document.querySelectorAll('.edgeapps-list .enable_online, .edgeapps-list .disable_online, .edgeapps-list .start_edgeapp, .edgeapps-list .stop_edgeapp, .edgeapps-list .install_edgeapp, .edgeapps-list .remove_edgeapp, .edgeapps-list .set_edgeapp_options'));
+
+                for (var i = 0; i < elements.length; i++) {
+                    var el = elements[i];
+                    // do something with `element`
+                    const app_id = el.id
+                    const task_id = el.querySelector('pre')?.textContent
+
+                    console.log("Checking app_id + task_id pair: " + app_id + "+" + task_id)
+
+                    fetch('/api/tasks/' + task_id, {
+                        method: 'GET',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if(data.status == 3) { // error
+                            return;
+                        }
+                        else if(data.status == 2) { // finished
+                            console.log("Done!");
+                            window.location.href = '/edgeapps#' + app_id
+                            setTimeout(function(){window.location.reload();}, 1500)
+                        }
+
+                        setTimeout(checkEdgeAppTaskStatusPool, Math.floor(Math.random() * (6000 - 2000 + 1)) + 2000, app_id, task_id);
+
+                    });
+                }
+
+            }
+            checkEdgeAppTaskStatusPool();
+        </script>
 
     {% endif %}
 

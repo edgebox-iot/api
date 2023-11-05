@@ -139,9 +139,7 @@
 
                                             <br><br>
                                             {# We now check if needsConfig is true. If so, user needs to add information before app starts #}
-                                            {% if edgeapp.needs_config %}
-                                                <a href="/edgeapps/details/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Configure <i class="fas fa-cog text-sm ms-1" aria-hidden="true"></i></a><br>
-                                            {% else %}
+                                            {% if not edgeapp.needs_config %}
                                                 <a href="/edgeapps/install/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Install &amp; Run <i class="fas fa-play-circle text-sm ms-1" aria-hidden="true"></i></a><br>
                                             {% endif %}
                                             
