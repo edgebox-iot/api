@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Repository\TaskRepository;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
@@ -60,6 +61,7 @@ class EdgeAppsController extends AbstractController
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemHelper,
         TaskFactory $taskFactory,
+        TaskRepository $taskRepository,
         DashboardHelper $dashboardHelper
     ) {
         $this->optionRepository = $optionRepository;
@@ -67,6 +69,7 @@ class EdgeAppsController extends AbstractController
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemHelper;
         $this->taskFactory = $taskFactory;
+        $this->taskRepository = $taskRepository;
         $this->dashboardHelper = $dashboardHelper;
     }
 
@@ -79,6 +82,39 @@ class EdgeAppsController extends AbstractController
         $tunnel_on = false;
 
         $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+        $ongoing_tasks = $this->taskRepository->findByOngoing();
+
+        $app_tasks = [
+            TaskFactory::INSTALL_EDGEAPP,
+            TaskFactory::REMOVE_EDGEAPP,
+            TaskFactory::START_EDGEAPP,
+            TaskFactory::STOP_EDGEAPP,
+            TaskFactory::SET_EDGEAPP_OPTIONS,
+            TaskFactory::ENABLE_ONLINE,
+            TaskFactory::DISABLE_ONLINE
+        ];
+
+        if(!empty($ongoing_tasks)) {
+            $ongoing_apps_and_statuses = [];
+
+            foreach ($ongoing_tasks as $ongoing_task) {
+                $task_code = $ongoing_task->getTask();
+                if(in_array($task_code, $app_tasks)) {
+                    $app_id = json_decode($ongoing_task->getArgs(), true)['id'];
+                    $ongoing_apps_and_statuses[$app_id] = $task_code;
+                }
+            }
+
+            foreach ($apps_list as $app_key => $app) {
+                $app_id = $app['id'];
+                if(!empty($ongoing_apps_and_statuses[$app_id])) {
+                    $apps_list[$app_key]['status'] = [
+                        "id" => 4,
+                        "description" => $ongoing_apps_and_statuses[$app_id]
+                    ];
+                }
+            }
+        }
 
         if (!empty($apps_list)) {
             $tunnel_on_option = $this->optionRepository->findOneBy(['name' => 'BOOTNODE_TOKEN']) ?? new Option();
@@ -92,6 +128,7 @@ class EdgeAppsController extends AbstractController
             'framework_ready' => $framework_ready,
             'release_version' => $this->systemHelper->getReleaseVersion(),
             'apps_list' => $apps_list,
+            'app_task_codes' => $app_tasks,
             'is_online_ready' => $this->systemHelper->isOnlineReady(),
             'tunnel_on' => $tunnel_on,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
@@ -177,6 +214,9 @@ class EdgeAppsController extends AbstractController
      */
     public function action(string $action, string $edgeapp): Response
     {
+
+        $task = null;
+
         $controller_title = 'Invalid action';
         $action_result = 'invalid_action';
 
@@ -214,6 +254,7 @@ class EdgeAppsController extends AbstractController
             'framework_ready' => $framework_ready,
             'result' => $action_result,
             'action' => $action,
+            'task' => $task,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'tunnel_status_code' => '',
         ]);

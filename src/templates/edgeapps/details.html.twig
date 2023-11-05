@@ -85,7 +85,7 @@
                                                 {% else %}
                                                     {% if release_version == 'cloud' %}
                                                         <br>
-                                                        <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
+                                                        <a href="/edgeapps/enable_online/{{ edgeapp.id }}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto">Bring Online <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
                                                     {% else %}
                                                         <a href="" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" data-bs-toggle="modal" data-bs-target="#modal-not-online">Switch to internet <i class="fas fa-globe-europe text-sm ms-1" aria-hidden="true"></i></a><br>
                                                         <a href="http://{{edgeapp.network_url}}" class="text-body text-sm font-weight-bold mb-0 icon-move-right mt-auto" target="_blank">Open <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i></a><br>

@@ -169,13 +169,24 @@ class TaskFactory
         if (null != $domain_option && !empty($domain_option->getValue())) {
             $internet_url = sprintf('%s.%s', $id, $domain_option->getValue());
         } else {
-            $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
-            $ip = '';
             if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
-                // Cloud version does not use bootnode but direct IP instead.
-                $ip = $this->systemHelper->getIP();
+                // CLOUD VERSION RELIES ON DIFFERENT ENV VARS
+                // $ip = $this->systemHelper->getIP();
+                $cluster = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
+                $host = $this->optionRepository->findOneBy(['name' => 'USERNAME']);
+                if (null != $cluster && !empty($cluster->getValue())) {
+                    $internet_url = $this->edgeAppsHelper->getInternetUrl($cluster->getValue(), $id, $host->getValue());
+                } else {
+                    $internet_url = null;
+                }
             }
-            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
+            // $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+            // $ip = '';
+            // if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
+            //     // Cloud version does not use bootnode but direct IP instead.
+            //     $ip = $this->systemHelper->getIP();
+            // }
+            // $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
         }
 
         $task = new Task();
@@ -206,14 +217,15 @@ class TaskFactory
         if (null != $domain_option && !empty($domain_option->getValue())) {
             $internet_url = sprintf('%s', $domain_option->getValue());
         } else {
-            $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
+            $cluster_option = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
+            $host_option = $this->optionRepository->findOneBy(['name' => 'USERNAME']);
             $ip = '';
             if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
                 // Cloud version does not use bootnode but direct IP instead.
                 $ip = $this->systemHelper->getIP();
             }
             $id = 'api';
-            $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
+            $internet_url = (null != $cluster_option && null != $host_option) ? $this->edgeAppsHelper->getInternetUrl($cluster_option->getValue(), $id, $host_option->getValue()) : null;
         }
 
         $task = new Task();

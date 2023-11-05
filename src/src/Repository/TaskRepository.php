@@ -32,22 +32,21 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
-    // /**
-    //  * @return Task[] Returns an array of Task objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Task[] Returns an array of Task objects
+     */
+    
+    public function findByOngoing()
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
+        ->andWhere('t.status IN(:statuses)')
+        ->setParameter('statuses', [Task::STATUS_CREATED, Task::STATUS_EXECUTING])
             ->orderBy('t.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Task

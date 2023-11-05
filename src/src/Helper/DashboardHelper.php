@@ -48,10 +48,17 @@ class DashboardHelper
             $topbar_style_value = 'float';
         }
 
+        $show_only_installed_apps_option = $this->optionRepository->findOneBy(['name' => 'DASHBOARD_SHOW_ONLY_INSTALLED_APPS']) ?? new Option();
+        $show_only_installed_apps_value = $show_only_installed_apps_option->getValue();
+        if (!$show_only_installed_apps_value) {
+            $show_only_installed_apps_value = false;
+        }
+
         $data = [
             'color_mood' => $color_mood_value,
             'sidebar_style' => $sidebar_style_value,
             'topbar_style' => $topbar_style_value,
+            'show_only_installed_apps' => $show_only_installed_apps_value,
         ];
 
         return $data;
@@ -69,6 +76,10 @@ class DashboardHelper
 
         if (!empty($data['topbar_style'])) {
             $this->setOptionValue('DASHBOARD_TOPBAR_STYLE', $data['topbar_style']);
+        }
+
+        if (!empty($data['show_only_installed_apps']) || $data['show_only_installed_apps'] === false) {
+            $this->setOptionValue('DASHBOARD_SHOW_ONLY_INSTALLED_APPS', $data['show_only_installed_apps']);
         }
 
         return $data;

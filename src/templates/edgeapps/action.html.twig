@@ -24,6 +24,9 @@
 
                 {% else %}
                     {% if result == "executing" %} 
+                        <div id="action-error-alert" class="alert alert-danger" role="alert" style="color: white; display: none;">
+                            <strong>Error</strong>.
+                        </div>
                         <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
                         <p><b>
                                 {% if action == "remove" %}
@@ -45,21 +48,64 @@
                                     <h2>Disabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
                                 {% endif %}
                             </b></p>
+                            <p>You will be automatically redirected once this task finishes 😉</p>
 
                         <script>
 
-                            redirectTimeout = 60000
+                            redirectTimeout = 2000
 
-                            {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %}
-                            redirectTimeout = 90000
-                            {% endif %}
+                            {# {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %} #}
+                            {# {% endif %} #}
 
-                            window.setTimeout(function(){
+                            function twerk() {
+                                element = document.getElementById("it-twerks")
+                                element.style.display = "block";
+                                setTimeout(function() {
+                                    document.getElementById("music").play()
+                                }, 500)
+                            }
 
-                                // Move to the applications view...
-                                window.location.href = "/edgeapps";
+                            function checkEdgeAppTaskStatus(task_id) {      
+                                console.log("Fetching task status with task id: " + task_id);
 
-                            }, redirectTimeout); // This is a loooong time... It can be better! (sysctl)
+                                fetch('/api/tasks/' + task_id, {
+                                    method: 'GET',
+                                    headers: {
+                                    'Content-Type': 'application/json'
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data);
+                                    if(data.status == 3) { // error
+
+                                    // Hide the "options-secondary-alert element
+                                    // document.getElementById("options-secondary-alert").style.display = "none";
+
+                                    // Show the error
+                                    alert = document.getElementById("action-error-alert")
+                                    alert.innerHTML = '<strong>There was a problem executing this task.</strong>' + data.result;
+                                    alert.style.display = "block";
+
+                                    return;
+                                    
+                                    }
+                                    else if(data.status == 2) { // finished
+                                        console.log("Done!");
+                                        twerk()
+                                        setTimeout(function() {
+                                            window.location.href = '/edgeapps#{{edgeapp}}'
+                                        }, 4000)
+                                        return;
+                                    }
+
+                                    setTimeout(checkEdgeAppTaskStatus, 2000, task_id);
+
+                                });
+
+                            }
+
+                            checkEdgeAppTaskStatus({{task.id}})
                         </script>
                     {% endif %}
 
@@ -99,6 +145,12 @@
                     {% endif %}
 
                 {% endif %}
+            </div>
+            <div class="col-md-6">
+                <div id="it-twerks" style="display: none; margin-top: 60px;">
+                    <lottie-player src="https://lottie.host/712114eb-6b5e-416e-b0b7-afee771364d9/RCGl6vbQ8d.json" background="#ffffff" speed="0.5" style="width: 300px; height: 300px" loop autoplay direction="1" mode="normal"></lottie-player>
+                    <audio id="music" src="/assets/it-twerks.mp3"></audio>
+                </div>
             </div>
             </div>
         {# <div> #}

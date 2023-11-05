@@ -51,24 +51,26 @@ class EdgeAppsHelper
         return $found;
     }
 
-    public function getInternetUrl(?string $api_token, string $app_id, string $ip = ''): ?string
+    public function getInternetUrl(?string $cluster, string $app_id, string $host): ?string
     {
         $url = null;
 
-        if (null === $api_token) {
+        if (null === $cluster) {
             return $url;
         }
 
-        $url_registration_response = $this->edgeboxioApiConnector->register_apps($api_token, $app_id, $ip);
+        $url = $host . "-" . $app_id . "." . $cluster;
 
-        if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
-            $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
+        // $url_registration_response = $this->edgeboxioApiConnector->register_apps($api_token, $app_id, $ip);
 
-            // Check if registration was successfull and only then issue the appliance to set configurations.
-            if (!empty($app_info) && !empty($app_info['url'])) {
-                $url = $app_info['url'];
-            }
-        }
+        // if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
+        //     $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
+
+        //     // Check if registration was successfull and only then issue the appliance to set configurations.
+        //     if (!empty($app_info) && !empty($app_info['url'])) {
+        //         $url = $app_info['url'];
+        //     }
+        // }
 
         return $url;
     }
