@@ -6,154 +6,152 @@
 
     <div class="card">
         <div class="card-body p-3">
-        {# <div class="container"> #}
             <div class="row my-5" style="margin-left: 15px;">
-            <div class="col-md-6">
-                {% if not framework_ready %}
-                    <h1><i class="fas fa-tools"></i></h1>
-                    <h2>Framework Not Ready</h2>
-                    <p style="color: red;">The framework is currently not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
-                    <p>
-                        <a href="/edgeapps">
-                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
-                                <span class="btn-inner--text">Go back</span>
-                            </button>
-                        </a>
-                    </p>
-
-                {% else %}
-                    {% if result == "executing" %} 
-                        <div id="action-error-alert" class="alert alert-danger" role="alert" style="color: white; display: none;">
-                            <strong>Error</strong>.
-                        </div>
-                        <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
-                        <p><b>
-                                {% if action == "remove" %}
-                                    <h2>Removing {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "install" %}
-                                    <h2>Installing {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "stop" %}
-                                    <h2>Stopping {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "start" %}
-                                    <h2>Starting {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "enable_online" %}
-                                    <h2>Enabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                                {% if action == "disable_online" %}
-                                    <h2>Disabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
-                                {% endif %}
-                            </b></p>
-                            <p>You will be automatically redirected once this task finishes 😉</p>
-
-                        <script>
-
-                            redirectTimeout = 2000
-
-                            {# {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %} #}
-                            {# {% endif %} #}
-
-                            function twerk() {
-                                element = document.getElementById("it-twerks")
-                                element.style.display = "block";
-                                setTimeout(function() {
-                                    document.getElementById("music").play()
-                                }, 500)
-                            }
-
-                            function checkEdgeAppTaskStatus(task_id) {      
-                                console.log("Fetching task status with task id: " + task_id);
-
-                                fetch('/api/tasks/' + task_id, {
-                                    method: 'GET',
-                                    headers: {
-                                    'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(data);
-                                    if(data.status == 3) { // error
-
-                                    // Hide the "options-secondary-alert element
-                                    // document.getElementById("options-secondary-alert").style.display = "none";
-
-                                    // Show the error
-                                    alert = document.getElementById("action-error-alert")
-                                    alert.innerHTML = '<strong>There was a problem executing this task.</strong>' + data.result;
-                                    alert.style.display = "block";
-
-                                    return;
-                                    
-                                    }
-                                    else if(data.status == 2) { // finished
-                                        console.log("Done!");
-                                        twerk()
-                                        setTimeout(function() {
-                                            window.location.href = '/edgeapps#{{edgeapp}}'
-                                        }, 4000)
-                                        return;
-                                    }
-
-                                    setTimeout(checkEdgeAppTaskStatus, 2000, task_id);
-
-                                });
-
-                            }
-
-                            checkEdgeAppTaskStatus({{task.id}})
-                        </script>
-                    {% endif %}
-
-                    {% if result == "edgeapp_not_found" %}
-                        <h2 style="color: red;">Error: EdgeApp Not Found</h2>
-                        <a href="/edgeapps">
-                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
-                                <span class="btn-inner--text">Go Back</span>
-                            </button></p>
-                        </a>
-                    {% endif %}
-
-                    {% if result == "invalid_action" %}
-                        <h2 style="color: red;">Error: Invalid Action</h2>
-                        <a href="/edgeapps">
-                            <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
-                                <span class="btn-inner--text">Go Back</span>
-                            </button></p>
-                        </a>
-                    {% endif %}
-
-                    {% if result == "error" %}
-                        <h1><i class="ni ni-support-16"></i></h1>
-                        <h2>Unexpected Error</h2>
-                        <p>A problem ocurred when performing this operation.</p>
+                <div class="col-md-6">
+                    {% if not framework_ready %}
+                        <h1><i class="fas fa-tools"></i></h1>
+                        <h2>Framework Not Ready</h2>
+                        <p style="color: red;">The framework is currently not available. Please check the logs in the <a href="/settings">settings page</a> for detailed information.</p>
                         <p>
-                            <a href="/settings/logs" target="_blank">
+                            <a href="/edgeapps">
                                 <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
-                                    <span class="btn-inner--text">See Detailed Logs</span>
+                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
+                                    <span class="btn-inner--text">Go back</span>
                                 </button>
                             </a>
                         </p>
-                        
-                    {% endif %}
 
-                {% endif %}
-            </div>
-            <div class="col-md-6">
-                <div id="it-twerks" style="display: none; margin-top: 60px;">
-                    <lottie-player src="https://lottie.host/712114eb-6b5e-416e-b0b7-afee771364d9/RCGl6vbQ8d.json" background="#ffffff" speed="0.5" style="width: 300px; height: 300px" loop autoplay direction="1" mode="normal"></lottie-player>
-                    <audio id="music" src="/assets/it-twerks.mp3"></audio>
+                    {% else %}
+                        {% if result == "executing" %} 
+                            <div id="action-error-alert" class="alert alert-danger" role="alert" style="color: white; display: none;">
+                                <strong>Error</strong>.
+                            </div>
+                            <lottie-player id="edgeapp-action-animation" src="https://assets1.lottiefiles.com/packages/lf20_knlqkpzx.json"  background="transparent"  speed="1"  style="width: 230px; height: 230px;"  loop  autoplay></lottie-player>
+                            <div id="it-twerks" style="display: none; margin-left: 25px;">
+                                <lottie-player src="https://lottie.host/712114eb-6b5e-416e-b0b7-afee771364d9/RCGl6vbQ8d.json" background="#ffffff" speed="0.5" style="width: 230px; height: 230px" loop autoplay direction="1" mode="normal"></lottie-player>
+                                <audio id="music" src="/assets/it-twerks.mp3"></audio>
+                            </div>
+                            <p><b>
+                                    {% if action == "remove" %}
+                                        <h2>Removing {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                    {% if action == "install" %}
+                                        <h2>Installing {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                    {% if action == "stop" %}
+                                        <h2>Stopping {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                    {% if action == "start" %}
+                                        <h2>Starting {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                    {% if action == "enable_online" %}
+                                        <h2>Enabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                    {% if action == "disable_online" %}
+                                        <h2>Disabling online access to {{edgeapp}} </h2><p>This can take a minute...</p>
+                                    {% endif %}
+                                </b></p>
+                                <p>You will be automatically redirected once this task finishes 😉</p>
+
+                            <script>
+
+                                redirectTimeout = 2000
+
+                                {# {% if action == "disable_online" or action == "enable_online" or action == "remove" or action == "install" %} #}
+                                {# {% endif %} #}
+
+                                function twerk() {
+                                    element = document.getElementById("edgeapp-action-animation")
+                                    element.style.display = "none";
+                                    element = document.getElementById("it-twerks")
+                                    element.style.display = "block";
+                                    setTimeout(function() {
+                                        document.getElementById("music").play()
+                                    }, 500)
+                                }
+
+                                function checkEdgeAppTaskStatus(task_id) {      
+                                    console.log("Fetching task status with task id: " + task_id);
+
+                                    fetch('/api/tasks/' + task_id, {
+                                        method: 'GET',
+                                        headers: {
+                                        'Content-Type': 'application/json'
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                        if(data.status == 3) { // error
+
+                                        // Hide the "options-secondary-alert element
+                                        // document.getElementById("options-secondary-alert").style.display = "none";
+
+                                        // Show the error
+                                        alert = document.getElementById("action-error-alert")
+                                        alert.innerHTML = '<strong>There was a problem executing this task.</strong>' + data.result;
+                                        alert.style.display = "block";
+
+                                        return;
+                                        
+                                        }
+                                        else if(data.status == 2) { // finished
+                                            console.log("Done!");
+                                            twerk()
+                                            setTimeout(function() {
+                                                window.location.href = '/edgeapps#{{edgeapp}}'
+                                            }, 4000)
+                                            return;
+                                        }
+
+                                        setTimeout(checkEdgeAppTaskStatus, 2000, task_id);
+
+                                    });
+
+                                }
+
+                                checkEdgeAppTaskStatus({{task.id}})
+                            </script>
+                        {% endif %}
+
+                        {% if result == "edgeapp_not_found" %}
+                            <h2 style="color: red;">Error: EdgeApp Not Found</h2>
+                            <a href="/edgeapps">
+                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                    <span class="btn-inner--text">Go Back</span>
+                                </button></p>
+                            </a>
+                        {% endif %}
+
+                        {% if result == "invalid_action" %}
+                            <h2 style="color: red;">Error: Invalid Action</h2>
+                            <a href="/edgeapps">
+                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                    <span class="btn-inner--text">Go Back</span>
+                                </button></p>
+                            </a>
+                        {% endif %}
+
+                        {% if result == "error" %}
+                            <h1><i class="ni ni-support-16"></i></h1>
+                            <h2>Unexpected Error</h2>
+                            <p>A problem ocurred when performing this operation.</p>
+                            <p>
+                                <a href="/settings/logs" target="_blank">
+                                    <button class="btn btn-icon btn-3 btn-secondary" type="button">
+                                        <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-ungroup"></i></span>
+                                        <span class="btn-inner--text">See Detailed Logs</span>
+                                    </button>
+                                </a>
+                            </p>
+                            
+                        {% endif %}
+
+                    {% endif %}
                 </div>
             </div>
-            </div>
-        {# <div> #}
         </div>
     </div>
 {% endblock content %}
