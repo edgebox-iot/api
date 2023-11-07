@@ -38,7 +38,7 @@ class ApiController extends AbstractController
         TunnelHelper $tunnelHelper,
         BackupsHelper $backupsHelper,
         EdgeAppsHelper $edgeappsHelper,
-        TaskFactory $taskFactory,
+        TaskFactory $taskFactory
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;

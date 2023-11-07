@@ -15,7 +15,7 @@ class EdgeAppsHelper
     public function __construct(
         OptionRepository $optionRepository,
         EdgeboxioApiConnector $edgeboxioApiConnector,
-        SystemHelper $systemHelper,
+        SystemHelper $systemHelper
     ) {
         $this->optionRepository = $optionRepository;
         $this->edgeboxioApiConnector = $edgeboxioApiConnector;
