@@ -103,7 +103,6 @@ class EdgeAppsHelperTest extends TestCase
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn($option);
 
-
         $mockEdgeboxioApiConnector = $this->getMockBuilder(EdgeboxioApiConnector::class)->disableOriginalConstructor()->getMock();
         $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $mockEdgeboxioApiConnector, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
