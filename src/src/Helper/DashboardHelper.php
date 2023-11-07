@@ -78,7 +78,7 @@ class DashboardHelper
             $this->setOptionValue('DASHBOARD_TOPBAR_STYLE', $data['topbar_style']);
         }
 
-        if (!empty($data['show_only_installed_apps']) || $data['show_only_installed_apps'] === false) {
+        if (!empty($data['show_only_installed_apps']) || false === $data['show_only_installed_apps']) {
             $this->setOptionValue('DASHBOARD_SHOW_ONLY_INSTALLED_APPS', $data['show_only_installed_apps']);
         }
 

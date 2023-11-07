@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
-use App\Repository\TaskRepository;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,6 +30,8 @@ class EdgeAppsController extends AbstractController
     private SystemHelper $systemHelper;
     private TaskFactory $taskFactory;
     private DashboardHelper $dashboardHelper;
+
+    private TaskRepository $taskRepository;
 
     /**
      * @var array
@@ -91,30 +93,30 @@ class EdgeAppsController extends AbstractController
             TaskFactory::STOP_EDGEAPP,
             TaskFactory::SET_EDGEAPP_OPTIONS,
             TaskFactory::ENABLE_ONLINE,
-            TaskFactory::DISABLE_ONLINE
+            TaskFactory::DISABLE_ONLINE,
         ];
 
-        if(!empty($ongoing_tasks)) {
+        if (!empty($ongoing_tasks)) {
             $ongoing_apps_and_statuses = [];
 
             foreach ($ongoing_tasks as $ongoing_task) {
                 $task_code = $ongoing_task->getTask();
-                if(in_array($task_code, $app_tasks)) {
+                if (in_array($task_code, $app_tasks)) {
                     $app_id = json_decode($ongoing_task->getArgs(), true)['id'];
                     $ongoing_apps_and_statuses[$app_id] = [
                         'task_code' => $task_code,
-                        'task_id' => $ongoing_task->getId()
+                        'task_id' => $ongoing_task->getId(),
                     ];
                 }
             }
 
             foreach ($apps_list as $app_key => $app) {
                 $app_id = $app['id'];
-                if(!empty($ongoing_apps_and_statuses[$app_id])) {
+                if (!empty($ongoing_apps_and_statuses[$app_id])) {
                     $apps_list[$app_key]['status'] = [
-                        "id" => 4,
-                        "description" => $ongoing_apps_and_statuses[$app_id]['task_code'],
-                        "task_id" => $ongoing_apps_and_statuses[$app_id]['task_id']
+                        'id' => 4,
+                        'description' => $ongoing_apps_and_statuses[$app_id]['task_code'],
+                        'task_id' => $ongoing_apps_and_statuses[$app_id]['task_id'],
                     ];
                 }
             }
@@ -170,23 +172,21 @@ class EdgeAppsController extends AbstractController
         }
 
         // Invert the array ot maintain the order
-        //$edgeapp_options = array_reverse($edgeapp_options);
+        // $edgeapp_options = array_reverse($edgeapp_options);
 
         $edgeapp_config['options'] = $edgeapp_options;
 
         if ($request->isMethod('post')) {
             // $this->edgeAppsHelper->saveEdgeAppConfig($edgeapp, $request->request->all());
             // We read each field from the form and issue a task to update the config
-            $task = $this->taskFactory->createUpdateEdgeappConfigTask($edgeapp, $request->request->all());
+//            $task = $this->taskFactory->createUpdateEdgeappConfigTask($edgeapp, $request->request->all());
         } else {
-            
             // Do nothing?
-
         }
 
         $logs = [];
 
-        if(!empty($edgeapp_config['services'])) {
+        if (!empty($edgeapp_config['services'])) {
             // Fetch the logs for this app for each service
             foreach ($edgeapp_config['services'] as $service) {
                 $id = $service['id'];
@@ -198,7 +198,6 @@ class EdgeAppsController extends AbstractController
                 }
             }
         }
-        
 
         return $this->render('edgeapps/details.html.twig', [
             'controller_title' => 'EdgeApps',
@@ -218,7 +217,6 @@ class EdgeAppsController extends AbstractController
      */
     public function action(string $action, string $edgeapp): Response
     {
-
         $task = null;
 
         $controller_title = 'Invalid action';
