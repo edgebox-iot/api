@@ -22,6 +22,8 @@ class TaskFactory
     public const START_EDGEAPP = 'start_edgeapp';
     public const STOP_EDGEAPP = 'stop_edgeapp';
     public const SET_EDGEAPP_OPTIONS = 'set_edgeapp_options';
+    public const SET_EDGEAPP_BASIC_AUTH = 'set_edgeapp_basic_auth';
+    public const REMOVE_EDGEAPP_BASIC_AUTH = 'remove_edgeapp_basic_auth';
     public const ENABLE_ONLINE = 'enable_online';
     public const DISABLE_ONLINE = 'disable_online';
     public const ENABLE_PUBLIC_DASHBOARD = 'enable_public_dashboard';
@@ -160,6 +162,24 @@ class TaskFactory
         $task->setTask(self::SET_EDGEAPP_OPTIONS);
         $task->setArgs(json_encode(['id' => $id, 'options' => $options]));
 
+        return $task;
+    }
+
+    public function createSetEdgeappBasicAuthTask(string $id, array $login): Task
+    {
+        $task = new Task();
+        $task->setTask(self::SET_EDGEAPP_BASIC_AUTH);
+        $task->setArgs(json_encode(['id' => $id, 'login' => $login]));
+
+        return $task;
+    }
+
+    public function createRemoveEdgeappBasicAuthTask(string $id): Task
+    {
+        $task = new Task();
+        $task->setTask(self::REMOVE_EDGEAPP_BASIC_AUTH);
+        $task->setArgs(json_encode(['id' => $id]));
+        
         return $task;
     }
 

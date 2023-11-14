@@ -72,6 +72,7 @@
 
                                 function checkEdgeAppTaskStatus(task_id) {      
                                     console.log("Fetching task status with task id: " + task_id);
+                                    console.log("Show me when it twerks? {{dashboard_settings.show_me_when_it_twerks}}")
 
                                     fetch('/api/tasks/' + task_id, {
                                         method: 'GET',
@@ -97,10 +98,14 @@
                                         }
                                         else if(data.status == 2) { // finished
                                             console.log("Done!");
-                                            twerk()
-                                            setTimeout(function() {
+                                            if ("{{dashboard_settings.show_me_when_it_twerks}}" == "yes") {
+                                                twerk()
+                                                setTimeout(function() {
+                                                    window.location.href = '/edgeapps#{{edgeapp}}'
+                                                }, 4000)
+                                            } else {
                                                 window.location.href = '/edgeapps#{{edgeapp}}'
-                                            }, 4000)
+                                            }
                                             return;
                                         }
 

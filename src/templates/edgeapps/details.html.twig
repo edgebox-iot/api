@@ -6,7 +6,7 @@
 
     <div class="card">
         <div class="card-body p-3">
-            <div class="row" style="margin-left: 15px;">
+            <div class="row" style="margin-left: 15px; margin-right: 15px;">
                 <div class="col-md-12">
 
                     {% if not framework_ready %}
@@ -40,7 +40,15 @@
                                 <div style="margin-top: -2rem;">
                                     {{ include('partials/_row_title_block.html.twig', {main_title: edgeapp.name, sub_title: edgeapp.description}) }}
                                 </div>
-                                <div class="row my-5" style="margin-top: -3rem !important; margin-bottom: 0px !important;">
+                                <style>
+                                    @media (max-width: 575px) {
+                                        .responsive-my-5 {
+                                            position: relative;
+                                            left: -27% !important;
+                                        }
+                                    }
+                                </style>
+                                <div class="row my-5 responsive-my-5" style="margin-top: -3rem !important; margin-bottom: 0px !important; ">
                                     {% if edgeapp.status.description == 'on' %}
                                         <div class="internet-access">
                                             {% if edgeapp.internet_accessible %}
@@ -165,7 +173,7 @@
                                     <div id="options-error-alert" class="alert alert-danger" role="alert" style="color: white; display: none;">
                                         <strong>Error</strong>.
                                     </div>
-                                    <h4>Settings</h4>
+                                    <h4>App Settings</h4>
                                     <p>Change the behavior of this app through the following settings:</p>
                                     <form id="app-options-form">
                                         <input type="hidden" class="form-control" id="id-input" value="{{edgeapp.id}}">
@@ -184,7 +192,7 @@
                                                             {% if option.is_secret %}
                                                                 <input {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %} type="password" class="form-control {% if option.is_install_locked %}btn-tooltip{% endif %}" {% if option.is_install_locked %}data-bs-toggle="tooltip" data-bs-placement="top" title="This option can only be set before the first installation!" data-container="body" data-animation="true"{% endif %} placeholder="{{option.description}}" value="{% if option.value != "" %}{{option.value}}{% else %}{{option.default_value}}{% endif %}" id="{{option.key}}-input" aria-label="{{option.description}}" aria-describedby="{{option.description}}">
                                                                 <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
-                                                                <button class="btn btn-outline-secondary mb-0 {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %}" data-input-id="{{option.key}}-input" type="button" onclick="generateAppOptionsSecret(this);" >Generate</button>
+                                                                <button class="btn btn-outline-secondary mb-0 btn-tooltip {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %}" data-input-id="{{option.key}}-input" type="button" onclick="generateAppOptionsSecret(this);" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate" data-container="body" data-animation="true"><i class="fa fa-refresh" aria-hidden="true"></i></button>
                                                                 {# <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button> #}
                                                             {% else %}
                                                                 <input {% if(option.is_install_locked and edgeapp.status.id != -1) %}disabled{% endif %} type="text" class="form-control {% if option.is_install_locked %}btn-tooltip{% endif %}" {% if option.is_install_locked %}data-bs-toggle="tooltip" data-bs-placement="top" title="This option can only be set before the first installation!" data-container="body" data-animation="true"{% endif %} placeholder="{{option.description}}" value="{% if option.value != "" %}{{option.value}}{% else %}{{option.default_value}}{% endif %}" id="{{option.key}}-input" aria-label="{{option.description}}" aria-describedby="{{option.description}}">
@@ -195,12 +203,6 @@
                                             </div>
                                         {% endfor %}
                                         <p class="mt-25">
-                                            <a href="/edgeapps">
-                                                <button class="btn btn-icon btn-3 btn-secondary" type="button">
-                                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-bold-left"></i></span>
-                                                    <span class="btn-inner--text">Go back</span>
-                                                </button>
-                                            </a>
                                             <button class="btn btn-icon btn-3 btn-success" type="button" onclick="saveAppOptions(this);">
                                                 <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-check-bold"></i></span>
                                                 <span class="btn-inner--text">Save</span>
@@ -208,16 +210,67 @@
                                         </p>
                                     </form>
                                 {% endif %}
-                                    
+
+                                <h4>Security</h4>
+                                <p>Secure app access with a login. Any previously unknown devices will be asked to authenticate.</p>
+                                <div class="row">
+                                    {% if edgeapp.login.enabled %}
+                                        <div id="basic-auth-primary-alert" class="alert alert-success" role="alert" style="display: block; color: white;">
+                                            <strong>Activated</strong> Your app is now protected by the username and password below.
+                                        </div>
+                                    {% endif %}
+                                    <div id="basic-auth-error-alert" class="alert alert-danger" role="alert" style="display: none; color: white;">
+                                        <strong>Error</strong> A problem occured with this feature.
+                                    </div>
+                                    <form id="app-basic-auth-form">
+                                        <input type="hidden" class="form-control" id="id-input" value="{{edgeapp.id}}">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="basic-auth-username-input">Username:</label>
+                                            <div class="input-group">
+                                                <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="text" class="form-control" placeholder="A username to protect your app" value="{% if edgeapp.login.username == "" %}{{edgeapp.id}}{% else %}{{edgeapp.login.username}}{% endif %}" id="basic-auth-username-input" aria-label="Username">
+                                            </div>
+                                            <label class="form-control-label" for="basic-auth-password-input">Password:</label>
+                                            <div class="input-group">
+                                                <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="password" class="form-control" placeholder="A password to protect your app" value="{{edgeapp.login.password}}" id="basic-auth-password-input" aria-label="Password" aria-describedby="A password to protect your app">
+                                                <button class="btn btn-outline-secondary mb-0" data-input-id="basic-auth-password-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
+                                                <button class="btn btn-outline-secondary mb-0 btn-tooltip {% if(edgeapp.status.id == -1) %}disabled{% endif %}" data-input-id="basic-auth-password-input" type="button" onclick="generateAppOptionsSecret(this);" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate" data-container="body" data-animation="true"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                                                {# <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button> #}
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% if edgeapp.login.enabled %}
+                                        <p class="mt-25">
+                                            <button class="btn btn-icon btn-3 btn-success" type="button" onclick="saveAppBasicAuth(this);">
+                                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-check-bold"></i></span>
+                                                <span class="btn-inner--text">Save</span>
+                                            </button>
+                                            
+                                            <button class="btn btn-icon btn-3 bg-gradient-warning" type="button" data-app-id="{{edgeapp.id}}" onclick="removeAppBasicAuth(this);">
+                                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-button-power"></i></span>
+                                                <span class="btn-inner--text">Disable</span>
+                                            </button>
+                                        </p>
+                                    {% else %}
+                                        <div class="col-md-4">
+                                            <p class="mt-25">
+                                                <button class="btn bg-gradient-warning w-90" role="button" onclick="saveAppBasicAuth(this);">
+                                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-lock-circle-open"></i></span>
+                                                    <span class="btn-inner--text">Enable</span>
+                                                </button>
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
                                 <h4>Advanced</h4>
                                 <p>Troubleshoot and perform advanced actions:</p>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <a class="btn bg-gradient-info w-100" data-bs-toggle="collapse" href="#collapseAdvancedEdgeappOptions" role="button" aria-expanded="false" aria-controls="collapseAdvancedEdgeappOptions">
+                                    <div class="col-md-4">
+                                        <a class="btn bg-gradient-info w-90" data-bs-toggle="collapse" href="#collapseAdvancedEdgeappOptions" role="button" aria-expanded="false" aria-controls="collapseAdvancedEdgeappOptions">
                                             Logs
                                         </a>
                                     </div>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <p class="mt-0 text-xs" style="padding-top: 10px;"><b><i>See the lastest log messages from this application services.</i></b></p>
                                     </div>
                                 </div>
@@ -250,11 +303,32 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <button type="button" class="btn bg-gradient-danger w-100 disabled">Reset App (soon...)</button>
+                                    <div class="col-md-4">
+                                        <a class="btn bg-gradient-danger w-90 {% if edgeapp.status.id == -1 %}disabled{% endif %}" data-bs-toggle="modal" data-bs-target="#modal-reset-app">Reset App</a>
                                     </div>
-                                    <div class="col-md-9">
+                                    <div class="col-md-8">
                                         <p class="mt-1 text-xs" style="padding-top: 10px;"><b><i>This will delete all previously saved data for this application.</b></i></p>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="modal-reset-app" tabindex="-1" role="dialog" aria-labelledby="modal-reset-app" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                        <div class="modal-content">
+                                        <div class="modal-body p-0">
+                                            <div class="card card-plain">
+                                            <div class="card-header pb-0 text-left">
+                                                <h3 class="font-weight-bolder text-danger text-gradient">You're about to delete data...</h3>
+                                                <p class="mb-0">Please confirm that you want to irreversably delete all data and settings for <b>{{edgeapp.id}}</b>.</p>
+                                                <p class="mb-0">You won't be able to access this data ever again unless you previously took a snapshot backup or manually copied the data out.<p>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="text-center">
+                                                    <a href="/edgeapps/remove/{{edgeapp.id}}" class="btn bg-gradient-danger btn-lg w-100 mt-4 mb-0">Delete All App Data and Settings</a>
+                                                    <a href="" class="btn bg-gradient-secondary btn-lg w-100 mt-4 mb-0">NO! 😱 Please take me back</a>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

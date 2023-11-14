@@ -54,11 +54,18 @@ class DashboardHelper
             $show_only_installed_apps_value = false;
         }
 
+        $show_me_when_it_twerks_option = $this->optionRepository->findOneBy(['name' => 'DASHBOARD_SHOW_ME_WHEN_IT_TWERKS']) ?? new Option();
+        $show_me_when_it_twerks_value = $show_me_when_it_twerks_option->getValue();
+        if (!$show_me_when_it_twerks_value) {
+            $show_me_when_it_twerks_value = 'no';
+        }
+
         $data = [
             'color_mood' => $color_mood_value,
             'sidebar_style' => $sidebar_style_value,
             'topbar_style' => $topbar_style_value,
             'show_only_installed_apps' => $show_only_installed_apps_value,
+            'show_me_when_it_twerks' => $show_me_when_it_twerks_value
         ];
 
         return $data;
@@ -78,8 +85,12 @@ class DashboardHelper
             $this->setOptionValue('DASHBOARD_TOPBAR_STYLE', $data['topbar_style']);
         }
 
-        if (!empty($data['show_only_installed_apps']) || $data['show_only_installed_apps'] === false) {
+        if (!empty($data['show_only_installed_apps'])) {
             $this->setOptionValue('DASHBOARD_SHOW_ONLY_INSTALLED_APPS', $data['show_only_installed_apps']);
+        }
+
+        if (!empty($data['show_me_when_it_twerks'])) {
+            $this->setOptionValue('DASHBOARD_SHOW_ME_WHEN_IT_TWERKS', $data['show_me_when_it_twerks']);
         }
 
         return $data;

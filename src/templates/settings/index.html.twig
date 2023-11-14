@@ -48,13 +48,24 @@
                             <!-- Navbar Fixed -->
                             <hr>
                             <div class="mt-3">
-                            <h6 class="text-uppercase text-body text-xs font-weight-bolder">Topbar style</h6>
+                                <h6 class="text-uppercase text-body text-xs font-weight-bolder">Topbar style</h6>
                             </div>
                             <p class="text-xs">Choose if the title bar should float or stay in place when you scroll through the dashboard.</p>
                             <div class="form-check form-switch ps-0">
                                 <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">Floating</label>
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsTitleBarFloating" data-class="bg-white" onclick="navbarFloating(this); saveTopbarStyle(this);" {% if(dashboard_settings.topbar_style == "fixed") %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Fixed</label>
+                            </div>
+                            <!-- Show me when it twerks -->
+                            <hr>
+                            <div class="mt-3">
+                                <h6 class="text-uppercase text-body text-xs font-weight-bolder">Show me when it twerks!</h6>
+                            </div>
+                            <p class="text-xs">If active, the 🦀 will shout <b><i>and twerk</i></b> when tasks complete.</p>
+                            <div class="form-check form-switch ps-0">
+                                <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">No</label>
+                                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsShowMeWhenItTwerks" data-class="bg-white" onclick="saveShowMeWhenItTwerks(this);" {% if(dashboard_settings.show_me_when_it_twerks == "yes") %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Yes</label>
                             </div>
                             <!-- Public Access -->
                             <hr>
