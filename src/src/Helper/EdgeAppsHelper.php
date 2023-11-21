@@ -8,17 +8,14 @@ use App\Repository\OptionRepository;
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
-    private EdgeboxioApiConnector $edgeboxioApiConnector;
 
     private SystemHelper $systemHelper;
 
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeboxioApiConnector $edgeboxioApiConnector,
         SystemHelper $systemHelper
     ) {
         $this->optionRepository = $optionRepository;
-        $this->edgeboxioApiConnector = $edgeboxioApiConnector;
         $this->systemHelper = $systemHelper;
     }
 

@@ -174,7 +174,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::REMOVE_EDGEAPP_BASIC_AUTH);
         $task->setArgs(json_encode(['id' => $id]));
-        
+
         return $task;
     }
 
