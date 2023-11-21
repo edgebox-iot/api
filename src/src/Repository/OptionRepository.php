@@ -19,6 +19,11 @@ class OptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Option::class);
     }
 
+    public function getTunnelStatus(): ?string
+    {
+        return $this->findOption('TUNNEL_STATUS');
+    }
+
     public function findDomainName(): ?string
     {
         return $this->findOption('DOMAIN_NAME');

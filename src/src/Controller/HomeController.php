@@ -59,7 +59,6 @@ class HomeController extends AbstractController
             'container_actions_overview' => $this->getActionsOverviewContainerVars(),
             'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
-            'tunnel_status_code' => '',
         ]);
     }
 

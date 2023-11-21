@@ -607,6 +607,7 @@
       
     }
   </script>
+  {% if tunnel_status_code is defined %}
   <script>
     function fetchCloudFlareTunnelStatus() {
       // Keep trying to call the GET API endpoint for cloudflare login link
@@ -772,16 +773,11 @@
       fetchCloudFlareTunnelStatus();
     }
 
-
-    {% if tunnel_status_code is defined %}
-      {% if tunnel_status_code == "starting" or tunnel_status_code == "stopping" or tunnel_status_code == "waiting" %}
-        // If the tunnel status is starting or stopping, call the fetchCloudFlareTunnelStatus function
-        fetchCloudFlareTunnelStatus();
-      {% endif %}
-    {% endif %}
-    
-
+  {% if tunnel_status_code in ["starting", "stopping", "waiting"] %}
+    fetchCloudFlareTunnelStatus();
+  {% endif %}
   </script>
+  {% endif %}
 
   <script>
     // Handling Backups Setup and Data Update

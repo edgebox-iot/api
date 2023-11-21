@@ -45,7 +45,6 @@ class StorageController extends AbstractController
             'storage_ready' => $storage_ready,
             'storage_devices' => $storage_devices_list,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
-            'tunnel_status_code' => '',
         ]);
     }
 
