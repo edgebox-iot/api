@@ -4,21 +4,19 @@ namespace App\Helper;
 
 use App\Entity\Option;
 use App\Repository\OptionRepository;
-use Doctrine\ORM\EntityManagerInterface;
-
 
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
-    private EdgeboxioApiConnector $edgeboxioApiConnector;
 
+    private SystemHelper $systemHelper;
 
     public function __construct(
         OptionRepository $optionRepository,
-        EdgeboxioApiConnector $edgeboxioApiConnector,
+        SystemHelper $systemHelper
     ) {
         $this->optionRepository = $optionRepository;
-        $this->edgeboxioApiConnector = $edgeboxioApiConnector;
+        $this->systemHelper = $systemHelper;
     }
 
     public function getEdgeAppsList(): array
@@ -51,27 +49,20 @@ class EdgeAppsHelper
         return $found;
     }
 
-    public function getInternetUrl(?string $cluster, string $app_id, string $host): ?string
+    public function getInternetUrl(string $appId): ?string
     {
-        $url = null;
-
-        if (null === $cluster) {
-            return $url;
+        $domainName = $this->optionRepository->findDomainName();
+        if (null !== $domainName) {
+            return sprintf('%s.%s', $appId, $domainName);
         }
 
-        $url = $host . "-" . $app_id . "." . $cluster;
+        if ($this->systemHelper->isCloud()) {
+            $cluster = $this->optionRepository->findCluster();
+            $host = $this->optionRepository->findUsername();
 
-        // $url_registration_response = $this->edgeboxioApiConnector->register_apps($api_token, $app_id, $ip);
+            return sprintf('%s-%s.%s', $host, $appId, $cluster);
+        }
 
-        // if (!empty($url_registration_response['status']) && 'success' == $url_registration_response['status']) {
-        //     $app_info = !empty($url_registration_response['value']['apps'][$app_id]) ? $url_registration_response['value']['apps'][$app_id] : [];
-
-        //     // Check if registration was successfull and only then issue the appliance to set configurations.
-        //     if (!empty($app_info) && !empty($app_info['url'])) {
-        //         $url = $app_info['url'];
-        //     }
-        // }
-
-        return $url;
+        return null;
     }
 }

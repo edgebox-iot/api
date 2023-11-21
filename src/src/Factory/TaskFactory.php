@@ -62,7 +62,6 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::START_BACKUP);
-        // $task->setArgs(json_encode());
 
         return $task;
     }
@@ -79,7 +78,6 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::DISABLE_BACKUPS);
-        // $task->setArgs(json_encode({}));
 
         return $task;
     }
@@ -97,7 +95,6 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::DISABLE_TUNNEL);
-        // $task->setArgs(json_encode({}));
 
         return $task;
     }
@@ -106,7 +103,6 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::START_TUNNEL);
-        // $task->setArgs(json_encode());
 
         return $task;
     }
@@ -115,7 +111,6 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::STOP_TUNNEL);
-        // $task->setArgs(json_encode({}));
 
         return $task;
     }
@@ -179,45 +174,23 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::REMOVE_EDGEAPP_BASIC_AUTH);
         $task->setArgs(json_encode(['id' => $id]));
-        
+
         return $task;
     }
 
     public function createEnableOnlineTask(string $id): Task
     {
-        $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
-        if (null != $domain_option && !empty($domain_option->getValue())) {
-            $internet_url = sprintf('%s.%s', $id, $domain_option->getValue());
-        } else {
-            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
-                // CLOUD VERSION RELIES ON DIFFERENT ENV VARS
-                // $ip = $this->systemHelper->getIP();
-                $cluster = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
-                $host = $this->optionRepository->findOneBy(['name' => 'USERNAME']);
-                if (null != $cluster && !empty($cluster->getValue())) {
-                    $internet_url = $this->edgeAppsHelper->getInternetUrl($cluster->getValue(), $id, $host->getValue());
-                } else {
-                    $internet_url = null;
-                }
-            }
-            // $token_option = $this->optionRepository->findOneBy(['name' => 'EDGEBOXIO_API_TOKEN']);
-            // $ip = '';
-            // if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
-            //     // Cloud version does not use bootnode but direct IP instead.
-            //     $ip = $this->systemHelper->getIP();
-            // }
-            // $internet_url = (null != $token_option) ? $this->edgeAppsHelper->getInternetUrl($token_option->getValue(), $id, $ip) : null;
-        }
+        $internetUrl = $this->edgeAppsHelper->getInternetUrl($id);
 
         $task = new Task();
         $task->setTask(self::ENABLE_ONLINE);
 
-        if (null === $internet_url) {
+        if (null === $internetUrl) {
             $task->setStatus(Task::STATUS_ERROR);
-            $task->setResult('Error comunicating with the Edgebox.io API');
+            $task->setResult('Error communicating with the Edgebox.io API');
         }
 
-        $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internet_url]));
+        $task->setArgs(json_encode(['id' => $id, 'internet_url' => $internetUrl]));
 
         return $task;
     }
@@ -233,24 +206,11 @@ class TaskFactory
 
     public function createEnablePublicDashboardTask(): Task
     {
-        $domain_option = $this->optionRepository->findOneBy(['name' => 'DOMAIN_NAME']);
-        if (null != $domain_option && !empty($domain_option->getValue())) {
-            $internet_url = sprintf('%s', $domain_option->getValue());
-        } else {
-            $cluster_option = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
-            $host_option = $this->optionRepository->findOneBy(['name' => 'USERNAME']);
-            $ip = '';
-            if ($this->systemHelper::VERSION_CLOUD == $this->systemHelper->getReleaseVersion()) {
-                // Cloud version does not use bootnode but direct IP instead.
-                $ip = $this->systemHelper->getIP();
-            }
-            $id = 'api';
-            $internet_url = (null != $cluster_option && null != $host_option) ? $this->edgeAppsHelper->getInternetUrl($cluster_option->getValue(), $id, $host_option->getValue()) : null;
-        }
+        $internetUrl = $this->edgeAppsHelper->getInternetUrl('api');
 
         $task = new Task();
         $task->setTask(self::ENABLE_PUBLIC_DASHBOARD);
-        $task->setArgs(json_encode(['internet_url' => $internet_url]));
+        $task->setArgs(json_encode(['internet_url' => $internetUrl]));
 
         return $task;
     }

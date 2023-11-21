@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Task;
+use App\Factory\TaskFactory;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
-use App\Helper\TunnelHelper;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\TunnelHelper;
 use App\Repository\OptionRepository;
-use App\Factory\TaskFactory;
-use App\Entity\Task;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,9 +28,8 @@ class ApiController extends AbstractController
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
     private BackupsHelper $backupsHelper;
-    private EdgeAppsHelper $edgeappsHelper;
+    private EdgeAppsHelper $edgeAppsHelper;
     private TaskFactory $taskFactory;
-
 
     public function __construct(
         OptionRepository $optionRepository,
@@ -38,15 +37,15 @@ class ApiController extends AbstractController
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
         BackupsHelper $backupsHelper,
-        EdgeAppsHelper $edgeappsHelper,
-        TaskFactory $taskFactory,
+        EdgeAppsHelper $edgeAppsHelper,
+        TaskFactory $taskFactory
     ) {
         $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
         $this->backupsHelper = $backupsHelper;
-        $this->edgeappsHelper = $edgeappsHelper;
+        $this->edgeAppsHelper = $edgeAppsHelper;
         $this->taskFactory = $taskFactory;
     }
 
@@ -233,7 +232,6 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-
     /**
      * @Route("/api/tasks/{id}", name="api_tasks_id")
      */
@@ -289,8 +287,6 @@ class ApiController extends AbstractController
 
         return new JsonResponse($data);
     }
-    
-
 
     /**
      * @Route("/api/edgeapps", name="api_edgeapps")
@@ -308,8 +304,8 @@ class ApiController extends AbstractController
                         'message' => 'App not found',
                     ];
 
-                    if ($this->edgeappsHelper->edgeAppExists($data['id'])) {
-                        $apps_list = $this->edgeappsHelper->getEdgeAppsList();
+                    if ($this->edgeAppsHelper->edgeAppExists($data['id'])) {
+                        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
                         // die(var_dump($apps_list));
                         // $current_options = $apps_list[$data['id']]['options'];
 
@@ -326,7 +322,7 @@ class ApiController extends AbstractController
                         }
 
                         $current_options = $edgeapp['options'];
-                    
+
                         // Check if all keys in the $data array exist as keys in the $current_options array.
                         // If not, error out.
                         $data_keys = array_keys($data['options']);
@@ -356,16 +352,16 @@ class ApiController extends AbstractController
                                 ];
                             }
                             $task = $this->taskFactory->createSetEdgeappOptionsTask($data['id'], $task_options);
-                            
+
                             if (Task::STATUS_ERROR === $task->getStatus()) {
                                 $response = [
                                     'status' => 'error',
                                     'message' => 'Task creation failed',
                                 ];
 
-                                return $response;
+                                return new JsonResponse($response);
                             }
-                
+
                             $this->entityManager->persist($task);
                             $this->entityManager->flush();
 
@@ -384,9 +380,8 @@ class ApiController extends AbstractController
                         'message' => 'App not found',
                     ];
 
-                    if ($this->edgeappsHelper->edgeAppExists($data['id'])) {
-                        
-                        $apps_list = $this->edgeappsHelper->getEdgeAppsList();
+                    if ($this->edgeAppsHelper->edgeAppExists($data['id'])) {
+                        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
 
                         // die(var_dump($apps_list));
                         // $current_options = $apps_list[$data['id']]['options'];
@@ -405,7 +400,6 @@ class ApiController extends AbstractController
 
                         // $current_options = $edgeapp['login'];
                         if (!empty($data['disable'])) {
-
                             $task = $this->taskFactory->createRemoveEdgeappBasicAuthTask($data['id']);
 
                             if (Task::STATUS_ERROR === $task->getStatus()) {
@@ -414,9 +408,9 @@ class ApiController extends AbstractController
                                     'message' => 'Task creation failed',
                                 ];
 
-                                return $response;
+                                return new JsonResponse($response);
                             }
-                
+
                             $this->entityManager->persist($task);
                             $this->entityManager->flush();
 
@@ -425,25 +419,23 @@ class ApiController extends AbstractController
                                 'message' => 'Task created',
                                 'task_id' => $task->getId(),
                             ];
-
                         } elseif (!empty($data['login']['basic-auth-username']) && !empty($data['login']['basic-auth-password'])) {
-                            
                             $task_options = [
                                 'username' => $data['login']['basic-auth-username'],
                                 'password' => $data['login']['basic-auth-password'],
                             ];
-                            
+
                             $task = $this->taskFactory->createSetEdgeappBasicAuthTask($data['id'], $task_options);
-                            
+
                             if (Task::STATUS_ERROR === $task->getStatus()) {
                                 $response = [
                                     'status' => 'error',
                                     'message' => 'Task creation failed',
                                 ];
 
-                                return $response;
+                                return new JsonResponse($response);
                             }
-                
+
                             $this->entityManager->persist($task);
                             $this->entityManager->flush();
 
@@ -459,10 +451,8 @@ class ApiController extends AbstractController
                             ];
                         }
                     }
-                    
+
                     $data = $response;
-                } elseif ('start' == $data['op']) {
-                    $data = $this->edgeappsHelper->startApp($data['id']);
                 } else {
                     $data = [
                         'status' => 'error',
@@ -476,7 +466,7 @@ class ApiController extends AbstractController
                 ];
             }
         } else {
-            $data = $this->edgeappsHelper->getEdgeAppsList();
+            $data = $this->edgeAppsHelper->getEdgeAppsList();
         }
 
         return new JsonResponse($data);

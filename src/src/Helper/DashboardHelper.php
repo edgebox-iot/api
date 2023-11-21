@@ -65,7 +65,7 @@ class DashboardHelper
             'sidebar_style' => $sidebar_style_value,
             'topbar_style' => $topbar_style_value,
             'show_only_installed_apps' => $show_only_installed_apps_value,
-            'show_me_when_it_twerks' => $show_me_when_it_twerks_value
+            'show_me_when_it_twerks' => $show_me_when_it_twerks_value,
         ];
 
         return $data;

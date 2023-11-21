@@ -19,6 +19,32 @@ class OptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Option::class);
     }
 
+    public function findDomainName(): ?string
+    {
+        return $this->findOption('DOMAIN_NAME');
+    }
+
+    public function findUsername(): ?string
+    {
+        return $this->findOption('USERNAME');
+    }
+
+    public function findCluster(): ?string
+    {
+        return $this->findOption('CLUSTER');
+    }
+
+    private function findOption(string $name)
+    {
+        $option = $this->findOneBy(['name' => $name]);
+
+        if (null === $option) {
+            return null;
+        }
+
+        return $option->getValue();
+    }
+
     // /**
     //  * @return Options[] Returns an array of Options objects
     //  */
