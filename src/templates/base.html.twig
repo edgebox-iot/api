@@ -580,6 +580,32 @@
       .catch(error => console.error(error));
       
     }
+
+    function saveShowMeWhenItTwerks(elem) {
+
+      var setting = "no"
+
+      if (elem.checked) {
+        console.log("Setting twerking to on!");
+        setting = "yes";
+      }
+
+      const data = {
+        show_me_when_it_twerks: setting 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+      
+    }
   </script>
   <script>
     function fetchCloudFlareTunnelStatus() {
@@ -1216,6 +1242,246 @@
 
       // Remove the temporary input element from the HTML body
       document.body.removeChild(element);
+    }
+
+    function saveAppBasicAuth(elem) {
+
+      console.log("Initiating tasks to save the app basic auth info");
+      var req_data = {}
+      req_data['op'] = "login"
+
+      elem.innerHTML = "Saving... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      var options = {};
+
+      // Fetch form with id app-options-form
+      var form = document.getElementById("app-basic-auth-form");
+
+      // Getting a list of the ids of all <input> elements with class .form-control inside the <div> element with id form-backups-setup
+      var inputs = form.querySelectorAll(".form-control");
+      var invalid_value_detected = false;
+
+      // Looping through all the inputs
+      for (var i = 0; i < inputs.length; i++) {
+        // Getting the id and value of the inputs
+        var id = inputs[i].id.replace("-input", "");
+
+        console.log(id);
+
+        var value = inputs[i].value;
+
+        // Remove class is invalid from field, in case this is a re-submission
+        // Remove the work backup- from the id
+        inputs[i].classList.remove("is-invalid");
+
+        // Validate if the input value is empty
+        if (value == "") {
+          // Add class is invalid to field
+          inputs[i].classList.add("is-invalid");
+          invalid_value_detected = true;
+
+          // Log Warn about field being empty
+          console.warn("Field " + id + " is empty");
+
+          // Set aria-disabled=false and remove disabled class so the button is clickable again.
+          elem.setAttribute("aria-disabled", "false");
+          elem.classList.remove("disabled");
+          elem.innerHTML = "Retry";
+
+          return;
+        }
+
+        if(id == "id") {
+          req_data['id'] = value;
+          // Skip the id field
+          continue;
+        }
+        // Adding the value to the data object
+        options[id] = value;
+
+      }
+
+      req_data['login'] = options;
+
+      console.log(form);
+
+      console.log(req_data);
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/edgeapps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req_data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Start Backup"
+            elem.innerHTML = "Retry";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+
+            if(data.status == "error") {
+              // Replace button body with text saying "Start Backup"
+              elem.innerHTML = "Retry";
+
+              // Set aria-disabled=false and remove disabled class so the button is clickable again.
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              // Show the error message
+              document.getElementById("basic-auth-error-alert").innerHTML = data.message;
+              document.getElementById("basic-auth-error-alert").style.display = "block";
+
+              
+            } else {
+              console.log("Task issued")
+              console.log(data);
+
+              // Hide the error message
+              document.getElementById("basic-auth-error-alert").style.display = "none";
+
+              // document.getElementById("options-secondary-alert").style.display = "block";
+
+              timeout_time = 2000;
+              // Keep pooling the API endpoint to check when setup is finished
+              setTimeout(checkSavedBasicAuth, timeout_time, data['task_id'], elem);
+
+            }
+          });
+        }
+      )
+    }
+
+    function removeAppBasicAuth(elem) {
+      console.log("Initiating tasks to remove the app basic auth info");
+      var req_data = {}
+      req_data['op'] = "login"
+      req_data['disable'] = true
+      req_data['id'] = elem.getAttribute("data-app-id");
+
+      console.log("Removing basic auth for app with id: " + req_data['id'])
+      
+      elem.innerHTML = "Removing... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Sending a POST request to /api/settings/backups with the data object and handle if response code is other than 200
+      fetch('/api/edgeapps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req_data),
+      }).then(
+        // If response code is not 200, replace button body with text saying "Start Backup", and set aria-disabled=false and remove disabled class so the button is clickable again.
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' + response.status);
+
+            // Replace button body with text saying "Start Backup"
+            elem.innerHTML = "Retry";
+
+            // Set aria-disabled=false and remove disabled class so the button is clickable again.
+            elem.setAttribute("aria-disabled", "false");
+            elem.classList.remove("disabled");
+
+            return;
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+
+            if(data.status == "error") {
+              // Replace button body with text saying "Start Backup"
+              elem.innerHTML = "Retry";
+
+              // Set aria-disabled=false and remove disabled class so the button is clickable again.
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              // Show the error message
+              document.getElementById("basic-auth-error-alert").innerHTML = data.message;
+              document.getElementById("basic-auth-error-alert").style.display = "block";
+
+              
+            } else {
+              console.log("Task issued")
+              console.log(data);
+
+              // Hide the error message
+              document.getElementById("basic-auth-error-alert").style.display = "none";
+
+              // document.getElementById("options-secondary-alert").style.display = "block";
+
+              timeout_time = 2000;
+              // Keep pooling the API endpoint to check when setup is finished
+              setTimeout(checkSavedBasicAuth, timeout_time, data['task_id'], elem);
+
+            }
+          });
+        }
+      )
+    }
+
+    function checkSavedBasicAuth(task_id, button_elem) {      
+      console.log("Fetching task status with task id: " + task_id);
+
+      fetch('/api/tasks/' + task_id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        console.log(button_elem)
+        if(data.status == 3) { // error
+
+          // Hide the "options-secondary-alert element
+          // document.getElementById("options-secondary-alert").style.display = "none";
+
+          // Show the error
+          alert = document.getElementById("basic-auth-error-alert")
+          alert.innerHTML = '<strong>There was a problem saving these options: </strong>' + data.result;
+          alert.style.display = "block";
+
+          // Replace button body with text saying "Save"
+          button_elem.innerHTML = "Retry";
+
+          // Set aria-disabled=false and remove disabled class so the button is clickable again.
+          button_elem.setAttribute("aria-disabled", "false");
+          button_elem.classList.remove("disabled");
+
+          return;
+          
+        }
+        else if(data.status == 2) { // finished
+          console.log("Reload1");
+          location.reload();
+        }
+
+        setTimeout(checkSavedBasicAuth, 2000, task_id);
+
+      });
+
     }
 
     function saveAppOptions(elem) {

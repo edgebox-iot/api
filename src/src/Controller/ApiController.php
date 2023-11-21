@@ -374,6 +374,91 @@ class ApiController extends AbstractController
                     }
 
                     $data = $response;
+                } elseif ('login' == $data['op']) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'App not found',
+                    ];
+
+                    if ($this->edgeappsHelper->edgeAppExists($data['id'])) {
+                        
+                        $apps_list = $this->edgeappsHelper->getEdgeAppsList();
+
+                        // die(var_dump($apps_list));
+                        // $current_options = $apps_list[$data['id']]['options'];
+
+                        // Find the array entry that is the app we are looking for
+                        // Entries in the array are like:
+                        // ['id' => 'app_id', 'options' => ['key' => 'value']]
+
+                        $edgeapp = null;
+                        foreach ($apps_list as $app) {
+                            if ($app['id'] == $data['id']) {
+                                $edgeapp = $app;
+                                break;
+                            }
+                        }
+
+                        // $current_options = $edgeapp['login'];
+                        if (!empty($data['disable'])) {
+
+                            $task = $this->taskFactory->createRemoveEdgeappBasicAuthTask($data['id']);
+
+                            if (Task::STATUS_ERROR === $task->getStatus()) {
+                                $response = [
+                                    'status' => 'error',
+                                    'message' => 'Task creation failed',
+                                ];
+
+                                return $response;
+                            }
+                
+                            $this->entityManager->persist($task);
+                            $this->entityManager->flush();
+
+                            $response = [
+                                'status' => 'executing',
+                                'message' => 'Task created',
+                                'task_id' => $task->getId(),
+                            ];
+
+                        } elseif (!empty($data['login']['basic-auth-username']) && !empty($data['login']['basic-auth-password'])) {
+                            
+                            $task_options = [
+                                'username' => $data['login']['basic-auth-username'],
+                                'password' => $data['login']['basic-auth-password'],
+                            ];
+                            
+                            $task = $this->taskFactory->createSetEdgeappBasicAuthTask($data['id'], $task_options);
+                            
+                            if (Task::STATUS_ERROR === $task->getStatus()) {
+                                $response = [
+                                    'status' => 'error',
+                                    'message' => 'Task creation failed',
+                                ];
+
+                                return $response;
+                            }
+                
+                            $this->entityManager->persist($task);
+                            $this->entityManager->flush();
+
+                            $response = [
+                                'status' => 'executing',
+                                'message' => 'Task created',
+                                'task_id' => $task->getId(),
+                            ];
+                        } else {
+                            $response = [
+                                'status' => 'error',
+                                'message' => 'Invalid options for basic authentication setup',
+                            ];
+                        }
+                    }
+                    
+                    $data = $response;
+                } elseif ('start' == $data['op']) {
+                    $data = $this->edgeAppsHelper->startApp($data['id']);
                 } else {
                     $data = [
                         'status' => 'error',
