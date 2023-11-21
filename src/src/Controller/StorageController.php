@@ -27,9 +27,7 @@ class StorageController extends AbstractController
         $this->dashboardHelper = $dashboardHelper;
     }
 
-    /**
-     * @Route("/storage", name="storage")
-     */
+    #[Route('/storage', name: 'storage')]
     public function index(): Response
     {
         $storage_ready = false;
@@ -48,9 +46,7 @@ class StorageController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/storage/device/new", name="storage_device_new")
-     */
+    #[Route('/storage/device/new', name: 'storage_device_new')]
     public function storage_device_new(): Response
     {
         return $this->render('storage/device/new.html.twig', [

@@ -84,9 +84,7 @@ class SettingsController extends AbstractController
         $this->entityManager->flush();
     }
 
-    /**
-     * @Route("/settings", name="settings")
-     */
+    #[Route('/settings', name: 'settings')]
     public function index(Request $request): Response
     {
         $status = 'Waiting for Edgebox.io Account Credentials';
@@ -320,9 +318,7 @@ class SettingsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/settings/logout", name="settings_logout")
-     */
+    #[Route('/settings/logout', name: 'settings_logout')]
     public function logout(): Response
     {
         $this->setOptionValue('EDGEBOXIO_API_TOKEN', '');
@@ -335,9 +331,7 @@ class SettingsController extends AbstractController
         return $this->redirectToRoute('settings');
     }
 
-    /**
-     * @Route("/settings/{action}", name="settings_action")
-     */
+    #[Route('//settings/{action}', name: 'settings_action')]
     public function action(string $action): Response
     {
         $controller_title = 'Invalid action';

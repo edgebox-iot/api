@@ -23,9 +23,7 @@ class RegistrationController extends AbstractController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @Route("/register", name="app_register")
-     */
+    #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
         if (null != $this->userRepository->hasUser()) {

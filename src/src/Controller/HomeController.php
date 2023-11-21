@@ -44,9 +44,7 @@ class HomeController extends AbstractController
         $this->backupsHelper = $backupsHelper;
     }
 
-    /**
-     * @Route("/", name="home")
-     */
+    #[Route('/', name: 'home')]
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
