@@ -38,7 +38,6 @@ class BackupsController extends AbstractController
             'controller_subtitle' => 'Safeguard Data',
             'backup_status' => $this->backupsHelper->getBackupsStatus(),
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
-            'tunnel_status_code' => '',
         ]);
     }
 }

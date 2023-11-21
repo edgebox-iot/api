@@ -88,17 +88,14 @@ class TunnelHelper
 
     public function getTunnelStatus(): array
     {
-        $tunnel_status_option = $this->optionRepository->findOneBy(['name' => 'TUNNEL_STATUS']) ?? new Option();
-
-        if (null === $tunnel_status_option->getValue() || 'null' === $tunnel_status_option->getValue()) {
+        $tunnelStatus = $this->optionRepository->getTunnelStatus();
+        if (null === $tunnelStatus || 'null' === $tunnelStatus) {
             return [
                 'status' => 'not_configured',
                 'message' => 'Tunnel is not configured',
             ];
         }
 
-        $val = $tunnel_status_option->getValue();
-
-        return json_decode($val, true);
+        return json_decode($tunnelStatus, true);
     }
 }
