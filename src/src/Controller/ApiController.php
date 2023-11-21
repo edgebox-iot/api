@@ -8,7 +8,6 @@ use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\TunnelHelper;
-use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ApiController extends AbstractController
 {
-    private OptionRepository $optionRepository;
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
@@ -32,7 +30,6 @@ class ApiController extends AbstractController
     private TaskFactory $taskFactory;
 
     public function __construct(
-        OptionRepository $optionRepository,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
@@ -40,7 +37,6 @@ class ApiController extends AbstractController
         EdgeAppsHelper $edgeAppsHelper,
         TaskFactory $taskFactory
     ) {
-        $this->optionRepository = $optionRepository;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
@@ -49,9 +45,7 @@ class ApiController extends AbstractController
         $this->taskFactory = $taskFactory;
     }
 
-    /**
-     * @Route("/api", name="api")
-     */
+    #[Route('/api', name: 'api')]
     public function index(): JsonResponse
     {
         $data = [
@@ -61,9 +55,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/settings/dashboard", name="api_settings_dashboard")
-     */
+    #[Route('/api/settings/dashboard', name: 'api_settings_dashboard')]
     public function settingsDashboard(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
@@ -79,9 +71,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/settings/tunnel", name="api_settings_tunnel")
-     */
+    #[Route('/api/settings/tunnel', name: 'api_settings_tunnel')]
     public function settingsTunnel(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
@@ -117,9 +107,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/backups", name="api_backups")
-     */
+    #[Route('/api/backups', name: 'api_backups')]
     public function backups(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
@@ -174,9 +162,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/tasks", name="api_tasks")
-     */
+    #[Route('/api/tasks', name: 'api_tasks')]
     public function tasks(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
@@ -232,9 +218,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/tasks/{id}", name="api_tasks_id")
-     */
+    #[Route('/api/tasks/{id}', name: 'api_tasks_id')]
     public function tasks_id(Request $request, int $id): JsonResponse
     {
         if ($request->isMethod('post')) {
@@ -288,9 +272,7 @@ class ApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/edgeapps", name="api_edgeapps")
-     */
+    #[Route('/api/edgeapps', name: 'api_edgeapps')]
     public function edgeapps(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {

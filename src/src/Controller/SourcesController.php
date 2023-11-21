@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SourcesController extends AbstractController
 {
-    /**
-     * @Route("/sources", name="sources")
-     */
+    #[Route('/sources', name: 'sources')]
     public function index(): Response
     {
         return $this->render('not_available.html.twig', [

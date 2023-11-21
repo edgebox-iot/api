@@ -75,9 +75,7 @@ class EdgeAppsController extends AbstractController
         $this->dashboardHelper = $dashboardHelper;
     }
 
-    /**
-     * @Route("/edgeapps", name="edgeapps")
-     */
+    #[Route('/edgeapps', name: 'edgeapps')]
     public function index(): Response
     {
         $framework_ready = false;
@@ -142,9 +140,7 @@ class EdgeAppsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/edgeapps/details/{edgeapp}", name="edgeapp_details")
-     */
+    #[Route('/edgeapps/details/{edgeapp}', name: 'edgeapp_details')]
     public function details(Request $request, string $edgeapp): Response
     {
         $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
@@ -212,9 +208,7 @@ class EdgeAppsController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/edgeapps/{action}/{edgeapp}", name="edgeapp_action")
-     */
+    #[Route('/edgeapps/{action}/{edgeapp}', name: 'edgeapp_action')]
     public function action(string $action, string $edgeapp): Response
     {
         $task = null;

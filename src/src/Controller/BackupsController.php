@@ -28,9 +28,7 @@ class BackupsController extends AbstractController
         $this->backupsHelper = $backupsHelper;
     }
 
-    /**
-     * @Route("/backups", name="backups")
-     */
+    #[Route('/backups', name: 'backups')]
     public function index(): Response
     {
         return $this->render('backups/index.html.twig', [
