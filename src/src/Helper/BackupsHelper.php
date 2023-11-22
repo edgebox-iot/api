@@ -245,14 +245,14 @@ class BackupsHelper
 
         // Extract the information using regular expressions
         preg_match('/Snapshots processed:\s+(\d+)/', $logString, $matches);
-        $snapshotsProcessed = isset($matches[1]) ? $matches[1] : null;
+        $snapshotsProcessed = $matches[1] ?? null;
 
         preg_match('/Total File Count:\s+(\d+)/', $logString, $matches);
-        $totalFileCount = isset($matches[1]) ? $matches[1] : null;
+        $totalFileCount = $matches[1] ?? null;
 
         preg_match('/Total Size:\s+([\d.]+)\s+(\w+)/', $logString, $matches);
-        $totalSize = isset($matches[1]) ? $matches[1] : null;
-        $sizeUnit = isset($matches[2]) ? $matches[2] : null;
+        $totalSize = $matches[1] ?? null;
+        $sizeUnit = $matches[2] ?? null;
 
         $parsed_stats = [
             'processed_snapshots' => $snapshotsProcessed,
