@@ -10,6 +10,7 @@ use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\SystemHelper;
 use App\Helper\TunnelHelper;
+use App\Helper\ShellHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,6 +34,7 @@ class SettingsController extends AbstractController
     private TaskFactory $taskFactory;
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
+    private ShellHelper $shellHeper;
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
@@ -60,6 +62,7 @@ class SettingsController extends AbstractController
         TaskFactory $taskFactory,
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemhelper,
+        ShellHelper $shellHelper,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper
@@ -70,6 +73,7 @@ class SettingsController extends AbstractController
         $this->taskFactory = $taskFactory;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemhelper;
+        $this->shellHelper = $shellHelper;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
@@ -296,6 +300,12 @@ class SettingsController extends AbstractController
             }
         }
 
+        $shell_status_code = $this->shellHelper->getShellStatus()['status'];
+        $shell_url = '';
+        if ('running' == $shell_status_code) {
+            $shell_url = $this->optionRepository->findOneBy(['name' => 'SHELL_URL'])->getValue();
+        }
+
         return $this->render('settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
@@ -306,6 +316,8 @@ class SettingsController extends AbstractController
             'connection_details' => $connection_details,
             'task_status' => $task_status,
             'tunnel_status_code' => $tunnel_status_code,
+            'shell_status_code' => $shell_status_code,
+            'shell_url' => $shell_url,
             'domain_name' => $domain_name,
             'domain_name_config_step' => $domain_name_config_step,
             'apps_online' => $apps_online,
