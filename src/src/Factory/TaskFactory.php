@@ -122,7 +122,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::START_SHELL);
         $task->setArgs(json_encode([
-            'timeout' => $timeout
+            'timeout' => $timeout,
         ]));
 
         return $task;

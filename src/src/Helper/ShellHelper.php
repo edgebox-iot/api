@@ -3,7 +3,6 @@
 namespace App\Helper;
 
 use App\Entity\Option;
-use App\Entity\Task;
 use App\Factory\TaskFactory;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,7 +66,7 @@ class ShellHelper
             return [
                 'status' => 'not_running',
                 'status_message' => 'Shell is not running',
-            ];                  
+            ];
         }
 
         $val = $shell_status_option->getValue();
