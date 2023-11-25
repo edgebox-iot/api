@@ -34,7 +34,7 @@ class SettingsController extends AbstractController
     private TaskFactory $taskFactory;
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
-    private ShellHelper $shellHeper;
+    private ShellHelper $shellHelper;
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
