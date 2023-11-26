@@ -12,3 +12,4 @@ vendor/
 .php_cs.cache
 coverage.xml
 edgebox-postinstall.done
+.phpunit.result.cache
