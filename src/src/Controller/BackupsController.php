@@ -4,16 +4,12 @@ namespace App\Controller;
 
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
- *
- * @IsGranted("IS_AUTHENTICATED_FULLY")
- */
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class BackupsController extends AbstractController
 {
     private DashboardHelper $dashboardHelper;

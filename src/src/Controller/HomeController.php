@@ -9,16 +9,12 @@ use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
 use App\Repository\TaskRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * Require IS_AUTHENTICATED_FULLY for *every* controller method in this class.
- *
- * @IsGranted("IS_AUTHENTICATED_FULLY")
- */
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class HomeController extends AbstractController
 {
     private TaskRepository $taskRepository;
