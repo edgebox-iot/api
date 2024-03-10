@@ -7,6 +7,7 @@ use App\Factory\TaskFactory;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\ShellHelper;
 use App\Helper\TunnelHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class ApiController extends AbstractController
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
+    private ShellHelper $shellHelper;
     private BackupsHelper $backupsHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private TaskFactory $taskFactory;
@@ -29,6 +31,7 @@ class ApiController extends AbstractController
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
+        ShellHelper $shellHelper,
         BackupsHelper $backupsHelper,
         EdgeAppsHelper $edgeAppsHelper,
         TaskFactory $taskFactory
@@ -36,6 +39,7 @@ class ApiController extends AbstractController
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
+        $this->shellHelper = $shellHelper;
         $this->backupsHelper = $backupsHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->taskFactory = $taskFactory;
@@ -98,6 +102,38 @@ class ApiController extends AbstractController
             }
         } else {
             $data = $this->tunnelHelper->getTunnelStatus();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    #[Route('/api/settings/shell', name: 'api_settings_shell')]
+    public function settingsShell(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            // Need to still look at body and such...
+            $jsonString = $request->getContent();
+            $data = json_decode($jsonString, true);
+
+            if (isset($data['op'])) {
+                if ('start' == $data['op']) {
+                    $data = $this->shellHelper->startShell($data['timeout']);
+                } elseif ('stop' == $data['op']) {
+                    $data = $this->shellHelper->stopShell();
+                } else {
+                    $data = [
+                        'status' => 'error',
+                        'message' => 'Invalid operation',
+                    ];
+                }
+            } else {
+                $data = [
+                    'status' => 'error',
+                    'message' => 'Invalid operation',
+                ];
+            }
+        } else {
+            $data = $this->shellHelper->getShellStatus();
         }
 
         return new JsonResponse($data);

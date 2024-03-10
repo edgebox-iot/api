@@ -17,6 +17,8 @@ class TaskFactory
     public const START_TUNNEL = 'start_tunnel';
     public const STOP_TUNNEL = 'stop_tunnel';
     public const DISABLE_TUNNEL = 'disable_tunnel';
+    public const START_SHELL = 'start_shell';
+    public const STOP_SHELL = 'stop_shell';
     public const INSTALL_EDGEAPP = 'install_edgeapp';
     public const REMOVE_EDGEAPP = 'remove_edgeapp';
     public const START_EDGEAPP = 'start_edgeapp';
@@ -111,6 +113,25 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::STOP_TUNNEL);
+
+        return $task;
+    }
+
+    public function createStartShellTask(int $timeout): Task
+    {
+        $task = new Task();
+        $task->setTask(self::START_SHELL);
+        $task->setArgs(json_encode([
+            'timeout' => $timeout,
+        ]));
+
+        return $task;
+    }
+
+    public function createStopShellTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::STOP_SHELL);
 
         return $task;
     }

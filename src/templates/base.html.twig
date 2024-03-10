@@ -779,9 +779,134 @@
   </script>
   {% endif %}
 
+  {% if shell_status_code is defined %}
+  <script>
+    // Handling sshx.io shell session
+    function startShellSession(elem) {
+      
+      // Validate if the text input with id custom-domain-cloudflare is empty
+      // var customDomainField = document.getElementById("custom-domain-cloudflare")
+      // Remove class is invalid from field, in case this is a re-submission:
+      var timeoutField = document.getElementById("sshx-timeout-value")
+      var timeoutValue = timeoutField.value;
+      timeoutField.classList.remove("is-invalid");
+
+      if (timeoutValue == "") {
+        console.log("Timeout value is empty!");
+
+        // If it is empty, add the following classes to the input field: is-invalid
+        timeoutField.classList.add("is-invalid");
+
+        // TODO: Display error?
+
+        return;
+      }
+
+      // Replace button body with text saying "Starting... " and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Starting <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/shell', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "start", timeout: timeoutValue * 60})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchShellSessionStatus();
+    }
+
+    function stopShellSession(elem) {
+      // Replace button body with text saying "stopping" and a spinner.
+      console.log(elem)
+      elem.innerHTML = "Stopping <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+
+      // Set aria-disabled=true and add disabled class to every button with class
+      var buttons = document.getElementsByClassName("btn-shell-session");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].setAttribute("aria-disabled", "true");
+        buttons[i].classList.add("disabled");
+      }
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/shell', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op: "stop"})
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchShellSessionStatus();
+    }
+
+    function fetchShellSessionStatus() {
+      // Keep trying to call the GET API endpoint for the shell link
+      console.log("Fetching shell session status");
+      var opened = false;
+      var interval = setInterval(function() {
+        fetch('/api/settings/shell')
+        .then(response => response.json())
+        .then(data => {
+          console.log("Current rendered status: {{shell_status_code}}")
+          console.log(data);
+          if (data.status == "running" && data.status != "{{ shell_status_code }}") {
+            console.log("Shell session link received");
+            // Open the link in a new tab
+            if(!opened) {
+              window.open(data.url, '_blank');
+              // Replace the button with text saying "Open Shell Session"
+              var elem = document.querySelector(".btn-shell-session");
+              elem.innerHTML = "Open Shell";
+              // Add link
+              elem.setAttribute("href", data.url);
+              // Set new tab target
+              elem.setAttribute("target", "_blank");
+              elem.setAttribute("aria-disabled", "false");
+              elem.classList.remove("disabled");
+
+              elem = document.querySelector(".btn-shell-stop-session");
+              elem.style.display = "block";
+              opened = true;
+
+              // Hide sshx-timeout-value
+              document.getElementById("sshx-timeout-settings").style.display = "none";
+            }
+          }
+          if(data.status != "{{ shell_status_code }}") {
+            console.log("Shell session status is different from the rendered status. Refreshing");
+            // wait 5 seconds
+            setTimeout(function() {
+              // Refresh the page
+              var url = new URL(location.href);
+              url.searchParams.set('option_changed', 'shell');
+              location.href = url.href;
+            }, 1000);
+          }
+          if (data.status == "error") {
+            console.log("Shell session setup failed");
+            clearInterval(interval);
+            
+            // Refresh the page
+            location.reload();
+          }
+          
+        })
+      }, 5000);
+    }
+  </script>
+  {% endif %}
+
   <script>
     // Handling Backups Setup and Data Update
-
     function fetchBackupsStatus(original_status = 'not_configured'){
       
       console.log("Fetching backup status with last status being: " + original_status);

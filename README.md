@@ -12,7 +12,7 @@ The API and web-interface module built with PHP, running on a LAMP stack environ
 
 PHP version is:
 
-* 7.4.2
+* 8.1
 
 It can be upgraded by editing the Dockerfile in the bin folder (please open a PR).
 
@@ -155,12 +155,6 @@ username: root
 password: tiger
 
 If running on the context of edgebox proxy service, it is available at http://pma.edgebox instead.
-
-## Not ready for production
-
-* secure mysql users with proper source IP limitations
-* Implement some form of authentication for the web interface and api endpoints.
-* Many missing features
 
 ## Interface
 
