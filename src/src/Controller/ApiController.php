@@ -115,32 +115,24 @@ class ApiController extends AbstractController
     public function settingsShell(Request $request): JsonResponse
     {
         if ($request->isMethod('post')) {
-            // Need to still look at body and such...
-            $jsonString = $request->getContent();
-            $data = json_decode($jsonString, true);
+            $data = json_decode($request->getContent(), true);
+            $response = [
+                'status' => 'error',
+                'message' => 'Invalid operation',
+            ];
 
             if (isset($data['op'])) {
                 if ('start' == $data['op']) {
-                    $data = $this->shellHelper->startShell($data['timeout']);
+                    $response = $this->shellHelper->startShell($data['timeout']);
                 } elseif ('stop' == $data['op']) {
-                    $data = $this->shellHelper->stopShell();
-                } else {
-                    $data = [
-                        'status' => 'error',
-                        'message' => 'Invalid operation',
-                    ];
-                }
-            } else {
-                $data = [
-                    'status' => 'error',
-                    'message' => 'Invalid operation',
-                ];
+                    $response = $this->shellHelper->stopShell();
+                } 
             }
         } else {
-            $data = $this->shellHelper->getShellStatus();
+            $response = $this->shellHelper->getShellStatus();
         }
 
-        return new JsonResponse($data);
+        return new JsonResponse($response);
     }
 
     #[Route('/api/backups', name: 'api_backups')]

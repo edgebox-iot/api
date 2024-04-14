@@ -60,7 +60,7 @@ class ShellHelper
 
     public function getShellStatus(): array
     {
-        $shell_status_option = $this->optionRepository->findOneBy(['name' => 'SHELL_STATUS']) ?? new Option();
+        $shell_status_option = $this->optionRepository->findShellStatus() ?? new Option();
 
         if (null === $shell_status_option->getValue() || 'null' === $shell_status_option->getValue() || 'not_running' === $shell_status_option->getValue()) {
             return [
@@ -75,14 +75,14 @@ class ShellHelper
             return [
                 'status' => 'running',
                 'status_message' => 'Shell is running',
-                'url' => $this->optionRepository->findOneBy(['name' => 'SHELL_URL'])->getValue(),
-            ];
-        } else {
-            return [
-                'status' => 'error',
-                'status_message' => 'Shell is in an unknown state',
-                'value' => $val,
+                'url' => $this->optionRepository->findShellUrl(),
             ];
         }
+        
+        return [
+            'status' => 'error',
+            'status_message' => 'Shell is in an unknown state',
+            'value' => $val,
+        ];
     }
 }

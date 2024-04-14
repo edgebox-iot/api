@@ -303,7 +303,7 @@ class SettingsController extends AbstractController
         $shell_status_code = $this->shellHelper->getShellStatus()['status'];
         $shell_url = '';
         if ('running' == $shell_status_code) {
-            $shell_url = $this->optionRepository->findOneBy(['name' => 'SHELL_URL'])->getValue();
+            $shell_url = $this->optionRepository->findShellUrl();
         }
 
         return $this->render('settings/index.html.twig', [

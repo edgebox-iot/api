@@ -39,6 +39,16 @@ class OptionRepository extends ServiceEntityRepository
         return $this->findOption('CLUSTER');
     }
 
+    public function findShellUrl(): ?string
+    {
+        return $this->findOption('SHELL_URL');
+    }
+
+    public function findShellStatus(): ?string
+    {
+        return $this->findOption('SHELL_STATUS');
+    }
+
     private function findOption(string $name)
     {
         $option = $this->findOneBy(['name' => $name]);
