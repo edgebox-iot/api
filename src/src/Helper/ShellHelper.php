@@ -23,15 +23,6 @@ class ShellHelper
         $this->taskFactory = $taskFactory;
     }
 
-    private function setOptionValue(string $name, string $value): void
-    {
-        $option = $this->optionRepository->findOneBy(['name' => $name]) ?? new Option();
-        $option->setName($name);
-        $option->setValue($value);
-        $this->entityManager->persist($option);
-        $this->entityManager->flush();
-    }
-
     public function stopShell(): array
     {
         $task = $this->taskFactory->createStopShellTask();
@@ -78,7 +69,7 @@ class ShellHelper
                 'url' => $this->optionRepository->findShellUrl(),
             ];
         }
-        
+
         return [
             'status' => 'error',
             'status_message' => 'Shell is in an unknown state',
