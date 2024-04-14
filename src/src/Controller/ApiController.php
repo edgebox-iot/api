@@ -126,7 +126,7 @@ class ApiController extends AbstractController
                     $response = $this->shellHelper->startShell($data['timeout']);
                 } elseif ('stop' == $data['op']) {
                     $response = $this->shellHelper->stopShell();
-                } 
+                }
             }
         } else {
             $response = $this->shellHelper->getShellStatus();
