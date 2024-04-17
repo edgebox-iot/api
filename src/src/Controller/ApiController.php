@@ -7,6 +7,7 @@ use App\Factory\TaskFactory;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
+use App\Helper\ShellHelper;
 use App\Helper\TunnelHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class ApiController extends AbstractController
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
+    private ShellHelper $shellHelper;
     private BackupsHelper $backupsHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private TaskFactory $taskFactory;
@@ -29,6 +31,7 @@ class ApiController extends AbstractController
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
+        ShellHelper $shellHelper,
         BackupsHelper $backupsHelper,
         EdgeAppsHelper $edgeAppsHelper,
         TaskFactory $taskFactory
@@ -36,6 +39,7 @@ class ApiController extends AbstractController
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
+        $this->shellHelper = $shellHelper;
         $this->backupsHelper = $backupsHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->taskFactory = $taskFactory;
@@ -101,6 +105,30 @@ class ApiController extends AbstractController
         }
 
         return new JsonResponse($data);
+    }
+
+    #[Route('/api/settings/shell', name: 'api_settings_shell')]
+    public function settingsShell(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            $data = json_decode($request->getContent(), true);
+            $response = [
+                'status' => 'error',
+                'message' => 'Invalid operation',
+            ];
+
+            if (isset($data['op'])) {
+                if ('start' == $data['op']) {
+                    $response = $this->shellHelper->startShell($data['timeout']);
+                } elseif ('stop' == $data['op']) {
+                    $response = $this->shellHelper->stopShell();
+                }
+            }
+        } else {
+            $response = $this->shellHelper->getShellStatus();
+        }
+
+        return new JsonResponse($response);
     }
 
     #[Route('/api/backups', name: 'api_backups')]
