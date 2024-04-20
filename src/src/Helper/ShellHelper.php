@@ -53,14 +53,14 @@ class ShellHelper
     {
         $shell_status_option = $this->optionRepository->findShellStatus() ?? new Option();
 
-        if (null === $shell_status_option->getValue() || 'null' === $shell_status_option->getValue() || 'not_running' === $shell_status_option->getValue()) {
+        if (null === $shell_status_option || 'null' === $shell_status_option || 'not_running' === $shell_status_option) {
             return [
                 'status' => 'not_running',
                 'status_message' => 'Shell is not running',
             ];
         }
 
-        $val = $shell_status_option->getValue();
+        $val = $shell_status_option;
 
         if ('running' === $val) {
             return [
