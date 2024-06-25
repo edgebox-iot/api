@@ -9,6 +9,7 @@ use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\ShellHelper;
+use App\Helper\UpdatesHelper;
 use App\Helper\SystemHelper;
 use App\Helper\TunnelHelper;
 use App\Repository\OptionRepository;
@@ -31,6 +32,7 @@ class SettingsController extends AbstractController
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
     private ShellHelper $shellHelper;
+    private UpdatesHelper $updatesHelper;
     private EntityManagerInterface $entityManager;
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
@@ -41,6 +43,7 @@ class SettingsController extends AbstractController
     private const ACTION_CONTROLLER_TITLES = [
         'enable_public_dashboard' => 'Enabling Online Access',
         'disable_public_dashboard' => 'Disabling Online Access',
+        'update_system' => 'Updating System',
     ];
 
     /**
@@ -49,6 +52,7 @@ class SettingsController extends AbstractController
     public const ALLOWED_ACTIONS = [
         'enable_public_dashboard' => 'createEnablePublicDashboardTask',
         'disable_public_dashboard' => 'createDisablePublicDashboardTask',
+        'update_system' => 'createApplyUpdatesTask',
     ];
 
     public function __construct(
@@ -59,6 +63,7 @@ class SettingsController extends AbstractController
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemhelper,
         ShellHelper $shellHelper,
+        UpdatesHelper $updatesHelper,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper
@@ -70,6 +75,7 @@ class SettingsController extends AbstractController
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemhelper;
         $this->shellHelper = $shellHelper;
+        $this->updatesHelper = $updatesHelper;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
@@ -302,6 +308,8 @@ class SettingsController extends AbstractController
             $shell_url = $this->optionRepository->findShellUrl();
         }
 
+        $updates_status = $this->updatesHelper->getUpdatesStatus();
+
         return $this->render('settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
@@ -323,6 +331,7 @@ class SettingsController extends AbstractController
             'is_dashboard_public' => $is_dashboard_public,
             'dash_internet_url' => $dash_internet_url,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
+            'updates_status' => $updates_status,
         ]);
     }
 
@@ -339,7 +348,7 @@ class SettingsController extends AbstractController
         return $this->redirectToRoute('settings');
     }
 
-    #[Route('//settings/{action}', name: 'settings_action')]
+    #[Route('/settings/{action}', name: 'settings_action')]
     public function action(string $action): Response
     {
         $controller_title = 'Invalid action';

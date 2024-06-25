@@ -30,6 +30,8 @@ class TaskFactory
     public const DISABLE_ONLINE = 'disable_online';
     public const ENABLE_PUBLIC_DASHBOARD = 'enable_public_dashboard';
     public const DISABLE_PUBLIC_DASHBOARD = 'disable_public_dashboard';
+    public const CHECK_UPDATES = 'check_updates';
+    public const APPLY_UPDATES = 'apply_updates';
 
     private OptionRepository $optionRepository;
     private EdgeAppsHelper $edgeAppsHelper;
@@ -240,6 +242,22 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::DISABLE_PUBLIC_DASHBOARD);
+
+        return $task;
+    }
+
+    public function createCheckUpdatesTask(int $timeout): Task
+    {
+        $task = new Task();
+        $task->setTask(self::CHECK_UPDATES);
+
+        return $task;
+    }
+
+    public function createApplyUpdatesTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::APPLY_UPDATES);
 
         return $task;
     }
