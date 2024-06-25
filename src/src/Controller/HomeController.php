@@ -194,6 +194,12 @@ class HomeController extends AbstractController
                 Task::STATUS_FINISHED => 'Updated options for %s EdgeApp',
                 Task::STATUS_ERROR => 'Failed to set options for %s EdgeApp',
             ],
+            'apply_updates' => [
+                Task::STATUS_CREATED => 'Waiting to Update System',
+                Task::STATUS_EXECUTING => 'Performing System Update',
+                Task::STATUS_FINISHED => 'Performed System Update',
+                Task::STATUS_ERROR => 'Failed to Update System',
+            ]
         ];
 
         $unknown_action_descriptions = [
