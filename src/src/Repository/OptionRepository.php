@@ -49,6 +49,11 @@ class OptionRepository extends ServiceEntityRepository
         return $this->findOption('SHELL_STATUS');
     }
 
+    public function findUpdatesStatus(): ?string
+    {
+        return $this->findOption('SYSTEM_UPDATES');
+    }
+
     private function findOption(string $name)
     {
         $option = $this->findOneBy(['name' => $name]);
