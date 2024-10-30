@@ -36,14 +36,14 @@
         </style>
         <div class="row">
             <div class="form-check form-switch installed-apps-responsive-switch" style="margin-left: 2.5rem; margin-top: -3rem; margin-bottom: 3rem;">
-                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="toggleEdgeAppsListFilter(this);" {% if dashboard_settings.show_only_installed_apps %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="toggleEdgeAppsListFilter(this);" {% if dashboard_settings.show_only_installed_apps == 'yes' %}checked{% endif %}>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Show only installed</label>
             </div>
         </div>
         <script>
             function toggleEdgeAppsListFilter(elem) {
                 Array.from(document.querySelectorAll('.edgeapps-list .not-installed')).forEach(el => el.style.display = elem.checked ? 'none' : 'block');
-                var option = elem.checked ? true : false;
+                var option = elem.checked ? 'yes' : 'no';
 
                 const data = {
                     show_only_installed_apps: option 

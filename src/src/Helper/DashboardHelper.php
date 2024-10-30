@@ -51,7 +51,7 @@ class DashboardHelper
         $show_only_installed_apps_option = $this->optionRepository->findOneBy(['name' => 'DASHBOARD_SHOW_ONLY_INSTALLED_APPS']) ?? new Option();
         $show_only_installed_apps_value = $show_only_installed_apps_option->getValue();
         if (!$show_only_installed_apps_value) {
-            $show_only_installed_apps_value = false;
+            $show_only_installed_apps_value = 'no';
         }
 
         $show_me_when_it_twerks_option = $this->optionRepository->findOneBy(['name' => 'DASHBOARD_SHOW_ME_WHEN_IT_TWERKS']) ?? new Option();
@@ -86,6 +86,7 @@ class DashboardHelper
         }
 
         if (!empty($data['show_only_installed_apps'])) {
+            
             $this->setOptionValue('DASHBOARD_SHOW_ONLY_INSTALLED_APPS', $data['show_only_installed_apps']);
         }
 
