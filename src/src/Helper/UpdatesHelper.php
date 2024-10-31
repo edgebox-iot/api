@@ -51,7 +51,7 @@ class UpdatesHelper
 
     public function getUpdatesStatus(): array
     {
-        $updates_status_option = $this->optionRepository->findUpdatesStatus() ?? new Option();
+        $updates_status_option = $this->optionRepository->findUpdatesStatus();
 
         if (null === $updates_status_option || 'null' === $updates_status_option || '[]' === $updates_status_option) {
             return [
