@@ -1,0 +1,424 @@
+{% extends 'base_security.html.twig' %}
+
+{% block title %}Changelog - Edgebox
+{% endblock %}
+{% block content %}
+	<section class="min-vh-100 mb-8">
+      	<div class="page-header align-items-start min-vh-30 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('../assets/img/curved-images/curved14.jpg');">
+			<span class="mask bg-gradient-dark opacity-6"></span>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="container-fluid py-4">
+						<div class="row">
+							<div class="col-12 text-center">
+								<img src="../assets/img/logo_transparent_horizontal_300x100.png" class="border-radius-lg" alt="team-2" style="filter: brightness(0) invert(1);">
+								<h3 class="mt-5 text-white">The Changelog 🚚</h3>
+								<h5 class="text-secondary font-weight-normal text-white"><b>A new update ({{ target_version }}) just landed!</b> <br>Here's the fixes and improvements we've been working on:</h5>
+
+								<div class="multisteps-form mb-5">
+
+									<div class="row">
+										<div class="col-12 col-lg-12 mx-auto my-5">
+											<div class="onboarding-progress">
+												<button class="onboarding-btn btn btn-secondary js-active" data-step="1" type="button" title="User Info">
+													<span>Onboarding and Update flows</span>
+												</button>
+												<button class="onboarding-btn btn btn-secondary" data-step="2" type="button" title="Address">
+													<span>New Apps</span>
+												</button>
+												<button class="onboarding-btn btn btn-secondary" data-step="3" type="button" title="Order Info">
+													<span>Improvements and Fixes</span>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+      	</div>
+		<div class="container">
+			<div class="onboarding-cards" style="margin-top: -300px;">
+				<div class="row onboarding-card" id="onboarding-card-1">
+					<div class="card col-12 col-lg-12 m-auto">
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										Updated Onboarding
+									</h1>
+									<h1 class="mb-4">
+										And new Changelog Flows ✨
+									</h1>
+									<p class="lead pe-5 me-5"></p>
+									<p>
+										<b>✅ Its now faster to get up-and-running, and easier to be more informed on what's new and fixed!</b>
+										<br>
+										<ul><li>You're looking at it. Our <b>new updates experience gives you a detailed log of what changed, every time it changes.</b></li>
+										<li><b>A new onboarding experience helps you get started quickly</b> by setting you up with edgeapps by pre-installing apps that help your use cases.
+										You can do this by <b><a href="/hello" target="_blank">doing the Walkthrough</a></b>. You might be surprised by what Edgebox can help you accomplish more privately 🤩 <i>You can also do this anytime later by finding it on the dashboard home page 👇</i></li></ul></p>
+									</p>
+									<div class="row">
+										<div class="col-lg-10">
+											<div class="image-grid">
+												<img src="../assets/img/changelog-assets/screenshot_2024-11-02_21.19.15.png" class="img-fluid" alt="team-2">
+												<img src="../assets/img/changelog-assets/screenshot_2024-11-01_14.01.33.png" class="img-fluid" alt="team-2">
+												<img src="../assets/img/hello-assets/screenshot_2024-11-02_10.35.23.png" class="img-fluid" alt="team-2">
+											</div>
+										</div>
+									</div>
+									<style>
+									.image-grid {
+										display: flex;
+										justify-content: space-between;
+										margin-top: 20px;
+									}
+
+									.image-grid img {
+										margin: 0 10px;
+										height: 300px; /* Arbitrary height */
+									}
+
+									.image-grid img:not(:first-child) {
+										margin-left: -500px;  /* Overlap amount */
+									}
+
+									@media (max-width: 991px) {
+										.image-grid {
+											flex-direction: column;
+											align-items: center;
+										}
+
+										.image-grid img:not(:first-child) {
+											margin-left: 0;
+											margin-top: -100px; /* Add top margin on mobile */
+										}
+									}
+									</style>
+
+									<br>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-lg-2">
+									
+								</div>
+								<div class="col col-lg-8">
+								</div>
+								<div class="col col-lg-2 d-flex justify-content-end">
+									<button class="btn btn-primary" onclick="navigateStep(1)">Next</button>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="row onboarding-card" id="onboarding-card-2">
+					<div class="card col-12 col-lg-12 m-auto">
+						
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										New Apps, new things
+									</h1>
+									<h1 class="mb-4">
+										Edgebox can do for you! 🚀
+									</h1>
+									<p class="lead pe-5 me-5"></p>
+									<p>
+										<br>
+										<b>AI and Knowledge Management tools are the theme of this update. Edgebox now let's you do more.</b>
+										<br>
+										Check them out, and select any you want to install now!
+
+									</p>
+									<br>
+									
+								</div>
+							</div>
+					
+							<div class="selection-grid">
+								<div class="select-card" id="install-card-openwebui" onclick="toggleSelection(this)" data-app-id="openwebui">
+									<span class="card-text"><b>OpenWebUI</b> allows you to chat, manage, and share conversations against different models, generate images, and create and manage your own custom "Models" with system prompts, with and no strings attached to any specific provider.</span>
+									<div class="bg-gradient-{{ dashboard_settings.color_mood }} border-radius-lg h-100" style="max-width: 100px; max-height: 90px; float: right;">
+										<div class="position-relative d-flex align-items-center justify-content-center h-100">
+											<img class="w-100 position-relative z-index-2" src="../assets/img/edgeapps/openwebui.png">
+										</div>
+									</div>
+								</div>
+								<div class="select-card" id="install-card-siyuan" onclick="toggleSelection(this)" data-app-id="siyuan">
+									<span class="card-text"><b>Siyuan</b> is a Knowledge Management tools and a powerful ways to keep track of things, in a really simple package, with a really easy to use interface. A powerful Notion alternative for single users and small groups or organizations.</span>
+									<div class="bg-gradient-{{ dashboard_settings.color_mood }} border-radius-lg h-100" style="max-width: 100px; max-height: 90px; float: right;">
+										<div class="position-relative d-flex align-items-center justify-content-center h-100">
+											<img class="w-100 position-relative z-index-2" src="../assets/img/edgeapps/siyuan.png">
+										</div>
+									</div>
+								</div>
+								<!-- Add more cards as needed -->
+							</div>
+
+							<div class="row mt-5">
+								<div class="col col-lg-2">
+									<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+								</div>
+								<div class="col col-lg-8">
+								</div>
+								<div class="col col-lg-2 d-flex justify-content-end">
+									<button class="btn btn-primary" onclick="navigateStep(1)">Next</button>
+								</div>
+							</div>
+						</div>
+
+						<style>
+						.selection-grid {
+							display: grid;
+							grid-template-columns: repeat(2, 1fr);
+							gap: 1rem;
+						}
+
+						@media (max-width: 768px) {
+							.selection-grid {
+								grid-template-columns: 1fr;
+							}
+						}
+
+						.select-card {
+							display: flex;
+							justify-content: space-between;
+							align-items: right;
+							padding: 1rem;
+							border: 2px solid #ddd;
+							border-radius: 8px;
+							cursor: pointer;
+							transition: all 0.3s ease;
+						}
+
+						.select-card:hover {
+							border-color: #007bff;
+						}
+
+						.select-card.selected {
+							background-image: linear-gradient(310deg, #7928CA, #FF0080);
+							-webkit-background-clip: text;
+    						-webkit-text-fill-color: transparent;
+							color: white;
+							border-color: #0056b3;
+						}
+
+						.card-text {
+							margin-right: 1rem;
+						}
+						</style>
+
+						{# <script>
+						function toggleSelection(element) {
+							element.classList.toggle('selected');
+						}
+						</script> #}
+
+					</div>
+				</div>
+				<div class="row onboarding-card" id="onboarding-card-3">
+					<div class="card col-12 col-lg-12 m-auto">
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										Improvements and Fixes
+									</h1>
+									<h1 class="mb-4">
+										for a better experience 🎉
+									</h1>
+									<p class="lead pe-5 me-5"></p>
+									<p>
+										<b>We've been gathering feedback from our first customers and users, and changed some things based on that!</b>
+										<br>
+										<br>
+										<b>🏗️ The behavior of how apps are installed:</b>
+										<ul>
+											<li>
+												<b>a newly installed app is automatically and immediately configured for external access by default</b>, when possible. You can still remove external access per app, individually, even after they are installed. From the feedback received, its just what everybody is expecting. A toggle in the settings page exists to block this behavior, so the legacy behavior is kept, if you're into that or need it 🤷‍♂️
+											</li>
+										</ul>
+										<img width="450px" src="../assets/img/changelog-assets/screenshot_2024-11-01_13.50.49.png">
+										<br>
+										<b>👀 How apps are shown to you on the dashboard:</b>
+										<ul>
+											<li>
+												<b>When showing all apps in the apps list, they are now ordered in a way such that installed apps always show first in the list</b>, followed by non-installed stable apps, followed by non-installed experimental apps
+											</li>
+											<li>
+												<b>Apps being installing or removed now show a special faded icon in the dashboard home quick app shortcuts</b>, and change to clickable once the app finishes installing.
+											</li>
+											<li>
+												<b>The Quick Access icons in the dashboard home now show labels</b>, to make it easy to identify your apps and their purpose. You can change this behavior in the settings page.
+											</li>
+										</ul>
+										
+										<div class="row">
+											<div class="col-lg-10">
+												<div class="image-grid">
+													<img src="../assets/img/hello-assets/screenshot_2024-11-02_10.35.23.png" class="img-fluid" alt="team-2">
+													<img src="../assets/img/changelog-assets/screenshot_2024-11-02_21.58.39.png" class="img-fluid" alt="team-2">
+													<img src="../assets/img/changelog-assets/screenshot_2024-11-02_10.28.39.png" class="img-fluid" alt="team-2">
+												</div>
+											</div>
+										</div>
+
+										<b>🪲 We also fixed some things to simplify Edgebox:</b>
+										<ul>
+											<li>
+												We improved the detection of a CloudFlare tunnel configuration before attempting to start a tunnel service task, decreasing the chance of a startup service hang.
+											</li>
+											<li>
+												We added the "experimental" tag to the apps list, to make it easier to identify apps that are not yet stable or fully tested. 
+											</li>
+										</ul>
+									</p>
+									<br>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-lg-2">
+									<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+								</div>
+								<div class="col col-lg-7">
+								</div>
+								<div class="col col-lg-3 d-flex justify-content-end">
+									<button onclick="finishOnboarding()" class="btn btn-primary">Finish</a>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<style>
+			.onboarding-card {
+				display: none;
+			}
+
+			.onboarding-card.active {
+				display: block;
+			}
+
+			.onboarding-btn.js-active {
+				background-color: #fff;
+				color: #000;
+			}
+			</style>
+			<script>
+				let currentStep = 1;
+				const totalSteps = 3;
+
+				function navigateStep(direction) {
+					const newStep = currentStep + direction;
+					if (newStep >= 1 && newStep <= totalSteps) {
+						// Hide current card
+						document.getElementById(`onboarding-card-${currentStep}`).classList.remove('active');
+						
+						// Show new card
+						document.getElementById(`onboarding-card-${newStep}`).classList.add('active');
+						
+						// Update progress buttons
+						updateProgressButtons(newStep);
+						
+						// Update navigation buttons
+						currentStep = newStep;
+						updateNavigationButtons();
+
+						// Scroll the user up to the top of the page
+						window.scrollTo(0, 0);
+					}
+				}
+
+				function updateProgressButtons(step) {
+					document.querySelectorAll('.onboarding-btn').forEach(btn => {
+						btn.classList.remove('js-active', 'btn-white');
+						btn.classList.add('btn-secondary');
+					});
+					
+					const activeBtn = document.querySelector(`.onboarding-btn[data-step="${step}"]`);
+					activeBtn.classList.remove('btn-secondary');
+					activeBtn.classList.add('js-active', 'btn-white');
+				}
+
+				function updateNavigationButtons() {
+					// document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+					// document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+				}
+
+				// Allow clicking on progress buttons
+				document.querySelectorAll('.onboarding-btn').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const targetStep = parseInt(btn.dataset.step);
+						const direction = targetStep - currentStep;
+						navigateStep(direction);
+					});
+				});
+
+				navigateStep(0);
+			</script>
+		</div>
+		<br>
+		<hr>
+		<div class="row align-items-center justify-content-center">
+			<div class="col-lg-6 mb-lg-0 mb-4">
+				<div class="copyright text-center text-muted">
+				© <script>
+					document.write(new Date().getFullYear())
+				</script>,
+				made with ❤️ for a more private web.
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		let selectedCards = [];
+
+		function toggleSelection(element) {
+			element.classList.toggle('selected');
+			const cardId = element.getAttribute('data-app-id');
+			
+			if (element.classList.contains('selected')) {
+				selectedCards.push(cardId);
+			} else {
+				selectedCards = selectedCards.filter(id => id !== cardId);
+			}
+		}
+
+		function finishOnboarding() {
+			if (selectedCards.length === 0) {
+				window.location.href = '/';
+			} else {
+				fetch('/api/edgeapps', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						op: 'install_bulk_edgeapps',
+						ids: selectedCards
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					// Redirect to dashboard or show success message
+					window.location.href = '/';
+					console.log(data);
+				})
+				.catch(error => {
+					// console.error('Error:', error);
+					window.location.href = '/';
+				});
+			}
+		}
+	</script>
+
+{% endblock content %}

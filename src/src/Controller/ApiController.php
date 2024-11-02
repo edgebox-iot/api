@@ -459,6 +459,51 @@ class ApiController extends AbstractController
                     }
 
                     $data = $response;
+
+                } elseif ('install_bulk_edgeapps' == $data['op']) {
+                    # Create a task to install all apps in the list
+                    # But remove apps that are alredy installed
+
+                    $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+                    $installed_apps = [];
+                    foreach ($apps_list as $app) {
+                        if ($app['status']['description'] == 'on') {
+                            $installed_apps[] = $app['id'];
+                        }
+                    }
+
+                    // $data['ids'] is an array like ['id1', 'id2', ...]
+                    // It should always have this format
+
+                    $data['ids'] = array_diff($data['ids'], $installed_apps);
+
+                    if (empty($data['ids'])) {
+                        $response = [
+                            'status' => 'error',
+                            'message' => 'No apps to install',
+                        ];
+
+                        return new JsonResponse($response);
+                    }
+
+                    $task = $this->taskFactory->createInstallBulkEdgeappsTask($data['ids']);
+                    if (Task::STATUS_ERROR === $task->getStatus()) {
+                        $response = [
+                            'status' => 'error',
+                            'message' => 'Task creation failed',
+                        ];
+
+                        return new JsonResponse($response);
+                    }
+
+                    $this->entityManager->persist($task);
+                    $this->entityManager->flush();
+
+                    $response = [
+                        'status' => 'executing',
+                        'message' => 'Task created',
+                        'task_id' => $task->getId(),
+                    ];
                 } else {
                     $data = [
                         'status' => 'error',

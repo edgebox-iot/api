@@ -20,6 +20,7 @@ class TaskFactory
     public const START_SHELL = 'start_shell';
     public const STOP_SHELL = 'stop_shell';
     public const INSTALL_EDGEAPP = 'install_edgeapp';
+    public const INSTALL_BULK_EDGEAPPS = 'install_bulk_edgeapps';
     public const REMOVE_EDGEAPP = 'remove_edgeapp';
     public const START_EDGEAPP = 'start_edgeapp';
     public const STOP_EDGEAPP = 'stop_edgeapp';
@@ -188,6 +189,15 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::SET_EDGEAPP_BASIC_AUTH);
         $task->setArgs(json_encode(['id' => $id, 'login' => $login]));
+
+        return $task;
+    }
+
+    public function createInstallBulkEdgeappsTask(array $edgeapps): Task
+    {
+        $task = new Task();
+        $task->setTask(self::INSTALL_BULK_EDGEAPPS);
+        $task->setArgs(json_encode(['ids' => $edgeapps]));
 
         return $task;
     }

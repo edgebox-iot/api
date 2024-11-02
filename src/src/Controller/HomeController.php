@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Controller\BaseController;
+use App\Attribute\RunMiddleware;
 use App\Entity\Task;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
@@ -9,23 +11,25 @@ use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
 use App\Repository\TaskRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\OptionRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
-class HomeController extends AbstractController
+class HomeController extends BaseController
 {
     private TaskRepository $taskRepository;
+    private OptionRepository $optionRepository;
     private SystemHelper $systemHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private StorageHelper $storageHelper;
-    private DashboardHelper $dashboardHelper;
     private BackupsHelper $backupsHelper;
+    protected DashboardHelper $dashboardHelper;
 
     public function __construct(
         TaskRepository $taskRepository,
+        OptionRepository $optionRepository,
         SystemHelper $systemHelper,
         EdgeAppsHelper $edgeAppsHelper,
         StorageHelper $storageHelper,
@@ -33,6 +37,7 @@ class HomeController extends AbstractController
         BackupsHelper $backupsHelper
     ) {
         $this->taskRepository = $taskRepository;
+        $this->optionRepository = $optionRepository;
         $this->systemHelper = $systemHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->storageHelper = $storageHelper;
@@ -40,9 +45,29 @@ class HomeController extends AbstractController
         $this->backupsHelper = $backupsHelper;
     }
 
+    #[Route('/hello', name: 'hello')]
+    public function hello(): Response
+    {
+        return $this->render('home/hello.html.twig', [
+            // 'controller_title' => 'Dashboard',
+            // 'controller_subtitle' => 'Welcome back!',
+            // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
+            // 'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
+            // 'container_storage_summary' => $this->getStorageSummaryContainerVars(),
+            // 'container_backups_last_run' => $this->getLastBackupRunContainerVar(),
+            // 'container_actions_overview' => $this->getActionsOverviewContainerVars(),
+            // 'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
+            // 'dashboard_settings' => $this->dashboardHelper->getSettings(),
+        ]);
+    }
+
+    #[RunMiddleware('checkOnboardingRedirect', 'checkChangelogRedirect')]
     #[Route('/', name: 'home')]
     public function index(): Response
     {
+
+        $actions_overview = $this->getActionsOverviewContainerVars();
+
         return $this->render('home/index.html.twig', [
             'controller_title' => 'Dashboard',
             'controller_subtitle' => 'Welcome back!',
@@ -50,7 +75,7 @@ class HomeController extends AbstractController
             'container_working_edgeapps' => $this->getWorkingEdgeAppsContainerVars(),
             'container_storage_summary' => $this->getStorageSummaryContainerVars(),
             'container_backups_last_run' => $this->getLastBackupRunContainerVar(),
-            'container_actions_overview' => $this->getActionsOverviewContainerVars(),
+            'container_actions_overview' => $actions_overview,
             'container_apps_quickaccess' => $this->getQuickEdgeAppsAccessContainerVars(),
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
@@ -58,7 +83,7 @@ class HomeController extends AbstractController
 
     private function getWorkingEdgeAppsContainerVars(): array
     {
-        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList(true, true);
 
         $result = [
             'total' => 0,
@@ -199,14 +224,32 @@ class HomeController extends AbstractController
                 Task::STATUS_EXECUTING => 'Performing System Update',
                 Task::STATUS_FINISHED => 'Performed System Update',
                 Task::STATUS_ERROR => 'Failed to Update System',
-            ]
+            ],
+            'install_bulk_edgeapps' => [
+                Task::STATUS_CREATED => 'Waiting to install EdgeApps: %s',
+                Task::STATUS_EXECUTING => 'Bulk Installing EdgeApps: %s',
+                Task::STATUS_FINISHED => 'Bulk Installed EdgeApps: %s',
+                Task::STATUS_ERROR => 'Failed to bulk install EdgeApps: %s',
+            ],
+            'start_shell' => [
+                Task::STATUS_CREATED => 'Waiting to start interactive shell',
+                Task::STATUS_EXECUTING => 'Starting interactive shell',
+                Task::STATUS_FINISHED => 'Started an interactive shell',
+                Task::STATUS_ERROR => 'Failed to start a shell',
+            ],
+            'stop_shell' => [
+                Task::STATUS_CREATED => 'Waiting to stop interactive shell',
+                Task::STATUS_EXECUTING => 'Stopping interactive shell',
+                Task::STATUS_FINISHED => 'Stopped interactive shell',
+                Task::STATUS_ERROR => 'Failed to stop interactive shell',
+            ],
         ];
 
         $unknown_action_descriptions = [
-            Task::STATUS_CREATED => 'Waiting to run action: %s %s',
-            Task::STATUS_EXECUTING => 'Running action: %s %s',
-            Task::STATUS_FINISHED => 'Action ran: %s %s',
-            Task::STATUS_ERROR => 'Failed to run action: %s %s',
+            Task::STATUS_CREATED => 'Waiting to run action: %s',
+            Task::STATUS_EXECUTING => 'Running action: %s',
+            Task::STATUS_FINISHED => 'Action ran: %s',
+            Task::STATUS_ERROR => 'Failed to run action: %s',
         ];
 
         $action_icons = [
@@ -232,11 +275,14 @@ class HomeController extends AbstractController
 
             if (empty($action_descriptions[$task->getTask()])) {
                 // Indicates an action which is not documented in the descriptions.
-                $action_description = sprintf($unknown_action_descriptions[$task->getStatus()], $task->getTask(), $task->getArgs());
+                $action_description = sprintf($unknown_action_descriptions[$task->getStatus()], $task->getTask());
             } else {
                 if (!empty($action_args['id'])) {
                     $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
-                } else {
+                } elseif (!empty($action_args['ids'])) {
+                    $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], implode(', ', $action_args['ids']));
+                }
+                else {
                     $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
                 }
             }
@@ -295,22 +341,71 @@ class HomeController extends AbstractController
 
     private function getQuickEdgeAppsAccessContainerVars(): array
     {
-        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList(true, true);
 
         $result = [
             'total' => 0,
             'apps' => [],
         ];
 
+        $valid_statuses = ['on', 'installing', 'stopping', 'starting', 'removing'];
+
         if (!empty($apps_list)) {
             foreach ($apps_list as $edgeapp) {
-                if ('on' == $edgeapp['status']['description']) {
-                    ++$result['total'];
-                    $result['apps'][] = [
-                        'id' => $edgeapp['id'],
-                        'url' => $edgeapp['internet_accessible'] ? 'https://'.$edgeapp['internet_url'] : 'http://'.$edgeapp['network_url'],
-                    ];
-                }
+
+                # I have an array $actionsOverview that contains the latest tasks and their statuses
+                # The array looks like this:
+                // array:5 [▼
+                // "task" => App\Entity\Task {#631 ▼
+                //     -id: 219
+                //     -task: "start_edgeapp"
+                //     -args: "{"id":"chatpad"}"
+                //     -status: 1
+                //     -result: null
+                //     -created: DateTime @1730476648 {#548 ▶}
+                //     -updated: DateTime @1730480266 {#550 ▶}
+                // }
+                // "description" => "Starting chatpad EdgeApp"
+                // "last_update" => "1 NOV 4:57 PM"
+                // "icon" => "button-play"
+                // "icon_color_class" => "warning"
+                // ]
+
+                // Or can also be like this:
+                // array:5 [▼
+                // "task" => App\Entity\Task {#631 ▼
+                //     -id: 220
+                //     -task: "stop_edgeapp"
+                //     -args: "{"id":"chatpad"}"
+                //     -status: 1
+                //     -result: null
+                //     -created: DateTime @1730476722 {#548 ▶}
+                //     -updated: DateTime @1730480325 {#550 ▶}
+                // }
+                // "description" => "Stopping chatpad EdgeApp"
+                // "last_update" => "1 NOV 4:58 PM"
+                // "icon" => "button-pause"
+                // "icon_color_class" => "warning"
+                // ]
+
+                // When the task args contain the id of the edgeapp, I can use that to check if the edgeapp is being worked on
+                // When the status is 1, it means the task is executing
+                // In this case, we should set the status to "working"
+                
+                
+                ++$result['total'];
+                
+                // $status = $edgeapp['status']['description'];
+                // if ($this->isEdgeAppBeingWorkedOn($edgeapp['id'], $actionsOverview)) {
+                //     $status = 'working';
+                // }
+            
+                $result['apps'][] = [
+                    'id' => $edgeapp['id'],
+                    'description' => $edgeapp['description'],
+                    'url' => $edgeapp['internet_accessible'] ? 'https://' . $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url'],
+                    'status' => $edgeapp['status'],
+                ];
             }
         }
 

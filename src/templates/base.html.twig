@@ -606,6 +606,58 @@
       .catch(error => console.error(error));
       
     }
+
+    function saveAppsPurposeLabel(elem) {
+
+      var setting = "no"
+
+      if (elem.checked) {
+        console.log("Setting app labels to on!");
+        setting = "yes";
+      }
+
+      const data = {
+        show_purpose_label_on_quick_access_icons: setting 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+      
+    }
+
+    function saveBlockDefaultAppsPublicAccess(elem) {
+
+      var setting = "no"
+
+      if (elem.checked) {
+        console.log("Setting block defaultapps public access to on!");
+        setting = "yes";
+      }
+
+      const data = {
+        block_default_apps_public_access: setting 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+      
+    }
   </script>
   {% if tunnel_status_code is defined %}
   <script>

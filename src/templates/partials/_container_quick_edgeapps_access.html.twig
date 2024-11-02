@@ -12,23 +12,114 @@
         {% else %}
         <div class="row">
             {% for app in apps_quickaccess %}
-                <div class="edgeapp {{app.id}} col-3 col-sm-2 col-lg-1 mb-lg-2 mb-2 mt-0" id="{{app.id}}">
-                    {# <div class="card">
-                        <div class="card-body p-3"> #}
-                            {# <div class="row"> #}
-                                <a href="{{app.url}}" target="_blank">
-                                    <div class="col-12 col-lg-12 ms-auto text-center mt-0 mt-lg-0">
-                                        <div class="bg-gradient-{{dashboard_settings.color_mood}} border-radius-lg h-100">
-                                            <div class="position-relative d-flex align-items-center justify-content-center h-100">
-                                                <img class="w-100 position-relative z-index-2" src="/assets/img/edgeapps/{{app.id}}.png">
-                                            </div>
+                {% if app.status.description != 'off' and app.status.description != 'not-installed' %}
+                    <div class="edgeapp {{app.id}} col-3 col-sm-2 col-lg-1 mb-lg-2 mb-2 mt-0" id="{{app.id}}">
+                        
+                        <div class="position-relative">
+                            <a href="{{app.url}}" target="_blank" class="{% if app.status.description != 'on' %}disabled-link processing{% endif %}">
+                                <div class="col-12 col-lg-12 ms-auto text-center mt-0 mt-lg-0">
+                                    <div class="bg-gradient-{{dashboard_settings.color_mood}} border-radius-lg h-100 {% if app.status.description != 'on' %}processing-container disabled-container{% endif %}">
+                                        <div class="position-relative d-flex align-items-center justify-content-center h-100">
+                                            {% if app.status.description != 'on' %}
+                                                <div class="processing-overlay"></div>
+                                                <div class="disabled-overlay"></div>
+                                            {% endif %}
+                                            <img class="w-100 position-relative z-index-2" src="/assets/img/edgeapps/{{app.id}}.png">
                                         </div>
                                     </div>
-                                </a>
-                            {# </div> #}
-                        {# </div>
-                    </div> #}
-                </div>
+                                </div>
+                            </a>
+                            
+                            {% if app.status.description != 'on' %}
+                                <div class="status-badge">
+                                    {% if app.status.description == 'install_edgeapp' or app.status.description == 'install_bulk_edgeapps' %}
+                                        <span class="badge badge-sm bg-gradient-secondary">
+                                            Installing
+                                        </span>
+                                    {% elseif app.status.description == 'start_edgeapp' %}
+                                        <span class="badge badge-sm bg-gradient-secondary">
+                                            Starting
+                                        </span>
+                                    {% elseif app.status.description == 'stop_edgeapp' %}
+                                        <span class="badge badge-sm bg-gradient-secondary">
+                                            Stopping
+                                        </span>
+                                    {% elseif app.status.description == 'remove_edgeapp' %}
+                                        <span class="badge badge-sm bg-gradient-secondary">
+                                            Removing
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-sm bg-gradient-secondary">Processing</span>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                {% if dashboard_settings.show_purpose_label_on_quick_access_icons is defined and dashboard_settings.show_purpose_label_on_quick_access_icons == 'yes' %}
+                                    <div class="status-badge">
+                                        <span class="badge badge-sm bg-{{dashboard_settings.color_mood}}" style="font-size: 0.7rem; opacity: 0.9 !important;">{{ app.description|split(' ', 2)[0] }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <style>
+
+                        .status-badge {
+                            position: absolute;
+                            bottom: 5px;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            z-index: 4;
+                            white-space: nowrap;
+                        }
+                        .disabled-link {
+                            pointer-events: none;
+                            cursor: default;
+                        }
+
+                        .disabled-container {
+                            opacity: 0.7;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .processing-overlay {
+                            position: absolute;
+                            top: 0;
+                            left: -100%;
+                            width: 100%;
+                            height: 100%;
+                            background: linear-gradient(
+                                90deg,
+                                transparent,
+                                rgba(255, 255, 255, 0.2),
+                                transparent
+                            );
+                            animation: processing 1.5s infinite;
+                            z-index: 3;
+                        }
+
+                        .disabled-overlay {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background-color: rgba(128, 128, 128, 0.3);
+                            z-index: 2;
+                        }
+
+                        @keyframes processing {
+                            0% {
+                                left: -100%;
+                            }
+                            100% {
+                                left: 100%;
+                            }
+                        }
+                        </style>
+
+                    </div>
+                {% endif %}
 
             {% endfor %}
         </div>

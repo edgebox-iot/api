@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Attribute\RunMiddleware;
+use App\Controller\BaseController;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
@@ -15,7 +17,6 @@ use App\Helper\TunnelHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
-class SettingsController extends AbstractController
+class SettingsController extends BaseController
 {
     private EdgeboxioApiConnector $edgeboxioApiConnector;
     private OptionRepository $optionRepository;
@@ -34,8 +35,8 @@ class SettingsController extends AbstractController
     private ShellHelper $shellHelper;
     private UpdatesHelper $updatesHelper;
     private EntityManagerInterface $entityManager;
-    private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
+    protected DashboardHelper $dashboardHelper;
 
     /**
      * @var array
@@ -90,6 +91,7 @@ class SettingsController extends AbstractController
         $this->entityManager->flush();
     }
 
+    #[RunMiddleware('checkChangelogRedirect')]
     #[Route('/settings', name: 'settings')]
     public function index(Request $request): Response
     {

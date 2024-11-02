@@ -1,0 +1,518 @@
+{% extends 'base_security.html.twig' %}
+
+{% block title %}Setup
+{% endblock %}
+{% block content %}
+	<section class="min-vh-100 mb-8">
+      	<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('../assets/img/curved-images/curved14.jpg');">
+			<span class="mask bg-gradient-dark opacity-6"></span>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="container-fluid py-4">
+						<div class="row">
+							<div class="col-12 text-center">
+								
+								<h3 class="mt-5 text-white">Welcome to <img src="../assets/img/logo_transparent_horizontal_300x100.png" class="border-radius-lg" alt="team-2" style="filter: brightness(0) invert(1);"> 🚀</h3>
+								<h5 class="text-secondary font-weight-normal text-white">You're a couple of steps away from private data ownership. <br>Learn more about it by going through this simple introduction.</h5>
+
+								<div class="multisteps-form mb-5">
+
+									<div class="row">
+										<div class="col-12 col-lg-12 mx-auto my-5">
+											<div class="onboarding-progress">
+												<button class="onboarding-btn btn btn-white js-active" data-step="1" type="button" title="User Info">
+													<span>About Edgebox</span>
+												</button>
+												<button class="onboarding-btn btn btn-secondary" data-step="2" type="button" title="Address">
+													<span>Choosing Apps</span>
+												</button>
+												<button class="onboarding-btn btn btn-secondary" data-step="3" type="button" title="Order Info">
+													<span>Finish Setup</span>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+      	</div>
+		<div class="container">
+			<div class="onboarding-cards" style="margin-top: -300px;">
+				<div class="row onboarding-card" id="onboarding-card-1">
+					<div class="card col-12 col-lg-12 m-auto">
+						
+						{# <div class="card-header">
+							<h4 class="mb-0">Own Your Data</h4>
+						</div> #}
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										Your Private Cloud
+									</h1>
+									<h1 class="mb-4">
+										Safe and accessible  ☁️
+									</h1>
+									<p class="lead pe-5 me-5"></p>
+									<p>
+										<b>Run 1-click cloud-capable applications to manage your life and projects,</b>
+										<br>
+										keeping your data safely stored away from the dark tracking patterns of today's big tech.
+									</p>
+									<div class="row">
+										<div class="col-lg-10">
+											<div class="image-grid">
+												<img src="../assets/img/hello-assets/screenshot_2024-11-02_10.32.08.png" class="img-fluid" alt="team-2">
+												<img src="../assets/img/hello-assets/screenshot_2024-11-02_10.34.33.png" class="img-fluid" alt="team-2">
+												<img src="../assets/img/hello-assets/screenshot_2024-11-02_10.35.23.png" class="img-fluid" alt="team-2">
+											</div>
+										</div>
+									</div>
+
+									<style>
+									.image-grid {
+										display: flex;
+										justify-content: space-between;
+										margin-top: 20px;
+									}
+
+									.image-grid img {
+										margin: 0 10px;
+										height: 300px; /* Arbitrary height */
+									}
+
+									.image-grid img:not(:first-child) {
+										margin-left: -500px;  /* Overlap amount */
+									}
+
+									@media (max-width: 991px) {
+										.image-grid {
+											flex-direction: column;
+											align-items: center;
+										}
+
+										.image-grid img:not(:first-child) {
+											margin-left: 0;
+											margin-top: -100px; /* Add top margin on mobile */
+										}
+									}
+									</style>
+									<br>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-lg-2">
+									
+								</div>
+								<div class="col col-lg-8">
+								</div>
+								<div class="col col-lg-2 d-flex justify-content-end">
+									<button class="btn btn-primary" onclick="navigateStep(1)">Start</button>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				<div class="row onboarding-card" id="onboarding-card-2">
+					<div class="card col-12 col-lg-12 m-auto">
+						
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										So many of your things
+									</h1>
+									<h1 class="mb-4">
+										need privacy 📦
+									</h1>
+									<p class="lead pe-5 me-5"></p>
+									<p>
+										<br>
+										<b>Select one or more options that interest you, and we'll pre-install suggested apps to do just that!</b>
+										<br>
+										Edgeapps are private and free alternatives to do things with the connectivity of the cloud.
+										<br>
+										<br>
+										<b>With Edgebox, I want to...</b>
+									</p>
+									<br>
+									
+								</div>
+							</div>
+					
+							<div class="selection-grid">
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="nextcloud">
+									<span class="card-text">manage files and folders and in cloud, and sync my devices</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="immich">
+									<span class="card-text">backup and organize photos and videos from my phone and see them a browser</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="bitwarden">
+									<span class="card-text">sync logins and passwords between my computers and mobile devices</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="linkwarden">
+									<span class="card-text">save and manage bookmark links, and export them to readable formats like PDF</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="wordpress">
+									<span class="card-text">host and manage my blog and/or webpages, and publish them on the Internet</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="n8n">
+									<span class="card-text">create, manage, and run automation workflows using connectors and diagrams</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								{# <div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">manage and play retro games from my browser</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div> #}
+								{# <div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">manage and catalog my ebook collection, and send it to my reader</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div> #}
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="openwebui">
+									<span class="card-text">interact with online AI Model Providers and manage conversations and prompts</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="freshrss">
+									<span class="card-text">Subscribe, organize and read web feeds (RSS) on a web browser or my mobile devices</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								{# <div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">organize, create, import, and read cooking recipes</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div> #}
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="actual">
+									<span class="card-text">manage and organize my finances and budgets</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="jupyter">
+									<span class="card-text">run and share Data Science notebooks</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="traggo">
+									<span class="card-text">do project management and time tracking</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								{# <div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">send newsletters, an host surveys and other feedback systems</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">manage and host git repositories and groups</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">use as a development environment for coding and creating web apps</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">monitor my websites health, host a status page, and alert me when it detects problems</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<div class="select-card" onclick="toggleSelection(this)">
+									<span class="card-text">host a backend and API</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div> #}
+								<div class="select-card" onclick="toggleSelection(this)" data-app-id="appsmith">
+									<span class="card-text">host internal dashboards and tooling for my project</span>
+									<div class="checkbox"><i class="fas fa-check"></i></div>
+								</div>
+								<!-- Add more cards as needed -->
+							</div>
+
+							<div class="row mt-5">
+								<div class="col col-lg-2">
+									<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+								</div>
+								<div class="col col-lg-8">
+								</div>
+								<div class="col col-lg-2 d-flex justify-content-end">
+									<button class="btn btn-primary" onclick="navigateStep(1)">Next</button>
+								</div>
+							</div>
+						</div>
+
+						<style>
+						.selection-grid {
+							display: grid;
+							grid-template-columns: repeat(4, 1fr);
+							gap: 1rem;
+						}
+
+						@media (max-width: 991px) {
+							.selection-grid {
+								grid-template-columns: repeat(2, 1fr);
+							}
+						}
+
+						.select-card {
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							padding: 1rem;
+							border: 2px solid #ddd;
+							border-radius: 8px;
+							cursor: pointer;
+							transition: all 0.3s ease;
+							position: relative;
+						}
+
+						.select-card:hover {
+							border-color: #252f40;
+						}
+
+						.select-card.selected {
+							border-color: #252f40;
+					
+						}
+
+						.card-text {
+							margin-right: 1rem;
+						}
+
+						.checkbox {
+							width: 20px;
+							height: 20px;
+							border: 2px solid #ddd;
+							border-radius: 4px;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							position: absolute;
+							bottom: 10px;
+							right: 10px;
+						}
+
+						.checkbox i {
+							display: none;
+							color: #7928CA;
+						}
+
+						.select-card.selected .checkbox i {
+							display: block;
+						}
+						</style>
+
+					</div>
+				</div>
+				<div class="row onboarding-card" id="onboarding-card-3">
+					<div class="card col-12 col-lg-12 m-auto">
+						
+						{# <div class="card-header">
+							<h4 class="mb-0">Own Your Data</h4>
+						</div> #}
+						<div class="card-body">
+							<div class="row mt-5">
+								<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+									<h1 class="text-gradient text-primary">
+										You're ready to go!
+									</h1>
+									<h1 class="mb-4">
+										Enjoy data ownership 💫
+									</h1>
+									<p class="lead pe-5 me-5">We hope you enjoy it!<p>
+
+									<p>🕐 <b>What is going to happen:</b></p>
+									<ul>
+									<li class="finish-setup-installied-apps" style="display: none;">
+										<p>
+											📦 <b>Some apps will now be installed to help you do things with your Edgebox</b>
+											<br>
+											Once you tap "Finish", we'll install the following apps for you: <b id="selected-apps-list"></b><br>This will take a few minutes and you'll be able to check the progress in the dashboard.
+										</p>
+									</li>
+									<li>
+										<p>
+											🔐 <b>Your Edgebox will be automatically backed up daily</b>
+											<br>
+											With the managed service, backups "just happen". <br>You can request a backup restore or archive through the <a target="_blank" href="https://edgebox.io/dash">Managed Service Dashboard.</a>
+										</p>
+									</li>
+									</ul>
+									<p>🤔 <b>Things to do next:</b></p>
+									<ul>
+									<li>
+										<p>
+											🚚 <b>Install and manage your Edgeapps</b>
+											<br>
+											You can add, remove, and search apps anytime through the Edgeapps page. <br>Try out new applications and see what works best for you.
+										</p>
+									</li>
+									<li>
+										<p>
+											🌎 <b>Setup a custom domain with Cloudflare</b>
+											<br>
+											Access your Edgebox and apps from anywhere in the world, using your custom domain.<br>Check out the <a target="_blank" href="https://edgebox.io/docs">documentation</a> for more information.
+										</p>
+									</li>
+									<li>
+										<p>
+											💾 <b>Setup a redundant, encrypted backup</b>
+											<br>
+											Backup your data to a second location, like an external hard drive or another cloud service<br> For extra peace of mind, even in the most catastrophic cases.
+										</p>
+									</li>
+									<li>
+										<p>
+											⚙️ <b>See the settings page for a glance at customizability and advanced options</b>
+											<br>
+											Customize your User Interface with color accents and system behaviors.<br>
+											Access advanced optioons like dedicated domain configuration, a real-time collaborative shell, and more.
+										</p>
+									</li>
+									</ul>
+									<br>
+									
+								</div>
+							</div>
+							<div class="row">
+								<div class="col col-lg-2">
+									<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+								</div>
+								<div class="col col-lg-7">
+								</div>
+								<div class="col col-lg-3 d-flex justify-content-end">
+									<button class="btn btn-primary" onclick="finishOnboarding()">Finish Setup</a>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				{# <div class="row mt-4">
+					<div class="col-12 d-flex justify-content-between">
+						<button class="btn btn-secondary" id="prevBtn" onclick="navigateStep(-1)" style="display: none">Back</button>
+						<button class="btn btn-primary" id="nextBtn" onclick="navigateStep(1)">Next</button>
+					</div>
+				</div> #}
+			</div>
+			<style>
+			.onboarding-card {
+				display: none;
+			}
+
+			.onboarding-card.active {
+				display: block;
+			}
+
+			.onboarding-btn.js-active {
+				background-color: #fff;
+				color: #000;
+			}
+			</style>
+			<script>
+				let currentStep = 1;
+				const totalSteps = 3;
+
+				function navigateStep(direction) {
+					const newStep = currentStep + direction;
+					if (newStep >= 1 && newStep <= totalSteps) {
+						// Hide current card
+						document.getElementById(`onboarding-card-${currentStep}`).classList.remove('active');
+						
+						// Show new card
+						document.getElementById(`onboarding-card-${newStep}`).classList.add('active');
+						
+						// Update progress buttons
+						updateProgressButtons(newStep);
+						
+						// Update navigation buttons
+						currentStep = newStep;
+						updateNavigationButtons();
+					}
+				}
+
+				function updateProgressButtons(step) {
+					document.querySelectorAll('.onboarding-btn').forEach(btn => {
+						btn.classList.remove('js-active', 'btn-white');
+						btn.classList.add('btn-secondary');
+					});
+					
+					const activeBtn = document.querySelector(`.onboarding-btn[data-step="${step}"]`);
+					activeBtn.classList.remove('btn-secondary');
+					activeBtn.classList.add('js-active', 'btn-white');
+				}
+
+				function updateNavigationButtons() {
+					document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+					document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+				}
+
+				// Allow clicking on progress buttons
+				document.querySelectorAll('.onboarding-btn').forEach(btn => {
+					btn.addEventListener('click', () => {
+						const targetStep = parseInt(btn.dataset.step);
+						const direction = targetStep - currentStep;
+						navigateStep(direction);
+					});
+				});
+
+				navigateStep(0);
+			</script>
+		</div>
+	</section>
+
+	<script>
+		let selectedCards = [];
+
+		function toggleSelection(element) {
+			element.classList.toggle('selected');
+			const cardId = element.getAttribute('data-app-id');
+			
+			if (element.classList.contains('selected')) {
+				selectedCards.push(cardId);
+				// I want to populate the list of selected apps
+				document.getElementById('selected-apps-list').textContent = selectedCards.join(', ');
+			} else {
+				selectedCards = selectedCards.filter(id => id !== cardId);
+			}
+
+			// If selectedCards is empty, hide the install message
+			if (selectedCards.length === 0) {
+				document.querySelector('.finish-setup-installied-apps').style.display = 'none';
+			} else {
+				document.querySelector('.finish-setup-installied-apps').style.display = 'block';
+			}
+
+		}
+
+		function finishOnboarding() {
+			if (selectedCards.length === 0) {
+				window.location.href = '/';
+			} else {
+				fetch('/api/edgeapps', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						op: 'install_bulk_edgeapps',
+						ids: selectedCards
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					// Redirect to dashboard or show success message
+					window.location.href = '/';
+					console.log(data);
+				})
+				.catch(error => {
+					// console.error('Error:', error);
+					window.location.href = '/';
+				});
+			}
+		}
+	</script>
+
+{% endblock content %}

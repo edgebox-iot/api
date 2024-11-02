@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Attribute\RunMiddleware;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
@@ -10,22 +11,22 @@ use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
+use App\Controller\BaseController;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
-class EdgeAppsController extends AbstractController
+class EdgeAppsController extends BaseController
 {
     private OptionRepository $optionRepository;
     private EntityManagerInterface $entityManager;
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
     private TaskFactory $taskFactory;
-    private DashboardHelper $dashboardHelper;
+    protected DashboardHelper $dashboardHelper;
 
     private TaskRepository $taskRepository;
 
@@ -71,50 +72,15 @@ class EdgeAppsController extends AbstractController
         $this->dashboardHelper = $dashboardHelper;
     }
 
+    #[RunMiddleware('checkChangelogRedirect')]
     #[Route('/edgeapps', name: 'edgeapps')]
     public function index(): Response
     {
         $framework_ready = false;
         $tunnel_on = false;
 
-        $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
-        $ongoing_tasks = $this->taskRepository->findByOngoing();
-
-        $app_tasks = [
-            TaskFactory::INSTALL_EDGEAPP,
-            TaskFactory::REMOVE_EDGEAPP,
-            TaskFactory::START_EDGEAPP,
-            TaskFactory::STOP_EDGEAPP,
-            TaskFactory::SET_EDGEAPP_OPTIONS,
-            TaskFactory::ENABLE_ONLINE,
-            TaskFactory::DISABLE_ONLINE,
-        ];
-
-        if (!empty($ongoing_tasks)) {
-            $ongoing_apps_and_statuses = [];
-
-            foreach ($ongoing_tasks as $ongoing_task) {
-                $task_code = $ongoing_task->getTask();
-                if (in_array($task_code, $app_tasks)) {
-                    $app_id = json_decode($ongoing_task->getArgs(), true)['id'];
-                    $ongoing_apps_and_statuses[$app_id] = [
-                        'task_code' => $task_code,
-                        'task_id' => $ongoing_task->getId(),
-                    ];
-                }
-            }
-
-            foreach ($apps_list as $app_key => $app) {
-                $app_id = $app['id'];
-                if (!empty($ongoing_apps_and_statuses[$app_id])) {
-                    $apps_list[$app_key]['status'] = [
-                        'id' => 4,
-                        'description' => $ongoing_apps_and_statuses[$app_id]['task_code'],
-                        'task_id' => $ongoing_apps_and_statuses[$app_id]['task_id'],
-                    ];
-                }
-            }
-        }
+        $apps_list = $this->edgeAppsHelper->getEdgeAppsList($fetchOngoingStatuses = true, $fetchOngoingStatuses = true);
+        $app_tasks = $this->taskRepository->findByOngoing();
 
         if (!empty($apps_list)) {
             $tunnel_on_option = $this->optionRepository->findOneBy(['name' => 'BOOTNODE_TOKEN']) ?? new Option();

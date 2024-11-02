@@ -18,6 +18,7 @@
               {% else %}
                 <div class="timeline timeline-one-side">
                   {% for action_key,action_info in actions %}
+                    {# <pre>{{ dump(action_info) }}</pre> #}
                     <div class="timeline-block mb-3">
                       <span class="timeline-step">
                         <i class="ni ni-{{ action_info.icon }} text-{{ action_info.icon_color_class }} text-gradient"></i>

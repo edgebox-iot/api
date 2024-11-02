@@ -56,6 +56,17 @@
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsTitleBarFloating" data-class="bg-white" onclick="navbarFloating(this); saveTopbarStyle(this);" {% if(dashboard_settings.topbar_style == "fixed") %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Fixed</label>
                             </div>
+                            <!-- Show purpose labels for quick access app icons -->
+                            <hr>
+                            <div class="mt-3">
+                                <h6 class="text-uppercase text-body text-xs font-weight-bolder">Show app icon purpose label</h6>
+                            </div>
+                            <p class="text-xs">Choose if if you want to see purpose labels overalaid on top of app icons in the dashboard main page.</p>
+                            <div class="form-check form-switch ps-0">
+                                <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">No</label>
+                                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsAppsPurposeLabel" data-class="bg-white" onclick="saveAppsPurposeLabel(this);" {% if(dashboard_settings.show_purpose_label_on_quick_access_icons == "yes") %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Yes</label>
+                            </div>
                             <!-- Show me when it twerks -->
                             <hr>
                             <div class="mt-3">
@@ -65,6 +76,17 @@
                             <div class="form-check form-switch ps-0">
                                 <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">No</label>
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsShowMeWhenItTwerks" data-class="bg-white" onclick="saveShowMeWhenItTwerks(this);" {% if(dashboard_settings.show_me_when_it_twerks == "yes") %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Yes</label>
+                            </div>
+                            <!-- Apps Public Access -->
+                            <hr>
+                            <div class="mt-3">
+                                <h6 class="text-uppercase text-body text-xs font-weight-bolder">Block default apps public access</h6>
+                            </div>
+                            <p class="text-xs">By default, a newly installed app is automatically configured for external access.<b><i>Activate this slider</i></b> to block that behavior.</p>
+                            <div class="form-check form-switch ps-0">
+                                <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">No</label>
+                                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsBlockDefaultAppsPublicAccess" data-class="bg-white" onclick="saveBlockDefaultAppsPublicAccess(this);" {% if(dashboard_settings.block_default_apps_public_access == "yes") %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Yes</label>
                             </div>
                             <!-- Public Access -->
@@ -142,8 +164,8 @@
                                 </div>
 
                             {% endif %}
-
-                            <p class="text-sm opacity-8">Set external access settings and configurations for your system. These allow you to tweak how external access to resources are setup. Click any of the titles below to see its option details.</p>
+                            
+                            <p class="text-sm opacity-8">Click any of the titles below to see its option details.</p>
                             
                             <hr>
                             <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
@@ -464,7 +486,7 @@
                             <div>
                             {% if updates_status.status == 'up_to_date' %}
                                 <h6 class="text-uppercase text-body text-xs font-weight-bolder">✅ {{updates_status.status_message}}!</h6>
-                                <p class="text-xs">Your system is fully up-to-date.</p>
+                                <p class="text-xs">Your system is fully up-to-date. <br>Check the <b><a href="/changelog">changelog</a></b> for the details on your last update.</p>
                             {% else %}
                                 <div class="row">
                                     <div class="col-9 col-sm-9">

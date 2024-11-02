@@ -42,6 +42,7 @@
         </div>
         <script>
             function toggleEdgeAppsListFilter(elem) {
+                console.log(elem.checked);
                 Array.from(document.querySelectorAll('.edgeapps-list .not-installed')).forEach(el => el.style.display = elem.checked ? 'none' : 'block');
                 var option = elem.checked ? 'yes' : 'no';
 
@@ -65,14 +66,14 @@
 
             {% for appkey,appinfo in apps_list %}
 
-                <div class="edgeapp {{appinfo.status.description}} col-lg-4 mb-lg-0 mb-2" id="{{appinfo.id}}" style="{% if dashboard_settings.show_only_installed_apps and appinfo.status.description == 'not-installed' %}display: none;{% endif %}">
+                <div class="edgeapp {{appinfo.status.description}} col-lg-4 mb-lg-0 mb-2" id="{{appinfo.id}}" style="{% if dashboard_settings.show_only_installed_apps == 'yes' and appinfo.status.description == 'not-installed' %}display: none;{% endif %}">
                     <div class="card">
                         <div class="card-body p-3">
                         <div class="row">
                             <div class="col-8 col-lg-8">
                                 <div class="d-flex flex-column h-100">
                                     <div class="status">
-                                        <p class="mb-1 pt-2 text-bold">
+                                        <p class="mb-1 pt-2 text-bold font-weight-bolder">
                                         {% if appinfo.description %}
                                             {{appinfo.description}}
                                         {% else %}
@@ -80,68 +81,74 @@
                                         {% endif %}
                                         </p>
                                     </div>
-                                    <h5 class="font-weight-bolder"><a href="/edgeapps/details/{{ appinfo.id }}">{{appinfo.name}} {% if not appinfo.needs_config %}<i class="fas fa-cog font-small-2 me-1" style="font-size: 15px;"></i>{% endif %}</a></h5>
+                                    <h6 class=""><a href="/edgeapps/details/{{ appinfo.id }}">{{appinfo.name}} {% if not appinfo.needs_config %}<i class="fas fa-cog font-small-2 me-1" style="font-size: 15px;"></i>{% endif %}</a></h6>
+                                    <div class="internet-access">
                                     {% if appinfo.status.description == 'on' %}
-                                        <div class="internet-access">
+                                        {# <div class="internet-access"> #}
                                             {% if appinfo.internet_accessible %}
-                                                <p><span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="right" title="{{appinfo.internet_url}}">Online</span><span></span></p>
+                                                <span class="badge badge-sm bg-gradient-success" data-bs-toggle="tooltip" data-bs-placement="right" title="{{appinfo.internet_url}}">Online</span><span>  </span>
                                             {% elseif release_version == 'cloud' %}
-                                                <p><span class="badge badge-sm bg-gradient-secondary data-bs-toggle="tooltip" data-bs-placement="right" title="Application running but not accessible online"">Offline</span></p>
+                                                <span class="badge badge-sm bg-gradient-secondary data-bs-toggle="tooltip" data-bs-placement="right" title="Application running but not accessible online"">Offline</span><span>  </span>
                                             {% else %}
-                                                <p><span class="badge badge-sm bg-gradient-secondary">Home-Only</span></p>
+                                                <span class="badge badge-sm bg-gradient-secondary">Home-Only</span><span>  </span>
                                             {% endif %}
 
-                                        </div>
+                                        {# </div> #}
                                     {% elseif appinfo.status.description == 'off' %}
-                                        <p><span class="badge badge-sm bg-gradient-danger">Off</span></p>
+                                        <span class="badge badge-sm bg-gradient-danger">Off</span><span>  </span>
                                     {% elseif appinfo.status.description == 'not-installed' %}
-                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
-                                    {% elseif appinfo.status.description == 'install_edgeapp' %}
-                                        <br>
+                                        {# <span class="badge badge-sm bg-gradient-default">Not Installed</span><span>  </span> #}
+                                        <span>  </span>
+                                    {% elseif appinfo.status.description == 'install_edgeapp' or appinfo.status.description == 'install_bulk_edgeapps'%}
                                         <br>
                                         <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Installing</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Installing</span></p>
                                     {% elseif appinfo.status.description == 'start_edgeapp' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Starting</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Starting</span></p>
                                     {% elseif appinfo.status.description == 'stop_edgeapp' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Stopping</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Stopping</span></p>
                                     {% elseif appinfo.status.description == 'remove_edgeapp' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Removing</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Removing</span></p>
                                     {% elseif appinfo.status.description == 'enable_online' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Public Access</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Public Access</span></p>
                                     {% elseif appinfo.status.description == 'disable_online' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Restricting Access</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Restricting Access</span></p>
                                     {% elseif appinfo.status.description == 'set_edgeapp_options' %}
                                         <br>
                                         <br>
-                                        <br>
                                         <pre style="display: none;">{{appinfo.status.task_id}}</pre>
-                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 14px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Options</span></p>
+                                        <p style="margin-bottom: 0px;"><span class="badge badge-sm bg-gradient-warning" style=" margin-top: 22px;"><span style="" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span> Setting Options</span></p>
                                     {% else %}
-                                        <p><span class="badge badge-sm bg-gradient-default">Not Installed</span></p>
+                                        <span class="badge badge-sm bg-gradient-default">Not Installed</span><span>  </span>
                                     {% endif %}
 
+                                    {# check if appinfo.experimental exists, and then if is true, add a badge #}                                 
+                                    {% if appinfo.experimental is defined and appinfo.experimental %}
+                                        <span class="badge badge-sm bg-gradient-warning">Experimental</span>
+                                    {% else %}
+                                        {% if appinfo.status.description == 'not-installed' %}
+                                            <span class="badge badge-sm bg-gradient-default">Not Installed</span>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                    </div>
+                                    <br>
                                     <div class="action-btns">
 
                                         {% if appinfo.status.description == 'on' %}
@@ -230,6 +237,8 @@
                                             
 
                                         {% endif %}
+
+                                        {# <pre>{{ dump(appinfo.status) }}</pre> #}
 
                                         {% if appinfo.status.description == 'in_task' %}
 

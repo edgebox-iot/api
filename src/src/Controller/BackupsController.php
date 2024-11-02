@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
+use App\Attribute\RunMiddleware;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
-class BackupsController extends AbstractController
+class BackupsController extends BaseController
 {
-    private DashboardHelper $dashboardHelper;
-
+    protected DashboardHelper $dashboardHelper;
     private BackupsHelper $backupsHelper;
 
     public function __construct(
@@ -24,6 +24,7 @@ class BackupsController extends AbstractController
         $this->backupsHelper = $backupsHelper;
     }
 
+    #[RunMiddleware('checkChangelogRedirect')]
     #[Route('/backups', name: 'backups')]
     public function index(): Response
     {
