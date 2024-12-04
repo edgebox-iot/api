@@ -251,6 +251,18 @@
                                         
                                     </div>
                                 </div>
+                                {% if dashboard_settings.browser_dev_env_status == 'running' %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a class="btn bg-gradient-secondary w-90" target="_blank" href="{{ browserdev_status.url }}/?folder=/home/system/components/apps/{{ edgeapp.id }}" role="button" aria-expanded="false" >
+                                                Development Environment
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p class="mt-0 text-xs" style="padding-top: 10px;"><b><i>Access the browser code editor for this edgeapp.</i></b></p>
+                                        </div>
+                                    </div>
+                                {% endif %}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <a class="btn bg-gradient-warning w-90" data-bs-toggle="collapse" href="#collapseAdvancedEdgeappSecurity" role="button" aria-expanded="false" aria-controls="collapseAdvancedEdgeappSecurity">

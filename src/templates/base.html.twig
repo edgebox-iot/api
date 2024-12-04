@@ -886,7 +886,7 @@
         buttons[i].classList.add("disabled");
       }
 
-      // Send API request to /api/settings/tunnel to start setup
+      // Send API request to /api/settings/shell to start setup
       fetch('/api/settings/shell', {
         method: 'POST',
         headers: {
@@ -956,6 +956,190 @@
   </script>
   {% endif %}
 
+  {% if browserdev_status is defined and browserdev_status.password is defined %}
+  <script>
+    // Handling BrowserDev
+    function changePwBrowserDev(elem) {
+      console.log("Initiating tasks to change the browser dev password");
+      var req_data = {}
+      req_data['op'] = "changepw"
+      req_data['password'] = document.getElementById("dev-env-password-input").value;
+
+      elem.innerHTML = "Changing... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Set the other buttons to also be disabled
+      
+      // btn-browserdev
+      var btn_browserdev = document.getElementById("btn-browserdev");
+      btn_browserdev.setAttribute("aria-disabled", "true");
+      btn_browserdev.classList.add("disabled");
+
+      // btn-browserdev-changepw
+      // var btn_browserdev_changepw = document.getElementById("btn-browserdev-changepw");
+      // btn_browserdev_changepw.setAttribute("aria-disabled", "true");
+      // btn_browserdev_changepw.classList.add("disabled");
+
+      // btn-browserdev-stop
+      var btn_browserdev_stop = document.getElementById("btn-browserdev-disable");
+      btn_browserdev_stop.setAttribute("aria-disabled", "true");
+      btn_browserdev_stop.classList.add("disabled");
+
+      // Send API request to /api/settings/tunnel to start setup
+      fetch('/api/settings/browserdev', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req_data)
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchBrowserDevStatus();
+    }
+
+    function disableBrowserDev(elem) {
+      elem.innerHTML = "Disabling... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Set the other buttons to also be disabled
+      
+      // btn-browserdev
+      var btn_browserdev = document.getElementById("btn-browserdev");
+      btn_browserdev.setAttribute("aria-disabled", "true");
+      btn_browserdev.classList.add("disabled");
+
+      // btn-browserdev-changepw
+      var btn_browserdev_changepw = document.getElementById("btn-browserdev-changepw");
+      btn_browserdev_changepw.setAttribute("aria-disabled", "true");
+      btn_browserdev_changepw.classList.add("disabled");
+
+      // btn-browserdev-stop
+      // var btn_browserdev_stop = document.getElementById("btn-browserdev-disable");
+      // btn_browserdev_stop.setAttribute("aria-disabled", "true");
+      // btn_browserdev_stop.classList.add("disabled");
+
+      // Disable browser dev environment
+      var req_data = {
+        "op": "disable"
+      }
+      fetch('/api/settings/browserdev', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req_data)
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchBrowserDevStatus();
+    }
+
+    function enableBrowserDev(elem) {
+      elem.innerHTML = "Enabling... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
+      elem.setAttribute("aria-disabled", "true");
+      elem.classList.add("disabled");
+
+      // Set the other buttons to also be disabled
+      
+      // btn-browserdev
+      // var btn_browserdev = document.getElementById("btn-browserdev");
+      // btn_browserdev.setAttribute("aria-disabled", "true");
+      // btn_browserdev.classList.add("disabled");
+
+      // btn-browserdev-changepw
+      var btn_browserdev_changepw = document.getElementById("btn-browserdev-changepw");
+      btn_browserdev_changepw.setAttribute("aria-disabled", "true");
+      btn_browserdev_changepw.classList.add("disabled");
+
+      // btn-browserdev-stop
+      // var btn_browserdev_stop = document.getElementById("btn-browserdev-disable");
+      // btn_browserdev_stop.setAttribute("aria-disabled", "true");
+      // btn_browserdev_stop.classList.add("disabled");
+
+      // Disable browser dev environment
+      var req_data = {
+        "op": "enable"
+      }
+      fetch('/api/settings/browserdev', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(req_data)
+      })
+
+      // Keep pooling the API endpoint to check when setup is finished
+      fetchBrowserDevStatus();
+    }
+
+    function fetchBrowserDevStatus() {
+      // Keep trying to call the GET API endpoint for the shell link
+      console.log("Fetching browser dev environment status");
+      var opened = false;
+      var interval = setInterval(
+        function() {
+          fetch('/api/settings/browserdev')
+          .then(response => response.json())
+          .then(data => {
+            console.log("Current rendered status: {{browserdev_status.status}}")
+            console.log(data);
+            if (data.status == "running" && data.status != "{{ browserdev_status.status }}") {
+              console.log("Browser Development Environment link received");
+              // Open the link in a new tab
+              if(!opened) {
+                window.open(data.url, '_blank');
+                // Replace the button with text saying "Open Shell Session"
+                var elem = document.querySelector(".btn-browserdev");
+                elem.innerHTML = "Open Development Environment";
+                // Add link
+                elem.setAttribute("href", data.url);
+                // Set new tab target
+                elem.setAttribute("target", "_blank");
+                elem.setAttribute("aria-disabled", "false");
+                elem.classList.remove("disabled");
+
+                elem = document.querySelector(".btn-shell-stop-session");
+                elem.style.display = "block";
+                opened = true;
+              }
+            }
+            if(data.status != "{{ browserdev_status.status }}") {
+              console.log("Browser Development Environment status is different from the rendered status. Refreshing");
+              // wait 5 seconds
+              setTimeout(function() {
+                // Refresh the page
+                var url = new URL(location.href);
+                url.searchParams.set('option_changed', 'browserdev');
+                location.href = url.href;
+              }, 1000);
+            }
+            if(data.password != "{{ browserdev_status.password }}") {
+              console.log("Browser Development Environment password is different from the rendered password. Refreshing");
+              // wait 1 seconds
+              setTimeout(function() {
+                // Refresh the page
+                var url = new URL(location.href);
+                url.searchParams.set('option_changed', 'browserdev');
+                location.href = url.href;
+              }, 1000);
+            }
+            if (data.status == "error") {
+              console.log("Browser Development Environment setup failed");
+              clearInterval(interval);
+              // Refresh the page
+              location.reload();
+            }
+          });
+        }, 1000);
+    }
+  </script>
+  {% endif %}
   <script>
     // Handling Backups Setup and Data Update
     function fetchBackupsStatus(original_status = 'not_configured'){

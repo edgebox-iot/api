@@ -8,6 +8,7 @@ use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\ShellHelper;
+use App\Helper\BrowserDevHelper;
 use App\Helper\TunnelHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,7 @@ class ApiController extends AbstractController
     private DashboardHelper $dashboardHelper;
     private TunnelHelper $tunnelHelper;
     private ShellHelper $shellHelper;
+    private BrowserDevHelper $browserDevHelper;
     private BackupsHelper $backupsHelper;
     private EdgeAppsHelper $edgeAppsHelper;
     private TaskFactory $taskFactory;
@@ -32,6 +34,7 @@ class ApiController extends AbstractController
         DashboardHelper $dashboardHelper,
         TunnelHelper $tunnelHelper,
         ShellHelper $shellHelper,
+        BrowserDevHelper $browserDevHelper,
         BackupsHelper $backupsHelper,
         EdgeAppsHelper $edgeAppsHelper,
         TaskFactory $taskFactory
@@ -40,6 +43,7 @@ class ApiController extends AbstractController
         $this->dashboardHelper = $dashboardHelper;
         $this->tunnelHelper = $tunnelHelper;
         $this->shellHelper = $shellHelper;
+        $this->browserDevHelper = $browserDevHelper;
         $this->backupsHelper = $backupsHelper;
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->taskFactory = $taskFactory;
@@ -126,6 +130,34 @@ class ApiController extends AbstractController
             }
         } else {
             $response = $this->shellHelper->getShellStatus();
+        }
+
+        return new JsonResponse($response);
+    }
+
+    #[Route('/api/settings/browserdev', name: 'api_settings_browserdev')]
+    public function settingsBrowserDev(Request $request): JsonResponse
+    {
+        if ($request->isMethod('post')) {
+            $data = json_decode($request->getContent(), true);
+            $response = [
+                'status' => 'error',
+                'message' => 'Invalid operation',
+            ];
+
+            if (isset($data['op'])) {
+                if ('changepw' == $data['op'] && isset($data['password'])) {
+                    $response = $this->browserDevHelper->setBrowserDevPassword($data['password']);
+                } elseif ('disable' == $data['op']) {
+                    $response = $this->browserDevHelper->disableBrowserDev();
+                } elseif ('enable' == $data['op']) {
+                    $response = $this->browserDevHelper->enableBrowserDev();
+                } elseif ('status' == $data['op']) {
+                    $response = $this->browserDevHelper->getBrowserDevStatus();
+                }
+            }
+        } else {
+            $response = $this->browserDevHelper->getBrowserDevStatus(true);
         }
 
         return new JsonResponse($response);

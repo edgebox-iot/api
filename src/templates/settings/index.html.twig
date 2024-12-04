@@ -474,6 +474,55 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="card-body p-3 pt-0">
+                            <hr class="mt-0">
+                            <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
+                                <a class="{% if app.request.query.get('option_changed') != 'browserdev' %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
+                                    ▼ Browser Dev Environment
+                                </a>
+                            </h6>
+                            <p class="text-sm opacity-8">
+                                <b>Access the underlying edgebox system via a full fledged web browser development environment.</b> This is an environment with full access to your edgebox instance. This is ideal for advanced users who want to run, debug, and develop their code and apps on the edgebox instance.
+                            </p>
+                            <div id="collapseBrowserDevOptions" class="collapse" style="margin-top: 25px;">
+                                <p class="text-sm opacity-8">
+                                    <div class="form-group browserdev-password-group" id="browserdev-password-settings" style="">
+                                        <label for="sshx-timeout-value" class="form-control-label">Your access password:</label>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                {# <input class="form-control" name="sshx-timeout-value" type="password" value="25" id="sshx-timeout-value"> #}
+                                                <div class="input-group">
+                                                    <input  type="password" class="form-control btn-tooltip" data-bs-toggle="tooltip" data-bs-placement="top" title="You'll be asked for this password to enter the development environment" data-container="body" data-animation="true" placeholder="Environment Password" value="{{browserdev_status.password}}" id="dev-env-password-input" aria-label="This is the Development Environment Password" aria-describedby="This is the Development Environment Password">
+                                                    <button class="btn btn-outline-secondary mb-0" data-input-id="dev-env-password-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
+                                                    <button class="btn btn-outline-secondary mb-0 btn-tooltip" data-input-id="dev-env-password-input" type="button" onclick="generateAppOptionsSecret(this);" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate" data-container="body" data-animation="true"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                                                    <button class="btn btn-outline-secondary mb-0" data-input-id="dev-env-password-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="btn-browserdev" class="btn btn-outline-dark btn-browserdev mr-5" {% if browserdev_status.status != 'running' %}onclick="enableBrowserDev(this);"{% else %}onclick="window.location.href='{{browserdev_status.url}}/?folder=/home/system/components/';"{% endif %}>{% if browserdev_status.status != 'running' %}Enable Development Environment{% else %}Open Development Environment{% endif %}</button>
+                                    <button type="button" id="btn-browserdev-changepw" class="btn btn-outline-dark btn-browserdev-changepw" onclick="changePwBrowserDev(this);" style="">Change Password</button>
+                                    <button type="button" id="btn-browserdev-disable"class="btn btn-outline-danger btn-browserdev-stop" onclick="disableBrowserDev(this);" style="{% if browserdev_status.status != 'running' %}display:none;{% endif %}">Disable Development Environment</button>
+                                    {% if browserdev_status.status != 'running' %}
+                                        <div class="alert alert-info alert-dismissible fade show" role="alert" style="margin-top: -5px;">
+                                            <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
+                                            <span class="alert-text text-xs text-white"><i><b>Once you click, wait a few seconds while things are prepared. A new tab will open with your development environment.</i></b></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: -5px;">
+                                            <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
+                                            <span class="alert-text text-xs text-white"><i><b>Your development environment is available online! We recommend you disable it when you don't need it.</i></b></span>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div class="card mt-4">
                         <div class="card-header pb-0 p-3">

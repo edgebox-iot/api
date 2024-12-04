@@ -11,6 +11,7 @@ use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\ShellHelper;
+use App\Helper\BrowserDevHelper;
 use App\Helper\UpdatesHelper;
 use App\Helper\SystemHelper;
 use App\Helper\TunnelHelper;
@@ -33,6 +34,7 @@ class SettingsController extends BaseController
     private EdgeAppsHelper $edgeAppsHelper;
     private SystemHelper $systemHelper;
     private ShellHelper $shellHelper;
+    private BrowserDevHelper $browserDevHelper;
     private UpdatesHelper $updatesHelper;
     private EntityManagerInterface $entityManager;
     private TunnelHelper $tunnelHelper;
@@ -64,6 +66,7 @@ class SettingsController extends BaseController
         EdgeAppsHelper $edgeAppsHelper,
         SystemHelper $systemhelper,
         ShellHelper $shellHelper,
+        BrowserDevHelper $browserDevHelper,
         UpdatesHelper $updatesHelper,
         EntityManagerInterface $entityManager,
         DashboardHelper $dashboardHelper,
@@ -76,6 +79,7 @@ class SettingsController extends BaseController
         $this->edgeAppsHelper = $edgeAppsHelper;
         $this->systemHelper = $systemhelper;
         $this->shellHelper = $shellHelper;
+        $this->browserDevHelper = $browserDevHelper;
         $this->updatesHelper = $updatesHelper;
         $this->entityManager = $entityManager;
         $this->dashboardHelper = $dashboardHelper;
@@ -312,6 +316,8 @@ class SettingsController extends BaseController
 
         $updates_status = $this->updatesHelper->getUpdatesStatus();
 
+        $browserdev_status = $this->browserDevHelper->getBrowserDevStatus(true);
+
         return $this->render('settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
@@ -334,6 +340,7 @@ class SettingsController extends BaseController
             'dash_internet_url' => $dash_internet_url,
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'updates_status' => $updates_status,
+            'browserdev_status' => $browserdev_status,
         ]);
     }
 

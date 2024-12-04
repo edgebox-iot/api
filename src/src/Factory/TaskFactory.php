@@ -33,6 +33,9 @@ class TaskFactory
     public const DISABLE_PUBLIC_DASHBOARD = 'disable_public_dashboard';
     public const CHECK_UPDATES = 'check_updates';
     public const APPLY_UPDATES = 'apply_updates';
+    public const ENABLE_BROWSERDEV = 'activate_browserdev';
+    public const DISABLE_BROWSERDEV = 'deactivate_browserdev';
+    public const SET_BROWSERDEV_PASSWORD = 'set_browserdev_password';
 
     private OptionRepository $optionRepository;
     private EdgeAppsHelper $edgeAppsHelper;
@@ -269,6 +272,28 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::APPLY_UPDATES);
 
+        return $task;
+    }
+
+    public function createEnableBrowserDevTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::ENABLE_BROWSERDEV);
+        return $task;
+    }
+
+    public function createDisableBrowserDevTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::DISABLE_BROWSERDEV);
+        return $task;
+    }
+
+    public function createSetBrowserDevPasswordTask(string $password): Task
+    {
+        $task = new Task();
+        $task->setTask(self::SET_BROWSERDEV_PASSWORD);
+        $task->setArgs(json_encode(['password' => $password]));
         return $task;
     }
 }

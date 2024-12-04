@@ -54,6 +54,17 @@ class OptionRepository extends ServiceEntityRepository
         return $this->findOption('SYSTEM_UPDATES');
     }
 
+    public function findBrowserDevStatus(): ?string
+    {
+        return $this->findOption('BROWSERDEV_STATUS');
+    }
+
+    public function findBrowserDevPassword(): ?string
+    {
+        return $this->findOption('BROWSERDEV_PASSWORD');
+        
+    }
+
     private function findOption(string $name)
     {
         $option = $this->findOneBy(['name' => $name]);
