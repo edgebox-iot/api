@@ -65,7 +65,7 @@ class BrowserDevHelper
 
     public function getBrowserDevPassword(): string
     {
-        return $this->optionRepository->findBrowserDevPassword();
+        return $this->optionRepository->findBrowserDevPassword() || '';
     }
     public function getBrowserDevUrl(): string
     {
