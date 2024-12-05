@@ -65,9 +65,8 @@ class BrowserDevHelper
 
     public function getBrowserDevPassword(): string
     {
-        return $this->optionRepository->findBrowserDevPassword();
+        return $this->optionRepository->findBrowserDevPassword() || [];
     }
-
     public function getBrowserDevUrl(): string
     {
         return "https://dev." . $this->optionRepository->findDomainName();
@@ -75,7 +74,6 @@ class BrowserDevHelper
 
     public function getBrowserDevStatus($with_password=false): array
     {
-        $browser_dev_status_option = $this->optionRepository->findBrowserDevStatus() ?? new Option();
         $running_result = [
             'status' => 'not_running',
             'status_message' => 'Browser Dev Environment is not running',
@@ -85,6 +83,8 @@ class BrowserDevHelper
             $password = $this->getBrowserdevPassword();
             $running_result['password'] = $password;
         }
+
+        $browser_dev_status_option = $this->optionRepository->findBrowserDevStatus() ?? new Option();
         
         if (null === $browser_dev_status_option || 'null' === $browser_dev_status_option || 'not_running' === $browser_dev_status_option) {
             return $running_result;
@@ -98,12 +98,12 @@ class BrowserDevHelper
                 'status_message' => 'Browser Dev Environment is running',
                 'url' => $this->getBrowserDevUrl(),
             ];
-
             if ($with_password) {
                 $password = $this->getBrowserdevPassword();
                 $running_result['password'] = $password;
             }
-            return $running_result;
         }
+
+        return $running_result;
     }
 }
