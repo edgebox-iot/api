@@ -1,0 +1,17 @@
+{# blocks/_collapse_card.html.twig #}
+{% block collapse_card %}
+    <div class="card-body p-3 collapsed pt-0">
+        <hr class="mt-0">
+        <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
+            <a class="{% if is_collapsed %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#{{ collapse_id }}" aria-expanded="{% if not is_collapsed %}true{% else %}false{% endif %}" aria-controls="{{ collapse_id }}">
+                ▼ {{ title }}
+            </a>
+        </h6>
+        <div style="cursor: pointer;" class="text-xs text-muted" data-bs-toggle="collapse" data-bs-target="#{{ collapse_id }}" aria-expanded="{% if not is_collapsed %}true{% else %}false{% endif %}" aria-controls="{{ collapse_id }}">
+            {% block card_header %}%{% endblock %}
+        </div>
+        <div id="{{ collapse_id }}" class="{% if not is_collapsed %}collapse show{% else %}collapsed collapse{% endif %}" style="margin-top: 25px;">
+            {% block card_content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

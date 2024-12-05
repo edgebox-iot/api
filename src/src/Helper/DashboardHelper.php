@@ -36,7 +36,7 @@ class DashboardHelper
 
     public function getSystemChangelogVersion(): string
     {
-        $changelog_files = glob(__DIR__ . '/../../templates/changelog/*.html.twig');
+        $changelog_files = glob(__DIR__ . '/../../templates/pages/changelog/*.html.twig');
         $changelog_files = array_map('basename', $changelog_files);
         $changelog_files = array_map(fn($file) => str_replace('.html.twig', '', $file), $changelog_files);
         $changelog_files = array_map(fn($file) => str_replace('changelog-', '', $file), $changelog_files);

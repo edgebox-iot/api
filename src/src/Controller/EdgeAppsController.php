@@ -92,7 +92,7 @@ class EdgeAppsController extends BaseController
             $framework_ready = true;
         }
 
-        return $this->render('edgeapps/index.html.twig', [
+        return $this->render('pages/edgeapps/index.html.twig', [
             'controller_title' => 'EdgeApps',
             'controller_subtitle' => 'Applications control',
             'framework_ready' => $framework_ready,
@@ -160,7 +160,7 @@ class EdgeAppsController extends BaseController
             }
         }
 
-        return $this->render('edgeapps/details.html.twig', [
+        return $this->render('pages/edgeapps/details.html.twig', [
             'controller_title' => 'EdgeApps',
             'controller_subtitle' => 'Application details',
             'release_version' => $this->systemHelper->getReleaseVersion(),
@@ -208,7 +208,7 @@ class EdgeAppsController extends BaseController
             $action_result = 'edgeapp_not_found';
         }
 
-        return $this->render('edgeapps/action.html.twig', [
+        return $this->render('pages/edgeapps/action.html.twig', [
             'controller_title' => 'EdgeApps - '.$controller_title,
             'controller_subtitle' => 'Please wait...',
             'edgeapp' => $edgeapp,

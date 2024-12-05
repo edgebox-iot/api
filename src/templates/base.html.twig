@@ -1040,7 +1040,7 @@
     }
 
     function enableBrowserDev(elem) {
-      elem.innerHTML = "Enabling... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
+      elem.innerHTML = "Enabling Development Environment... <span style=\"margin-left: 10px;\" class='spinner-border spinner-border-sm' role='status' aria-hidden='true'></span>";
       // Set aria-disabled=true and add disabled class so the button is not clickable anymore.
       elem.setAttribute("aria-disabled", "true");
       elem.classList.add("disabled");
@@ -1094,11 +1094,10 @@
               // Open the link in a new tab
               if(!opened) {
                 window.open(data.url, '_blank');
-                // Replace the button with text saying "Open Shell Session"
                 var elem = document.querySelector(".btn-browserdev");
                 elem.innerHTML = "Open Development Environment";
                 // Add link
-                elem.setAttribute("href", data.url);
+                elem.setAttribute("href", data.url + "/?folder=/home/system/components/");
                 // Set new tab target
                 elem.setAttribute("target", "_blank");
                 elem.setAttribute("aria-disabled", "false");

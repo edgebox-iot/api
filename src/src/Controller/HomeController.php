@@ -48,7 +48,7 @@ class HomeController extends BaseController
     #[Route('/hello', name: 'hello')]
     public function hello(): Response
     {
-        return $this->render('home/hello.html.twig', [
+        return $this->render('pages/home/hello.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -68,7 +68,7 @@ class HomeController extends BaseController
 
         $actions_overview = $this->getActionsOverviewContainerVars();
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('pages/home/index.html.twig', [
             'controller_title' => 'Dashboard',
             'controller_subtitle' => 'Welcome back!',
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),

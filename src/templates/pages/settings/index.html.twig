@@ -428,18 +428,18 @@
                                 </div>
                             </div>
 
-                        </div>                       
-                        <div class="card-body p-3 collapsed pt-0">
-                            <hr class="mt-0">
-                            <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
-                                <a class="{% if shell_status_code != "running" or app.request.query.get('option_changed') != 'shell' %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseShellOptions" aria-expanded="{% if shell_status_code == "running" or app.request.query.get('option_changed') == 'shell' %}true{% else %}false{% endif %}" aria-controls="collapseShellOptions">
-                                    ▼ Web Shell Access
-                                </a>
-                            </h6>
-                            <p class="text-sm opacity-8">
-                                <b>Spawn a root shell access link.</b> A temporary link that expires in a configured amount of time, and can also be closed on-demand. Ideal for quick actions on your edgebox instance, alone or with a someone else via real-time multiplayer interaction.
-                            </p>
-                            <div id="collapseShellOptions" class="{% if shell_status_code == "running" or app.request.query.get('option_changed') == 'shell' %}collapse show{% else %}collapsed collapse{% endif %}" style="margin-top: 25px;">
+                        </div>
+                        {% embed 'blocks/_collapse_card.html.twig' with { 
+                            'title': 'Web Shell Access',
+                            'collapse_id': 'collapseShellOptions',
+                            'is_collapsed': shell_status_code != "running" or app.request.query.get('option_changed') != 'shell', 
+                        } %}
+                            {% block card_header %}
+                                <p class="text-sm opacity-8">
+                                    <b>Spawn a root shell access link.</b> A temporary link that expires in a configured amount of time, and can also be closed on-demand. Ideal for quick actions on your edgebox instance, alone or with a someone else via real-time multiplayer interaction.
+                                </p>
+                            {% endblock %}
+                            {% block card_content %}
                                 <p class="text-sm opacity-8">
                                     <button type="button" class="btn btn-outline-dark btn-shell-session mr-5" {% if shell_status_code != 'running' %}onclick="startShellSession(this);"{% else %}onclick="window.location.href='{{shell_url}}';"{% endif %}>{% if shell_status_code != 'running' %}Start Shell Session{% else %}Open Shell{% endif %}</button>
                                     <button type="button" class="btn btn-outline-danger btn-shell-stop-session" onclick="stopShellSession(this);" style="{% if shell_status_code != 'running' %}display:none;{% endif %}">Stop Shell Session</button>
@@ -472,19 +472,19 @@
                                         </div>
                                     {% endif %}
                                 </p>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                         <div class="card-body p-3 pt-0">
                             <hr class="mt-0">
                             <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
-                                <a class="{% if app.request.query.get('option_changed') != 'browserdev' %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
+                                <a class="{% if app.request.query.get('option_changed') == 'browserdev' %}show{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
                                     ▼ Browser Dev Environment
                                 </a>
                             </h6>
-                            <p class="text-sm opacity-8">
+                            <p style="cursor: pointer;" class="text-sm opacity-8 {% if app.request.query.get('option_changed') == 'browserdev' %}show{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
                                 <b>Access the underlying edgebox system via a full fledged web browser development environment.</b> This is an environment with full access to your edgebox instance. This is ideal for advanced users who want to run, debug, and develop their code and apps on the edgebox instance.
                             </p>
-                            <div id="collapseBrowserDevOptions" class="collapse" style="margin-top: 25px;">
+                            <div id="collapseBrowserDevOptions" class="{% if app.request.query.get('option_changed') == 'browserdev' %}collapse show{% else %}collapse collapsed{% endif %}" style="margin-top: 25px;">
                                 <p class="text-sm opacity-8">
                                     <div class="form-group browserdev-password-group" id="browserdev-password-settings" style="">
                                         <label for="sshx-timeout-value" class="form-control-label">Your access password:</label>
@@ -500,7 +500,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" id="btn-browserdev" class="btn btn-outline-dark btn-browserdev mr-5" {% if browserdev_status.status != 'running' %}onclick="enableBrowserDev(this);"{% else %}onclick="window.location.href='{{browserdev_status.url}}/?folder=/home/system/components/';"{% endif %}>{% if browserdev_status.status != 'running' %}Enable Development Environment{% else %}Open Development Environment{% endif %}</button>
+                                    <button type="button" id="btn-browserdev" class="btn btn-outline-dark btn-browserdev mr-5" {% if browserdev_status.status != 'running' %}onclick="enableBrowserDev(this);"{% else %}onclick="window.open('{{browserdev_status.url}}/?folder=/home/system/components/', '_blank', 'noopener');"{% endif %}>{% if browserdev_status.status != 'running' %}Enable Development Environment{% else %}Open Development Environment{% endif %}</button>
                                     <button type="button" id="btn-browserdev-changepw" class="btn btn-outline-dark btn-browserdev-changepw" onclick="changePwBrowserDev(this);" style="">Change Password</button>
                                     <button type="button" id="btn-browserdev-disable"class="btn btn-outline-danger btn-browserdev-stop" onclick="disableBrowserDev(this);" style="{% if browserdev_status.status != 'running' %}display:none;{% endif %}">Disable Development Environment</button>
                                     {% if browserdev_status.status != 'running' %}

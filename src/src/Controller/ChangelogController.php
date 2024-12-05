@@ -55,7 +55,7 @@ class ChangelogController extends AbstractController
 
         # If LAST_SEEN_CHANGELOG_VERSION is not set, redirect to the changelog page.
 
-        return $this->render('changelog/' . $target_version . '.html.twig', [
+        return $this->render('pages/changelog/' . $target_version . '.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -72,7 +72,7 @@ class ChangelogController extends AbstractController
     #[Route('/changelog/{version}', name: 'changelog-version')]
     public function changelog_version(string $version): Response
     {
-        return $this->render('changelog/' . $version . '.html.twig', [
+        return $this->render('pages/changelog/' . $version . '.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),

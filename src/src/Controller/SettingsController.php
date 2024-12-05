@@ -318,7 +318,7 @@ class SettingsController extends BaseController
 
         $browserdev_status = $this->browserDevHelper->getBrowserDevStatus(true);
 
-        return $this->render('settings/index.html.twig', [
+        return $this->render('pages/settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
             'alert' => $alert,
@@ -385,7 +385,7 @@ class SettingsController extends BaseController
             $this->entityManager->flush();
         }
 
-        return $this->render('settings/action.html.twig', [
+        return $this->render('pages/settings/action.html.twig', [
             'controller_title' => 'Settings - '.$controller_title,
             'controller_subtitle' => 'Please wait...',
             'framework_ready' => $framework_ready,
