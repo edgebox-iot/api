@@ -76,18 +76,17 @@ class BrowserDevHelper
     public function getBrowserDevStatus($with_password=false): array
     {
         $browser_dev_status_option = $this->optionRepository->findBrowserDevStatus() ?? new Option();
-
+        $running_result = [
+            'status' => 'not_running',
+            'status_message' => 'Browser Dev Environment is not running',
+            'url' => $this->getBrowserDevUrl(),
+        ];
+        if ($with_password) {
+            $password = $this->getBrowserdevPassword();
+            $running_result['password'] = $password;
+        }
+        
         if (null === $browser_dev_status_option || 'null' === $browser_dev_status_option || 'not_running' === $browser_dev_status_option) {
-            $running_result = [
-                'status' => 'not_running',
-                'status_message' => 'Browser Dev Environment is not running',
-                'url' => $this->getBrowserDevUrl(),
-            ];
-
-            if ($with_password) {
-                $password = $this->getBrowserdevPassword();
-                $running_result['password'] = $password;
-            }
             return $running_result;
         }
 
