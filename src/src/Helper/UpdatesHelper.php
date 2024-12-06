@@ -38,7 +38,7 @@ class UpdatesHelper
 
     public function applyUpdates(): array
     {
-        $task = $this->taskFactory->createApplyUpdatesTask($timeout);
+        $task = $this->taskFactory->createApplyUpdatesTask();
         $this->entityManager->persist($task);
         $this->entityManager->flush();
 

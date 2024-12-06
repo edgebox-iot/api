@@ -259,7 +259,7 @@ class TaskFactory
         return $task;
     }
 
-    public function createCheckUpdatesTask(int $timeout): Task
+    public function createCheckUpdatesTask(): Task
     {
         $task = new Task();
         $task->setTask(self::CHECK_UPDATES);
