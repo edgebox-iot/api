@@ -53,7 +53,7 @@ class MiddlewareSubscriber implements EventSubscriberInterface
             }
 
             // If return of middleware is Response or RedirectResponse, return it
-            if ($middleware_result && ($middleware_result instanceof Response || $middleware_result instanceof RedirectResonse)) {
+            if ($middleware_result && ($middleware_result instanceof Response || $middleware_result instanceof RedirectResponse)) {
                 $event->setController(fn() => $middleware_result);
             }
         }
