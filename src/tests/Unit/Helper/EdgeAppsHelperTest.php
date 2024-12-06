@@ -44,7 +44,7 @@ class EdgeAppsHelperTest extends TestCase
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn($option);
 
-        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock(), , $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
+        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock(), $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
         self::assertCount(1, $edgeAppsHelper->getEdgeAppsList());
     }
