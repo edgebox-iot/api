@@ -46,9 +46,7 @@ class MiddlewareSubscriber implements EventSubscriberInterface
             
             $firstMethodName = $middleware->name;
             $otherMethodNames = $middleware->getExtras();
-
-            die(var_dump($firstMethodName, $otherMethodNames));
-
+            
             $methodNames = [$firstMethodName, ...$otherMethodNames];
             
             $middleware_result = null;
