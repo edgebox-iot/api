@@ -11,7 +11,7 @@ class RunMiddleware
         public string $name,
         ...$extras
     ) {
-        $this->extras = $extras ?? [];
+        $this->extras = $extras;
     }
 
     public function getExtras(): array
