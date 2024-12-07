@@ -43,17 +43,26 @@ class MiddlewareSubscriber implements EventSubscriberInterface
                 $run_middleware_instance = $attribute->newInstance();
                 $middleware = $run_middleware_instance;
             }
-
-            $methodName = $middleware->name;
+            
+            $firstMethodName = $middleware->name;
+            $otherMethodNames = $middleware->getExtras();
+            
+            $methodNames = [$firstMethodName, ...$otherMethodNames];
             
             $middleware_result = null;
 
-            if (method_exists($controller[0], $methodName)) {
-                $middleware_result = $controller[0]->$methodName();
+            foreach ($methodNames as $methodName) {
+                // If middleware result is not null, stop for loop
+                // If return of middleware is Response or RedirectResponse, return it
+                if ($middleware_result && ($middleware_result instanceof Response || $middleware_result instanceof RedirectResponse)) {
+                    break;
+                }
+                if (method_exists($controller[0], $methodName)) {
+                    $middleware_result = $controller[0]->$methodName();
+                }
             }
 
-            // If return of middleware is Response or RedirectResponse, return it
-            if ($middleware_result && ($middleware_result instanceof Response || $middleware_result instanceof RedirectResonse)) {
+            if ($middleware_result) {
                 $event->setController(fn() => $middleware_result);
             }
         }

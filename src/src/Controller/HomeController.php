@@ -48,7 +48,7 @@ class HomeController extends BaseController
     #[Route('/hello', name: 'hello')]
     public function hello(): Response
     {
-        return $this->render('home/hello.html.twig', [
+        return $this->render('pages/home/hello.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -68,7 +68,7 @@ class HomeController extends BaseController
 
         $actions_overview = $this->getActionsOverviewContainerVars();
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('pages/home/index.html.twig', [
             'controller_title' => 'Dashboard',
             'controller_subtitle' => 'Welcome back!',
             'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -243,6 +243,24 @@ class HomeController extends BaseController
                 Task::STATUS_FINISHED => 'Stopped interactive shell',
                 Task::STATUS_ERROR => 'Failed to stop interactive shell',
             ],
+            'activate_browserdev' => [
+                Task::STATUS_CREATED => 'Waiting to activate Browser Dev Environment',
+                Task::STATUS_EXECUTING => 'Activating Browser Dev Environment',
+                Task::STATUS_FINISHED => 'Activated Browser Dev Environment',
+                Task::STATUS_ERROR => 'Failed to activate Browser Dev Environment',
+            ],
+            'deactivate_browserdev' => [
+                Task::STATUS_CREATED => 'Waiting to deactivate Browser Dev Environment',
+                Task::STATUS_EXECUTING => 'Deactivating Browser Dev Environment',
+                Task::STATUS_FINISHED => 'Deactivated Browser Dev Environment',
+                Task::STATUS_ERROR => 'Failed to deactivate Browser Dev Environment',
+            ],
+            'set_browserdev_password' => [
+                Task::STATUS_CREATED => 'Waiting to set Browser Dev Environment password',
+                Task::STATUS_EXECUTING => 'Setting Browser Dev Environment password',
+                Task::STATUS_FINISHED => 'Set Browser Dev Environment password',
+                Task::STATUS_ERROR => 'Failed to set Browser Dev Environment password',
+            ],
         ];
 
         $unknown_action_descriptions = [
@@ -263,6 +281,8 @@ class HomeController extends BaseController
             'disable_tunnel' => 'scissors',
             'enable_public_dashboard' => 'ui-04',
             'disable_public_dashboard' => 'ui-04',
+            'activate_browserdev' => 'button-play',
+            'deactivate_browserdev' => 'button-pause',
             'unknown_action' => 'ui-04',
         ];
 

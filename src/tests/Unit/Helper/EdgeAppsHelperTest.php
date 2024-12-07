@@ -5,6 +5,7 @@ namespace App\Tests\Unit\Helper;
 use App\Entity\Option;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
+use App\Repository\TaskRepository;
 use App\Repository\OptionRepository;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +16,7 @@ class EdgeAppsHelperTest extends TestCase
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn(null);
 
-        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
+        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(TaskRepository::class)->disableOriginalConstructor()->getMock(), $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
         self::assertEquals([], $edgeAppsHelper->getEdgeAppsList());
     }
@@ -43,7 +44,7 @@ class EdgeAppsHelperTest extends TestCase
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn($option);
 
-        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
+        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(TaskRepository::class)->disableOriginalConstructor()->getMock(), $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
         self::assertCount(1, $edgeAppsHelper->getEdgeAppsList());
     }
@@ -71,7 +72,7 @@ class EdgeAppsHelperTest extends TestCase
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn($option);
 
-        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
+        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(TaskRepository::class)->disableOriginalConstructor()->getMock(), $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
         self::assertTrue($edgeAppsHelper->edgeAppExists('asdf'));
     }
@@ -98,7 +99,7 @@ class EdgeAppsHelperTest extends TestCase
         );
         $mockOptionRepository = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
         $mockOptionRepository->method('findOneBy')->willReturn($option);
-        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
+        $edgeAppsHelper = new EdgeAppsHelper($mockOptionRepository, $this->getMockBuilder(TaskRepository::class)->disableOriginalConstructor()->getMock(), $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock());
 
         self::assertFalse($edgeAppsHelper->edgeAppExists('fdsa'));
     }

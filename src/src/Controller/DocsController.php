@@ -11,7 +11,7 @@ class DocsController extends AbstractController
     #[Route('/docs', name: 'docs')]
     public function index(): Response
     {
-        return $this->render('docs/index.html.twig', [
+        return $this->render('pages/docs/index.html.twig', [
             'page_title' => 'Documentation',
             'page_subtitle' => 'Documentation',
         ]);

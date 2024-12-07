@@ -211,57 +211,6 @@
                                     </form>
                                 {% endif %}
 
-                                <h4>Security</h4>
-                                <p>Secure app access with a login. Any previously unknown devices will be asked to authenticate.</p>
-                                <div class="row">
-                                    {% if edgeapp.login.enabled %}
-                                        <div id="basic-auth-primary-alert" class="alert alert-success" role="alert" style="display: block; color: white;">
-                                            <strong>Activated</strong> Your app is now protected by the username and password below.
-                                        </div>
-                                    {% endif %}
-                                    <div id="basic-auth-error-alert" class="alert alert-danger" role="alert" style="display: none; color: white;">
-                                        <strong>Error</strong> A problem occured with this feature.
-                                    </div>
-                                    <form id="app-basic-auth-form">
-                                        <input type="hidden" class="form-control" id="id-input" value="{{edgeapp.id}}">
-                                        <div class="form-group">
-                                            <label class="form-control-label" for="basic-auth-username-input">Username:</label>
-                                            <div class="input-group">
-                                                <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="text" class="form-control" placeholder="A username to protect your app" value="{% if edgeapp.login.username == "" %}{{edgeapp.id}}{% else %}{{edgeapp.login.username}}{% endif %}" id="basic-auth-username-input" aria-label="Username">
-                                            </div>
-                                            <label class="form-control-label" for="basic-auth-password-input">Password:</label>
-                                            <div class="input-group">
-                                                <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="password" class="form-control" placeholder="A password to protect your app" value="{{edgeapp.login.password}}" id="basic-auth-password-input" aria-label="Password" aria-describedby="A password to protect your app">
-                                                <button class="btn btn-outline-secondary mb-0" data-input-id="basic-auth-password-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
-                                                <button class="btn btn-outline-secondary mb-0 btn-tooltip {% if(edgeapp.status.id == -1) %}disabled{% endif %}" data-input-id="basic-auth-password-input" type="button" onclick="generateAppOptionsSecret(this);" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate" data-container="body" data-animation="true"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                                                {# <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button> #}
-                                            </div>
-                                        </div>
-                                    </form>
-                                    {% if edgeapp.login.enabled %}
-                                        <p class="mt-25">
-                                            <button class="btn btn-icon btn-3 btn-success" type="button" onclick="saveAppBasicAuth(this);">
-                                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-check-bold"></i></span>
-                                                <span class="btn-inner--text">Save</span>
-                                            </button>
-                                            
-                                            <button class="btn btn-icon btn-3 bg-gradient-warning" type="button" data-app-id="{{edgeapp.id}}" onclick="removeAppBasicAuth(this);">
-                                                <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-button-power"></i></span>
-                                                <span class="btn-inner--text">Disable</span>
-                                            </button>
-                                        </p>
-                                    {% else %}
-                                        <div class="col-md-4">
-                                            <p class="mt-25">
-                                                <button class="btn bg-gradient-warning w-90" role="button" onclick="saveAppBasicAuth(this);">
-                                                    <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-lock-circle-open"></i></span>
-                                                    <span class="btn-inner--text">Enable</span>
-                                                </button>
-                                            </p>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
                                 <h4>Advanced</h4>
                                 <p>Troubleshoot and perform advanced actions:</p>
                                 <div class="row">
@@ -299,6 +248,84 @@
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
+                                        
+                                    </div>
+                                </div>
+                                {% if dashboard_settings.browser_dev_env_status == 'running' %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a class="btn bg-gradient-secondary w-90" target="_blank" href="{{ browserdev_status.url }}/?folder=/home/system/components/apps/{{ edgeapp.id }}" role="button" aria-expanded="false" >
+                                                Development Environment
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p class="mt-0 text-xs" style="padding-top: 10px;"><b><i>Access the browser code editor for this edgeapp.</i></b></p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <a class="btn bg-gradient-warning w-90" data-bs-toggle="collapse" href="#collapseAdvancedEdgeappSecurity" role="button" aria-expanded="false" aria-controls="collapseAdvancedEdgeappSecurity">
+                                            Security
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p class="mt-0 text-xs" style="padding-top: 10px;"><b><i>Add an optional extra login protection the app.</i></b></p>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="collapseAdvancedEdgeappSecurity">
+                                    <div class="card card-body mb-5">
+
+                                        <h5>Extra Authentication Layer</h5>
+                                        <p>Secure app access with a login. Any previously unknown web browsers will be asked to authenticate through BasicAuth before having access to this app.</p>
+                                        <div class="row">
+                                            {% if edgeapp.login.enabled %}
+                                                <div id="basic-auth-primary-alert" class="alert alert-success" role="alert" style="display: block; color: white;">
+                                                    <strong>Activated</strong> Your app is now protected by the username and password below.
+                                                </div>
+                                            {% endif %}
+                                            <div id="basic-auth-error-alert" class="alert alert-danger" role="alert" style="display: none; color: white;">
+                                                <strong>Error</strong> A problem occured with this feature.
+                                            </div>
+                                            <form id="app-basic-auth-form">
+                                                <input type="hidden" class="form-control" id="id-input" value="{{edgeapp.id}}">
+                                                <div class="form-group">
+                                                    <label class="form-control-label" for="basic-auth-username-input">Username:</label>
+                                                    <div class="input-group">
+                                                        <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="text" class="form-control" placeholder="A username to protect your app" value="{% if edgeapp.login.username == "" %}{{edgeapp.id}}{% else %}{{edgeapp.login.username}}{% endif %}" id="basic-auth-username-input" aria-label="Username">
+                                                    </div>
+                                                    <label class="form-control-label" for="basic-auth-password-input">Password:</label>
+                                                    <div class="input-group">
+                                                        <input {% if(edgeapp.status.id == -1) %}disabled{% endif %} type="password" class="form-control" placeholder="A password to protect your app" value="{{edgeapp.login.password}}" id="basic-auth-password-input" aria-label="Password" aria-describedby="A password to protect your app">
+                                                        <button class="btn btn-outline-secondary mb-0" data-input-id="basic-auth-password-input" type="button" onclick="toogleAppOptionSecretVisibility(this);">Show</button>
+                                                        <button class="btn btn-outline-secondary mb-0 btn-tooltip {% if(edgeapp.status.id == -1) %}disabled{% endif %}" data-input-id="basic-auth-password-input" type="button" onclick="generateAppOptionsSecret(this);" data-bs-toggle="tooltip" data-bs-placement="top" title="Generate" data-container="body" data-animation="true"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                                                        {# <button class="btn btn-outline-secondary mb-0" data-input-id="{{option.key}}-input" type="button" onclick="copyAppOptionToClipboard(this);">Copy</button> #}
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            {% if edgeapp.login.enabled %}
+                                                <p class="mt-25">
+                                                    <button class="btn btn-icon btn-3 btn-success" type="button" onclick="saveAppBasicAuth(this);">
+                                                        <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-check-bold"></i></span>
+                                                        <span class="btn-inner--text">Save</span>
+                                                    </button>
+                                                    
+                                                    <button class="btn btn-icon btn-3 bg-gradient-warning" type="button" data-app-id="{{edgeapp.id}}" onclick="removeAppBasicAuth(this);">
+                                                        <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-button-power"></i></span>
+                                                        <span class="btn-inner--text">Disable</span>
+                                                    </button>
+                                                </p>
+                                            {% else %}
+                                                <div class="col-md-4">
+                                                    <p class="mt-25">
+                                                        <button class="btn bg-gradient-success w-90" role="button" onclick="saveAppBasicAuth(this);">
+                                                            <span class="btn-inner--icon" style="margin-right: 10px;"><i class="ni ni-lock-circle-open"></i></span>
+                                                            <span class="btn-inner--text">Enable</span>
+                                                        </button>
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
                                         
                                     </div>
                                 </div>

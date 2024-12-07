@@ -28,7 +28,7 @@ class BackupsController extends BaseController
     #[Route('/backups', name: 'backups')]
     public function index(): Response
     {
-        return $this->render('backups/index.html.twig', [
+        return $this->render('pages/backups/index.html.twig', [
             'controller_title' => 'Backups',
             'controller_subtitle' => 'Safeguard Data',
             'backup_status' => $this->backupsHelper->getBackupsStatus(),

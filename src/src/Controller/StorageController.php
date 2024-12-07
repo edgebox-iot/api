@@ -33,7 +33,7 @@ class StorageController extends AbstractController
             $storage_ready = true;
         }
 
-        return $this->render('storage/index.html.twig', [
+        return $this->render('pages/storage/index.html.twig', [
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Buckets & Drives',
             'storage_ready' => $storage_ready,
@@ -45,7 +45,7 @@ class StorageController extends AbstractController
     #[Route('/storage/device/new', name: 'storage_device_new')]
     public function storage_device_new(): Response
     {
-        return $this->render('storage/device/new.html.twig', [
+        return $this->render('pages/storage/device/new.html.twig', [
             'controller_title' => 'Storage',
             'controller_subtitle' => 'Add new device',
             'dashboard_settings' => $this->dashboardHelper->getSettings(),

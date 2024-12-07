@@ -36,7 +36,7 @@ class DashboardHelper
 
     public function getSystemChangelogVersion(): string
     {
-        $changelog_files = glob(__DIR__ . '/../../templates/changelog/*.html.twig');
+        $changelog_files = glob(__DIR__ . '/../../templates/pages/changelog/*.html.twig');
         $changelog_files = array_map('basename', $changelog_files);
         $changelog_files = array_map(fn($file) => str_replace('.html.twig', '', $file), $changelog_files);
         $changelog_files = array_map(fn($file) => str_replace('changelog-', '', $file), $changelog_files);
@@ -57,12 +57,14 @@ class DashboardHelper
         $show_me_when_it_twerks_value = $this->getOptionValue('DASHBOARD_SHOW_ME_WHEN_IT_TWERKS') ?? 'no';
         $block_default_apps_public_access_value = $this->getOptionValue('DASHBOARD_BLOCK_DEFAULT_APPS_PUBLIC_ACCESS') ?? 'no';
         $show_purpose_label_on_quick_access_icons = $this->getOptionValue('DASHBOARD_SHOW_PURPOSE_LABEL_ON_QUICK_ACCESS_ICONS') ?? 'yes';
+        $browser_dev_env_status = $this->getOptionValue('BROWSERDEV_STATUS') ?? 'not_running';
 
         $data = [
             'color_mood' => $color_mood_value,
             'sidebar_style' => $sidebar_style_value,
             'topbar_style' => $topbar_style_value,
             'show_only_installed_apps' => $show_only_installed_apps_value,
+            'browser_dev_env_status' => $browser_dev_env_status,
             'show_me_when_it_twerks' => $show_me_when_it_twerks_value,
             'block_default_apps_public_access' => $block_default_apps_public_access_value,
             'show_purpose_label_on_quick_access_icons' => $show_purpose_label_on_quick_access_icons,
