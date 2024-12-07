@@ -4,11 +4,10 @@ namespace App\EventSubscriber;
 
 use App\Attribute\RunMiddleware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-
-use \Symfony\Component\HttpFoundation\RedirectResponse;
-use \Symfony\Component\HttpFoundation\Response;
 
 class MiddlewareSubscriber implements EventSubscriberInterface
 {
@@ -21,7 +20,6 @@ class MiddlewareSubscriber implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
-
         $controller = $event->getController();
 
         if (!is_array($controller)) {
@@ -31,24 +29,26 @@ class MiddlewareSubscriber implements EventSubscriberInterface
         $reflectionMethod = new \ReflectionMethod($controller[0], $controller[1]);
         $attributes = $reflectionMethod->getAttributes();
 
-        $run_middleware_instance= null;
+        $middleware = null;
 
         foreach ($attributes as $attribute) {
-
-            if ($attribute->getName() !== RunMiddleware::class) {
+            if (RunMiddleware::class !== $attribute->getName()) {
                 continue;
             }
 
-            if ($run_middleware_instance == null) {
-                $run_middleware_instance = $attribute->newInstance();
-                $middleware = $run_middleware_instance;
+            if (null == $middleware) {
+                $middleware = $attribute->newInstance();
             }
-            
+
+            if (null === $middleware) {
+                continue;
+            }
+
             $firstMethodName = $middleware->name;
             $otherMethodNames = $middleware->getExtras();
-            
+
             $methodNames = [$firstMethodName, ...$otherMethodNames];
-            
+
             $middleware_result = null;
 
             foreach ($methodNames as $methodName) {
@@ -63,7 +63,7 @@ class MiddlewareSubscriber implements EventSubscriberInterface
             }
 
             if ($middleware_result) {
-                $event->setController(fn() => $middleware_result);
+                $event->setController(fn () => $middleware_result);
             }
         }
     }

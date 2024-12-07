@@ -3,13 +3,15 @@
 namespace App\Helper;
 
 use App\Entity\Option;
+use App\Factory\TaskFactory;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
-use App\Factory\TaskFactory;
 
 class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
+
+    private TaskRepository $taskRepository;
 
     private SystemHelper $systemHelper;
 
@@ -25,7 +27,6 @@ class EdgeAppsHelper
 
     public function getEdgeAppsList(bool $OrderByStatus = true, bool $fetchOngoingStatuses = false): array
     {
-
         $apps_list_option = $this->optionRepository->findOneBy(['name' => 'EDGEAPPS_LIST']) ?? new Option();
 
         if (null === $apps_list_option->getValue() || 'null' === $apps_list_option->getValue()) {
@@ -43,21 +44,18 @@ class EdgeAppsHelper
             // Support for demoting experimentanl non-running apps to the bottom of the list
             // experimental == true and status.id == -1 should be displayed always last
             usort($apps, function ($a, $b) {
-                
-                if ($a['status']['id'] == -1 && (!empty($a['experimental'])) && ($b['status']['id'] != -1 || empty($b['experimental']))) {
+                if (-1 == $a['status']['id'] && (!empty($a['experimental'])) && (-1 != $b['status']['id'] || empty($b['experimental']))) {
                     return 1;
                 }
-                if (($a['status']['id'] != -1 || empty($a['experimental'])) && $b['status']['id'] == -1 && (!empty($b['experimental']))) {
+                if ((-1 != $a['status']['id'] || empty($a['experimental'])) && -1 == $b['status']['id'] && (!empty($b['experimental']))) {
                     return -1;
                 }
 
                 return 0;
             });
-
         }
 
         if ($fetchOngoingStatuses) {
-            
             $ongoing_tasks = $this->taskRepository->findByOngoing();
 
             // die(var_dump($ongoing_tasks));
@@ -83,8 +81,7 @@ class EdgeAppsHelper
                             'task_code' => $task_code,
                             'task_id' => $ongoing_task->getId(),
                         ];
-                    }
-                    elseif ($task_code == TaskFactory::INSTALL_BULK_EDGEAPPS) {
+                    } elseif (TaskFactory::INSTALL_BULK_EDGEAPPS == $task_code) {
                         $app_ids = json_decode($ongoing_task->getArgs(), true)['ids'];
                         foreach ($app_ids as $app_id) {
                             $ongoing_apps_and_statuses[$app_id] = [

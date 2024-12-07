@@ -2,21 +2,17 @@
 
 namespace App\Controller;
 
-use App\Controller\BaseController;
-use App\Attribute\RunMiddleware;
-use App\Entity\Task;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
-use App\Repository\TaskRepository;
 use App\Repository\OptionRepository;
+use App\Repository\TaskRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ChangelogController extends AbstractController
@@ -50,12 +46,11 @@ class ChangelogController extends AbstractController
     #[Route('/changelog', name: 'latest-change-log')]
     public function hello(): Response
     {
-
         $target_version = $this->dashboardHelper->getSystemChangelogVersion();
 
-        # If LAST_SEEN_CHANGELOG_VERSION is not set, redirect to the changelog page.
+        // If LAST_SEEN_CHANGELOG_VERSION is not set, redirect to the changelog page.
 
-        return $this->render('pages/changelog/' . $target_version . '.html.twig', [
+        return $this->render('pages/changelog/'.$target_version.'.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -72,7 +67,7 @@ class ChangelogController extends AbstractController
     #[Route('/changelog/{version}', name: 'changelog-version')]
     public function changelog_version(string $version): Response
     {
-        return $this->render('pages/changelog/' . $version . '.html.twig', [
+        return $this->render('pages/changelog/'.$version.'.html.twig', [
             // 'controller_title' => 'Dashboard',
             // 'controller_subtitle' => 'Welcome back!',
             // 'container_system_uptime' => $this->getSystemUptimeContainerVar(),
@@ -85,5 +80,4 @@ class ChangelogController extends AbstractController
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
         ]);
     }
-
 }

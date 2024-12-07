@@ -7,6 +7,8 @@ class RunMiddleware
 {
     protected array $args;
 
+    private array $extras;
+
     public function __construct(
         public string $name,
         ...$extras

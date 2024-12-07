@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Attribute\RunMiddleware;
 use App\Helper\BackupsHelper;
 use App\Helper\DashboardHelper;
-use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;

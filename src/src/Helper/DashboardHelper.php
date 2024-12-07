@@ -31,20 +31,22 @@ class DashboardHelper
     public function getOptionValue(string $name): ?string
     {
         $option = $this->optionRepository->findOneBy(['name' => $name]) ?? new Option();
+
         return $option->getValue();
     }
 
     public function getSystemChangelogVersion(): string
     {
-        $changelog_files = glob(__DIR__ . '/../../templates/pages/changelog/*.html.twig');
+        $changelog_files = glob(__DIR__.'/../../templates/pages/changelog/*.html.twig');
         $changelog_files = array_map('basename', $changelog_files);
-        $changelog_files = array_map(fn($file) => str_replace('.html.twig', '', $file), $changelog_files);
-        $changelog_files = array_map(fn($file) => str_replace('changelog-', '', $file), $changelog_files);
-        $changelog_files = array_map(fn($file) => str_replace('-', '.', $file), $changelog_files);
+        $changelog_files = array_map(fn ($file) => str_replace('.html.twig', '', $file), $changelog_files);
+        $changelog_files = array_map(fn ($file) => str_replace('changelog-', '', $file), $changelog_files);
+        $changelog_files = array_map(fn ($file) => str_replace('-', '.', $file), $changelog_files);
         $changelog_files = array_map('floatval', $changelog_files);
-        $changelog_files = array_filter($changelog_files, fn($file) => $file > 0);
+        $changelog_files = array_filter($changelog_files, fn ($file) => $file > 0);
         $changelog_files = array_unique($changelog_files);
         rsort($changelog_files);
+
         return $changelog_files[0] ?? '1.2.0';
     }
 
@@ -88,7 +90,6 @@ class DashboardHelper
         }
 
         if (!empty($data['show_only_installed_apps'])) {
-            
             $this->setOptionValue('DASHBOARD_SHOW_ONLY_INSTALLED_APPS', $data['show_only_installed_apps']);
         }
 
