@@ -60,19 +60,19 @@ class BrowserDevHelper
             'task_status' => $task->getStatus(),
             'task_args' => $task->getArgs(),
         ];
-        
     }
 
     public function getBrowserDevPassword(): string
     {
         return $this->optionRepository->findBrowserDevPassword() ?? '';
     }
+
     public function getBrowserDevUrl(): string
     {
-        return "https://dev." . $this->optionRepository->findDomainName();
+        return 'https://dev.'.$this->optionRepository->findDomainName();
     }
 
-    public function getBrowserDevStatus($with_password=false): array
+    public function getBrowserDevStatus($with_password = false): array
     {
         $running_result = [
             'status' => 'not_running',
@@ -85,7 +85,7 @@ class BrowserDevHelper
         }
 
         $browser_dev_status_option = $this->optionRepository->findBrowserDevStatus() ?? new Option();
-        
+
         if (null === $browser_dev_status_option || 'null' === $browser_dev_status_option || 'not_running' === $browser_dev_status_option) {
             return $running_result;
         }

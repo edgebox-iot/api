@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\BaseController;
 use App\Attribute\RunMiddleware;
 use App\Entity\Task;
 use App\Helper\BackupsHelper;
@@ -10,8 +9,8 @@ use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\StorageHelper;
 use App\Helper\SystemHelper;
-use App\Repository\TaskRepository;
 use App\Repository\OptionRepository;
+use App\Repository\TaskRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -65,7 +64,6 @@ class HomeController extends BaseController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-
         $actions_overview = $this->getActionsOverviewContainerVars();
 
         return $this->render('pages/home/index.html.twig', [
@@ -301,8 +299,7 @@ class HomeController extends BaseController
                     $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], $action_args['id']);
                 } elseif (!empty($action_args['ids'])) {
                     $action_description = sprintf($action_descriptions[$task->getTask()][$task->getStatus()], implode(', ', $action_args['ids']));
-                }
-                else {
+                } else {
                     $action_description = $action_descriptions[$task->getTask()][$task->getStatus()];
                 }
             }
@@ -372,9 +369,8 @@ class HomeController extends BaseController
 
         if (!empty($apps_list)) {
             foreach ($apps_list as $edgeapp) {
-
-                # I have an array $actionsOverview that contains the latest tasks and their statuses
-                # The array looks like this:
+                // I have an array $actionsOverview that contains the latest tasks and their statuses
+                // The array looks like this:
                 // array:5 [▼
                 // "task" => App\Entity\Task {#631 ▼
                 //     -id: 219
@@ -411,19 +407,18 @@ class HomeController extends BaseController
                 // When the task args contain the id of the edgeapp, I can use that to check if the edgeapp is being worked on
                 // When the status is 1, it means the task is executing
                 // In this case, we should set the status to "working"
-                
-                
+
                 ++$result['total'];
-                
+
                 // $status = $edgeapp['status']['description'];
                 // if ($this->isEdgeAppBeingWorkedOn($edgeapp['id'], $actionsOverview)) {
                 //     $status = 'working';
                 // }
-            
+
                 $result['apps'][] = [
                     'id' => $edgeapp['id'],
                     'description' => $edgeapp['description'],
-                    'url' => $edgeapp['internet_accessible'] ? 'https://' . $edgeapp['internet_url'] : 'http://' . $edgeapp['network_url'],
+                    'url' => $edgeapp['internet_accessible'] ? 'https://'.$edgeapp['internet_url'] : 'http://'.$edgeapp['network_url'],
                     'status' => $edgeapp['status'],
                 ];
             }
