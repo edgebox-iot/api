@@ -69,7 +69,11 @@ class BrowserDevHelper
 
     public function getBrowserDevUrl(): string
     {
+<<<<<<< Updated upstream
         return 'https://dev.'.$this->optionRepository->findDomainName();
+=======
+        return $this->optionRepository->findBrowserDevUrl() ?? '';
+>>>>>>> Stashed changes
     }
 
     public function getBrowserDevStatus($with_password = false): array
