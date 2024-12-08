@@ -476,17 +476,17 @@
                                 </p>
                             {% endblock %}
                         {% endembed %}
-                        <div class="card-body p-3 pt-0">
-                            <hr class="mt-0">
-                            <h6 class="text-uppercase text-body text-xs font-weight-bolder" style="cursor: pointer;">
-                                <a class="{% if app.request.query.get('option_changed') == 'browserdev' %}show{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
-                                    ▼ Browser Dev Environment
-                                </a>
-                            </h6>
-                            <p style="cursor: pointer;" class="text-sm opacity-8 {% if app.request.query.get('option_changed') == 'browserdev' %}show{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#collapseBrowserDevOptions" aria-expanded="{% if app.request.query.get('option_changed') == 'browserdev' %}true{% else %}false{% endif %}" aria-controls="collapseBrowserDevOptions">
-                                <b>Access the underlying edgebox system via a full fledged web browser development environment.</b> This is an environment with full access to your edgebox instance. This is ideal for advanced users who want to run, debug, and develop their code and apps on the edgebox instance.
-                            </p>
-                            <div id="collapseBrowserDevOptions" class="{% if app.request.query.get('option_changed') == 'browserdev' %}collapse show{% else %}collapse collapsed{% endif %}" style="margin-top: 25px;">
+                        {% embed 'blocks/_collapse_card.html.twig' with { 
+                            'title': 'Browser Dev Environment',
+                            'collapse_id': 'collapseBrowserDevOptions',
+                            'is_collapsed': app.request.query.get('option_changed') != 'browserdev', 
+                        } %}
+                            {% block card_header %}
+                                <p class="text-sm opacity-8">
+                                    <b>Access the underlying edgebox system via a full fledged web browser development environment.</b> This is an environment with full access to your edgebox instance. This is ideal for advanced users who want to run, debug, and develop their code and apps on the edgebox instance.
+                                </p>
+                            {% endblock %}
+                            {% block card_content %}
                                 <p class="text-sm opacity-8">
                                     <div class="form-group browserdev-password-group" id="browserdev-password-settings" style="">
                                         <label for="sshx-timeout-value" class="form-control-label">Your access password:</label>
@@ -523,8 +523,8 @@
                                         </div>
                                     {% endif %}
                                 </p>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                     <div class="card mt-4">
                         <div class="card-header pb-0 p-3">
