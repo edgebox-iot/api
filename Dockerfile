@@ -34,7 +34,7 @@ RUN apt-get -y update --fix-missing \
         exif \
         gd
 
-# Install additional PHP Extensions
+# To Install additional PHP Extensions you can also use pecl
 # RUN pecl install xdebug-3.2.0 \
 #     && docker-php-ext-enable xdebug \
 #     && pecl install redis-5.3.3 \
@@ -47,15 +47,10 @@ FROM php-base as final
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 COPY ./src/composer.json ./src/composer.lock ./ 
 
-# Copy application code (most frequently changed)
 COPY ./src /var/www/html
 
 ENV APP_ENV=prod
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Cleanup
 RUN rm -rf /usr/src/*
-
-# Configure apache if needed
-# RUN a2enmod rewrite headers
