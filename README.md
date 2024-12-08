@@ -143,7 +143,7 @@ By default following extensions are installed.
 * xmlrpc
 * gd
 
-> If you want to install more extensions, just update `./bin/api-ws/Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
+> If you want to install more extensions, just update `./Dockerfile`. You can also generate a PR and it will be merged if it seems good for general purpose.
 > You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
 ## phpMyAdmin
