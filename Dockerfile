@@ -56,6 +56,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Add Source Code
 COPY ./src /var/www/html
 
+ENV APP_ENV=prod
+
 # Install Composer Dependencies
 RUN composer install --no-dev --optimize-autoloader
 
