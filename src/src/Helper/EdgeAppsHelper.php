@@ -11,6 +11,8 @@ class EdgeAppsHelper
 {
     private OptionRepository $optionRepository;
 
+    private TaskRepository $taskRepository;
+
     private SystemHelper $systemHelper;
 
     public function __construct(

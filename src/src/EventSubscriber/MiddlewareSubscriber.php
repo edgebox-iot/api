@@ -29,18 +29,33 @@ class MiddlewareSubscriber implements EventSubscriberInterface
         $reflectionMethod = new \ReflectionMethod($controller[0], $controller[1]);
         $attributes = $reflectionMethod->getAttributes();
 
+<<<<<<< HEAD
         $run_middleware_instance = null;
+=======
+        $middleware = null;
+>>>>>>> main
 
         foreach ($attributes as $attribute) {
             if (RunMiddleware::class !== $attribute->getName()) {
                 continue;
             }
 
+<<<<<<< HEAD
             if (null == $run_middleware_instance) {
                 $run_middleware_instance = $attribute->newInstance();
                 $middleware = $run_middleware_instance;
             }
 
+=======
+            if (null == $middleware) {
+                $middleware = $attribute->newInstance();
+            }
+
+            if (null === $middleware) {
+                continue;
+            }
+
+>>>>>>> main
             $firstMethodName = $middleware->name;
             $otherMethodNames = $middleware->getExtras();
 
