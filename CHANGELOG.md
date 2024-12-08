@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.3.1] - Unreleased
+## [1.3.1] - 08-12-2024
 
 * Fixed linting and code style issues across the project
 * Added action to build docker image on push to Pull Requests
 * Optimized the Dockerfile build to include the app and dependencies in different layers
 
-## [1.3.0] - 05-12-2020
+## [1.3.0] - 05-12-2024
 
 * Added Edgebox Browser Development Environment Feature Support
     * Added tasks for handling browser development environment into TaskFactory
