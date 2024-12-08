@@ -2,7 +2,6 @@
 
 namespace App\Helper;
 
-use App\Entity\Option;
 use App\Factory\TaskFactory;
 use App\Repository\OptionRepository;
 use Doctrine\ORM\EntityManagerInterface;

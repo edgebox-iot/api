@@ -3,18 +3,17 @@
 namespace App\Controller;
 
 use App\Attribute\RunMiddleware;
-use App\Controller\BaseController;
 use App\Entity\Option;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
+use App\Helper\BrowserDevHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\EdgeboxioApiConnector;
 use App\Helper\ShellHelper;
-use App\Helper\BrowserDevHelper;
-use App\Helper\UpdatesHelper;
 use App\Helper\SystemHelper;
 use App\Helper\TunnelHelper;
+use App\Helper\UpdatesHelper;
 use App\Repository\OptionRepository;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;

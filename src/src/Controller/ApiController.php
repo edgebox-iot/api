@@ -5,10 +5,10 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Factory\TaskFactory;
 use App\Helper\BackupsHelper;
+use App\Helper\BrowserDevHelper;
 use App\Helper\DashboardHelper;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\ShellHelper;
-use App\Helper\BrowserDevHelper;
 use App\Helper\TunnelHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -491,15 +491,14 @@ class ApiController extends AbstractController
                     }
 
                     $data = $response;
-
                 } elseif ('install_bulk_edgeapps' == $data['op']) {
-                    # Create a task to install all apps in the list
-                    # But remove apps that are alredy installed
+                    // Create a task to install all apps in the list
+                    // But remove apps that are alredy installed
 
                     $apps_list = $this->edgeAppsHelper->getEdgeAppsList();
                     $installed_apps = [];
                     foreach ($apps_list as $app) {
-                        if ($app['status']['description'] == 'on') {
+                        if ('on' == $app['status']['description']) {
                             $installed_apps[] = $app['id'];
                         }
                     }

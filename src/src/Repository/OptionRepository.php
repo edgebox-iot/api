@@ -62,7 +62,6 @@ class OptionRepository extends ServiceEntityRepository
     public function findBrowserDevPassword(): ?string
     {
         return $this->findOption('BROWSERDEV_PASSWORD');
-        
     }
 
     private function findOption(string $name)

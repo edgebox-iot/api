@@ -279,6 +279,7 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::ENABLE_BROWSERDEV);
+
         return $task;
     }
 
@@ -286,6 +287,7 @@ class TaskFactory
     {
         $task = new Task();
         $task->setTask(self::DISABLE_BROWSERDEV);
+
         return $task;
     }
 
@@ -294,6 +296,7 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::SET_BROWSERDEV_PASSWORD);
         $task->setArgs(json_encode(['password' => $password]));
+
         return $task;
     }
 }

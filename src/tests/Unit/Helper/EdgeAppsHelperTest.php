@@ -5,8 +5,8 @@ namespace App\Tests\Unit\Helper;
 use App\Entity\Option;
 use App\Helper\EdgeAppsHelper;
 use App\Helper\SystemHelper;
-use App\Repository\TaskRepository;
 use App\Repository\OptionRepository;
+use App\Repository\TaskRepository;
 use PHPUnit\Framework\TestCase;
 
 class EdgeAppsHelperTest extends TestCase
