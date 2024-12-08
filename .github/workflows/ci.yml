@@ -72,8 +72,8 @@ jobs:
       - name: Install dependencies
         run: |
           cd src/
-          composer install --working-dir=tools/php-cs-fixer --prefer-dist
+          composer install --prefer-dist
       - name: Run php-cs-fixer
         run: |
           cd src/
-          ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -vvv --dry-run --stop-on-violation --using-cache=no
+          ./vendor/bin/php-cs-fixer fix -vvv --dry-run --stop-on-violation --using-cache=no
