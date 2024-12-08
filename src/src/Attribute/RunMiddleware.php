@@ -4,7 +4,8 @@ namespace App\Attribute;
 
 #[\Attribute(\Attribute::TARGET_METHOD)]
 class RunMiddleware
-{    private array $extras;
+{
+    private array $extras;
 
     public function __construct(
         public string $name,
