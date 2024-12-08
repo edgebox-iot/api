@@ -53,5 +53,11 @@ RUN docker-php-ext-install \
 # Layering Composer binary
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+# Add Source Code
+COPY ./src /var/www/html
+
+# Install Composer Dependencies
+RUN composer install --no-dev --optimize-autoloader
+
 # Cleanup
 RUN rm -rf /usr/src/*

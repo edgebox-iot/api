@@ -6,7 +6,7 @@ services:
   api-ws:
     # image: ghcr.io/edgebox-iot/api:latest
     build:  
-      context: ../api/bin/api-ws
+      context: ./
     container_name: '${COMPOSE_PROJECT_NAME}-api-ws'
     restart: always
     volumes:
