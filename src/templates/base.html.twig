@@ -33,17 +33,34 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/js/all.min.js" integrity="sha512-1JkMy1LR9bTo3psH+H4SV5bO2dFylgOy+UJhMus1zF4VEFuZVu5lsi4I6iIndE4N9p01z1554ZDcvMSjMaqCBQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  <link href="/assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/assets/css/soft-ui-dashboard.css?v=1.0.1" rel="stylesheet" />
+  <link href="/assets/css/edgebox-logo.css?v={{ "now"|date('U') }}" rel="stylesheet" />
+  <link href="/assets/css/edgebox-dark.css?v={{ "now"|date('U') }}" rel="stylesheet" />
 
   <!-- Lottie Animations Support -->
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 
-<body class="g-sidenav-show  bg-gray-100">
+<body class="g-sidenav-show  bg-gray-100" data-color="{{dashboard_settings.color_mood}}">
+  <script>
+    // Dark mode: localStorage is source of truth, fallback to backend setting
+    (function() {
+      var ls = localStorage.getItem('edgebox_dark_mode');
+      var backend = '{{ dashboard_settings.dark_mode }}';
+      var isDark = ls !== null ? (ls === 'yes') : (backend === 'yes');
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+      }
+      // If localStorage doesn't exist yet, seed it from backend
+      if (ls === null && backend === 'yes') {
+        localStorage.setItem('edgebox_dark_mode', 'yes');
+      }
+    })();
+  </script>
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-left ms-3 {{dashboard_settings.sidebar_style}}" id="sidenav-main" data-color="{{dashboard_settings.color_mood}}">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute right-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href="/">
-        <img src="/assets/img/crest.png" class="navbar-brand-img h-100 w-15" alt="...">
+      <a class="navbar-brand m-0" href="/" style="display: flex; align-items: center;">
+        {% include 'components/_logo_cube.html.twig' with { size: 'sm', glow: false } %}
         <span class="ms-1 font-weight-bold">Edgebox</span>
       </a>
     </div>
@@ -101,7 +118,7 @@
         <li class="nav-item">
           <a class="nav-link {% if controller_title == 'Backups' %}active{% endif %} " href="/backups">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-box-2" style="{% if controller_title == 'Backups' %}color: white; opacity: 1;{% else %}color: black;{% endif %}"></i>
+              <i class="ni ni-box-2 sidenav-icon" aria-hidden="true"></i>
             </div>
             <span class="nav-link-text ms-1">Backups</span>
           </a>
@@ -242,7 +259,7 @@
                 © <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                made with <i class="fa fa-heart"></i> for a more private web.
+                made with <i class="fa fa-heart"></i> for a more private web by <a href="https://meall.tech" target="_blank">MeAll Technologies UG</a>.
               </div>
             </div>
           </div>
@@ -516,6 +533,7 @@
     function saveColorMood(elem) {
 
       var color = elem.getAttribute("data-color");
+      document.body.setAttribute("data-color", color);
 
       const data = {
         color_mood: color 
@@ -643,6 +661,38 @@
 
       const data = {
         block_default_apps_public_access: setting 
+      };
+
+      fetch('/api/settings/dashboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+      
+    }
+
+    function saveDarkMode(elem) {
+
+      var setting = "no"
+
+      if (elem.checked) {
+        console.log("Setting dark mode to on!");
+        setting = "yes";
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+
+      // Always update localStorage
+      localStorage.setItem('edgebox_dark_mode', setting);
+
+      const data = {
+        dark_mode: setting 
       };
 
       fetch('/api/settings/dashboard', {

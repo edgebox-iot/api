@@ -26,10 +26,21 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/assets/css/soft-ui-dashboard.css?v=1.0.1" rel="stylesheet" />
+  <link href="/assets/css/edgebox-logo.css?v={{ "now"|date('U') }}" rel="stylesheet" />
+  <link href="/assets/css/edgebox-dark.css?v={{ "now"|date('U') }}" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body class="bg-gray-100">
+    <script>
+      // Dark mode from localStorage (no backend available on login page)
+      (function() {
+        var ls = localStorage.getItem('edgebox_dark_mode');
+        if (ls === 'yes') {
+          document.body.classList.add('dark-mode');
+        }
+      })();
+    </script>
     {% block content %}
     {% endblock content %}
 </body>

@@ -5,10 +5,10 @@
 {% block content %}
 
 
-    <nav class="navbar navbar-expand-lg  blur blur-rounded top-0  z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+    <nav class="navbar navbar-expand-lg  blur border-radius-xl top-0  z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
         <div class="container-fluid">
-        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="https://edgebox.io" target="_blank">
-            <img src="/assets/img/crest.png" class="navbar-brand-img h-100" alt="..." style="width: 6%;">
+        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="https://edgebox.io" target="_blank" style="display: flex; align-items: center;">
+            {% include 'components/_logo_cube.html.twig' with { size: 'sm', glow: false } %}
             <span class="ms-1 font-weight-bold">Edgebox</span>
         </a>
         <div class="collapse navbar-collapse" id="navigation">
@@ -16,7 +16,7 @@
             </ul>
             <ul class="navbar-nav d-lg-block d-none">
             <li class="nav-item">
-                <a href="https://edgebox.io/product" target="_blank" class="btn btn-sm btn-round mb-0 me-1 bg-gradient-dark">+ info</a>
+                <a href="https://edgebox.io/product" target="_blank" class="btn btn-sm mb-0 me-1 bg-gradient-dark">+ info</a>
             </li>
             </ul>
         </div>
@@ -25,11 +25,11 @@
 
 
     <section>
-    <div class="page-header section-height-75">
+    <div class="page-header min-vh-100">
       <div class="container">
         <div class="row">
           <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-            <div class="card card-plain mt-8">
+            <div class="card card-plain mt-4">
               <div class="card-header pb-0 text-left bg-transparent">
                 <h3 class="font-weight-bolder text-dark text-gradient">Welcome back</h3>
                 <p class="mb-0">Enter your credentials to sign in</p>
@@ -86,7 +86,9 @@
           </div>
           <div class="col-md-6">
             <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-              <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('../assets/img/curved-images/curved6.jpg')"></div>
+              <div class="login-hero-panel oblique-image position-absolute fixed-top ms-auto h-100 z-index-0 ms-n8">
+                {% include 'components/_logo_cube.html.twig' with { size: 'xl', glow: true, darkBg: true, animate: true, staticGlow: true } %}
+              </div>
             </div>
           </div>
         </div>
@@ -94,5 +96,33 @@
     </div>
     </section>
 
+    <!-- Dark mode toggle for login page -->
+    <button type="button" id="loginDarkModeToggle" class="login-dark-toggle" onclick="toggleLoginDarkMode()" title="Toggle dark/light mode">
+      <i class="fas fa-moon" id="loginDarkModeIcon"></i>
+    </button>
+    <script>
+      (function() {
+        // Update icon based on current state
+        var icon = document.getElementById('loginDarkModeIcon');
+        if (document.body.classList.contains('dark-mode')) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+        }
+      })();
+
+      function toggleLoginDarkMode() {
+        var isDark = document.body.classList.toggle('dark-mode');
+        var icon = document.getElementById('loginDarkModeIcon');
+        if (isDark) {
+          icon.classList.remove('fa-moon');
+          icon.classList.add('fa-sun');
+          localStorage.setItem('edgebox_dark_mode', 'yes');
+        } else {
+          icon.classList.remove('fa-sun');
+          icon.classList.add('fa-moon');
+          localStorage.setItem('edgebox_dark_mode', 'no');
+        }
+      }
+    </script>
 
 {% endblock %}
