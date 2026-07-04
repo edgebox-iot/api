@@ -31,6 +31,17 @@
                                 <span class="badge filter bg-gradient-danger {% if dashboard_settings.color_mood == "danger" %}active{% endif %}" data-color="danger" onclick="sidebarColorPick(this); saveColorMood(this);"></span>
                             </div>
                             </a>
+                            <!-- Display Mode -->
+                            <hr>
+                            <div class="mt-3">
+                                <h6 class="text-uppercase text-body text-xs font-weight-bolder">Display Mode</h6>
+                            </div>
+                            <p class="text-xs">Switch to a dark color scheme across the entire dashboard interface.</p>
+                            <div class="form-check form-switch ps-0">
+                                <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">Light</label>
+                                <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsDarkMode" onclick="saveDarkMode(this);" {% if(dashboard_settings.dark_mode == "yes") %}checked{% endif %}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Dark</label>
+                            </div>
                             <!-- Sidenav Type -->
                             <hr>
                             <div class="mt-3">
@@ -41,7 +52,7 @@
                             <div class="form-check form-switch ps-0">
                                 <label class="form-check-label left-aligned" for="flexSwitchCheckDefault">Transparent</label>
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsNavbarFixed" data-class="{{ dashboard_settings.sidebar_style }}" onclick="changeDataClassForSideBarType(this); sidebarType(this); saveSidebarStyle(this);" {% if dashboard_settings.sidebar_style == "bg-white" %}checked{% endif %}>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">White</label>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Solid</label>
                             </div>
                             </div>
                             <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
@@ -89,6 +100,7 @@
                                 <input class="form-check-input mt-1 ms-auto" type="checkbox" id="settingsBlockDefaultAppsPublicAccess" data-class="bg-white" onclick="saveBlockDefaultAppsPublicAccess(this);" {% if(dashboard_settings.block_default_apps_public_access == "yes") %}checked{% endif %}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">Yes</label>
                             </div>
+                            <!-- Dark Mode (moved to after Color Mood) -->
                             <!-- Public Access -->
                             <hr>
                             <div class="mt-3">

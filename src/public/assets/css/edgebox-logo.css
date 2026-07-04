@@ -1,0 +1,466 @@
+/* Edgebox Open Cube Logo
+ * A pure-CSS 3D open cube used as the Edgebox product logo.
+ * Sizes: .cube-logo-sm (navbar/sidebar), .cube-logo-md (inline), .cube-logo-lg (hero)
+ */
+
+/* --- Scene (perspective container) --- */
+.cube-scene {
+    perspective: 600px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+/* --- Size variants --- */
+.cube-scene.cube-logo-sm {
+    width: 32px;
+    height: 32px;
+}
+
+.cube-scene.cube-logo-md {
+    width: 56px;
+    height: 56px;
+}
+
+.cube-scene.cube-logo-lg {
+    width: 80px;
+    height: 80px;
+}
+
+/* --- Cube wrapper --- */
+.cube-scene .cube {
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateX(-20deg) rotateY(20deg);
+}
+
+.cube-scene.cube-logo-sm .cube {
+    width: 20px;
+    height: 14px;
+}
+
+.cube-scene.cube-logo-md .cube {
+    width: 35px;
+    height: 24px;
+}
+
+.cube-scene.cube-logo-lg .cube {
+    width: 50px;
+    height: 35px;
+}
+
+/* --- Hover animation --- */
+.cube-scene .cube.animate {
+    animation: cubeHover 4s infinite ease-in-out alternate;
+}
+
+@keyframes cubeHover {
+    0%   { transform: rotateX(-25deg) rotateY(35deg) translateY(2px); }
+    100% { transform: rotateX(-25deg) rotateY(55deg) translateY(-2px); }
+}
+
+/* --- Cube faces (shared) --- */
+.cube-scene .cube-face {
+    position: absolute;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Face sizes per variant */
+.cube-scene.cube-logo-sm .cube-face {
+    width: 20px;
+    height: 14px;
+    border: 2px solid #344767;
+}
+
+.cube-scene.cube-logo-sm .cube-face.front  { transform: translateZ(10px); }
+.cube-scene.cube-logo-sm .cube-face.back   { transform: rotateY(180deg) translateZ(10px); }
+.cube-scene.cube-logo-sm .cube-face.left   { transform: rotateY(-90deg) translateZ(10px); }
+.cube-scene.cube-logo-sm .cube-face.right  { transform: rotateY(90deg)  translateZ(10px); }
+.cube-scene.cube-logo-sm .cube-face.bottom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #344767;
+    transform: rotateX(-90deg) translateZ(6px);
+}
+
+.cube-scene.cube-logo-sm .cube-face.front,
+.cube-scene.cube-logo-sm .cube-face.back,
+.cube-scene.cube-logo-sm .cube-face.left,
+.cube-scene.cube-logo-sm .cube-face.right {
+    border-top-color: #344767;
+}
+
+.cube-scene.cube-logo-md .cube-face {
+    width: 35px;
+    height: 24px;
+    border: 3.5px solid #344767;
+}
+
+.cube-scene.cube-logo-md .cube-face.front  { transform: translateZ(17.5px); }
+.cube-scene.cube-logo-md .cube-face.back   { transform: rotateY(180deg) translateZ(17.5px); }
+.cube-scene.cube-logo-md .cube-face.left   { transform: rotateY(-90deg) translateZ(17.5px); }
+.cube-scene.cube-logo-md .cube-face.right  { transform: rotateY(90deg)  translateZ(17.5px); }
+.cube-scene.cube-logo-md .cube-face.bottom {
+    width: 35px;
+    height: 35px;
+    border: 3.5px solid #344767;
+    transform: rotateX(-90deg) translateZ(11px);
+}
+
+.cube-scene.cube-logo-md .cube-face.front,
+.cube-scene.cube-logo-md .cube-face.back,
+.cube-scene.cube-logo-md .cube-face.left,
+.cube-scene.cube-logo-md .cube-face.right {
+    border-top-color: #344767;
+}
+
+.cube-scene.cube-logo-lg .cube-face {
+    width: 50px;
+    height: 35px;
+    border: 4.5px solid #344767;
+}
+
+.cube-scene.cube-logo-lg .cube-face.front  { transform: translateZ(25px); }
+.cube-scene.cube-logo-lg .cube-face.back   { transform: rotateY(180deg) translateZ(25px); }
+.cube-scene.cube-logo-lg .cube-face.left   { transform: rotateY(-90deg) translateZ(25px); }
+.cube-scene.cube-logo-lg .cube-face.right  { transform: rotateY(90deg)  translateZ(25px); }
+.cube-scene.cube-logo-lg .cube-face.bottom {
+    width: 50px;
+    height: 50px;
+    border: 4.5px solid #344767;
+    transform: rotateX(-90deg) translateZ(16px);
+}
+
+.cube-scene.cube-logo-lg .cube-face.front,
+.cube-scene.cube-logo-lg .cube-face.back,
+.cube-scene.cube-logo-lg .cube-face.left,
+.cube-scene.cube-logo-lg .cube-face.right {
+    border-top-color: #344767;
+}
+
+/* --- Light-on-dark variant (for hero banners with dark backgrounds) --- */
+.cube-scene.cube-logo-light .cube-face {
+    border-color: #fff !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.cube-scene.cube-logo-light .cube-face.bottom {
+    border-color: #fff !important;
+}
+
+/* --- XL size (login hero / splash) --- */
+.cube-scene.cube-logo-xl {
+    width: 1125px;
+    height: 1125px;
+}
+
+.cube-scene.cube-logo-xl .cube {
+    width: 720px;
+    height: 504px;
+}
+
+.cube-scene.cube-logo-xl .cube-face {
+    width: 720px;
+    height: 504px;
+    border: 9px solid #fff;
+}
+
+.cube-scene.cube-logo-xl .cube-face.front  { transform: translateZ(360px); }
+.cube-scene.cube-logo-xl .cube-face.back   { transform: rotateY(180deg) translateZ(360px); }
+.cube-scene.cube-logo-xl .cube-face.left   { transform: rotateY(-90deg) translateZ(360px); }
+.cube-scene.cube-logo-xl .cube-face.right  { transform: rotateY(90deg)  translateZ(360px); }
+.cube-scene.cube-logo-xl .cube-face.bottom {
+    width: 720px;
+    height: 720px;
+    border: 9px solid #fff;
+    transform: rotateX(-90deg) translateZ(230px);
+}
+
+.cube-scene.cube-logo-xl .cube-face.front,
+.cube-scene.cube-logo-xl .cube-face.back,
+.cube-scene.cube-logo-xl .cube-face.left,
+.cube-scene.cube-logo-xl .cube-face.right {
+    border-top-color: #fff;
+}
+
+/* --- Glow variant (green neon pulsate) --- */
+/* Default glow: dark edges for light backgrounds */
+.cube-scene.cube-logo-glow .cube-face {
+    animation: cubeGlowPulsateLight 1.5s infinite alternate !important;
+}
+
+/* Glow on dark backgrounds: white edges */
+.cube-scene.cube-logo-glow.cube-logo-light .cube-face,
+.cube-scene.cube-logo-glow.cube-logo-dark-bg .cube-face {
+    border-color: #fff !important;
+    background: rgba(0, 0, 0, 0.2);
+    animation: cubeGlowPulsateDark 1.5s infinite alternate !important;
+}
+
+.cube-scene.cube-logo-glow.cube-logo-light .cube-face.bottom,
+.cube-scene.cube-logo-glow.cube-logo-dark-bg .cube-face.bottom {
+    border-color: #fff !important;
+}
+
+@keyframes cubeGlowPulsateLight {
+    100% {
+        box-shadow:
+            inset 0 0 4px rgba(0, 255, 170, 0.6),
+            0 0 4px rgba(0, 255, 170, 0.6),
+            inset 0 0 11px rgba(0, 255, 170, 0.5),
+            0 0 11px rgba(0, 255, 170, 0.5),
+            inset 0 0 19px rgba(0, 255, 170, 0.4),
+            0 0 19px rgba(0, 255, 170, 0.4),
+            inset 0 0 40px rgba(0, 255, 170, 0.3),
+            0 0 40px rgba(0, 255, 170, 0.3),
+            inset 0 0 80px rgba(0, 255, 170, 0.2),
+            0 0 80px rgba(0, 255, 170, 0.2);
+        border-color: #344767;
+    }
+
+    0% {
+        box-shadow:
+            inset 0 0 2px rgba(0, 255, 170, 0.6),
+            0 0 2px rgba(0, 255, 170, 0.6),
+            inset 0 0 4px rgba(0, 255, 170, 0.5),
+            0 0 4px rgba(0, 255, 170, 0.5),
+            inset 0 0 6px rgba(0, 255, 170, 0.4),
+            0 0 6px rgba(0, 255, 170, 0.4),
+            inset 0 0 10px rgba(0, 255, 170, 0.3),
+            0 0 10px rgba(0, 255, 170, 0.3),
+            inset 0 0 45px rgba(0, 255, 170, 0.2),
+            0 0 45px rgba(0, 255, 170, 0.2);
+        border-color: #344767;
+    }
+}
+
+@keyframes cubeGlowPulsateDark {
+    100% {
+        box-shadow:
+            inset 0 0 4px rgba(255, 255, 255, 0.8),
+            0 0 4px rgba(255, 255, 255, 0.8),
+            inset 0 0 11px rgba(255, 255, 255, 0.6),
+            0 0 11px rgba(255, 255, 255, 0.6),
+            inset 0 0 19px rgba(255, 255, 255, 0.4),
+            0 0 19px rgba(255, 255, 255, 0.4),
+            inset 0 0 40px rgba(0, 255, 170, 0.4),
+            0 0 40px rgba(0, 255, 170, 0.4),
+            inset 0 0 80px rgba(0, 255, 170, 0.3),
+            0 0 80px rgba(0, 255, 170, 0.3),
+            inset 0 0 100px rgba(0, 255, 170, 0.2),
+            0 0 100px rgba(0, 255, 170, 0.2),
+            inset 0 0 150px rgba(0, 255, 170, 0.15),
+            0 0 150px rgba(0, 255, 170, 0.15);
+        border-color: #fff;
+    }
+
+    0% {
+        box-shadow:
+            inset 0 0 2px rgba(255, 255, 255, 0.8),
+            0 0 2px rgba(255, 255, 255, 0.8),
+            inset 0 0 4px rgba(255, 255, 255, 0.6),
+            0 0 4px rgba(255, 255, 255, 0.6),
+            inset 0 0 6px rgba(255, 255, 255, 0.4),
+            0 0 6px rgba(255, 255, 255, 0.4),
+            inset 0 0 10px rgba(0, 255, 170, 0.4),
+            0 0 10px rgba(0, 255, 170, 0.4),
+            inset 0 0 45px rgba(0, 255, 170, 0.3),
+            0 0 45px rgba(0, 255, 170, 0.3),
+            inset 0 0 60px rgba(0, 255, 170, 0.25),
+            0 0 60px rgba(0, 255, 170, 0.25),
+            inset 0 0 80px rgba(0, 255, 170, 0.2),
+            0 0 80px rgba(0, 255, 170, 0.2);
+        border-color: #fff;
+    }
+}
+
+/* --- Static glow (no animation, fixed box-shadow for perf) --- */
+.cube-scene.cube-logo-static-glow.cube-logo-glow .cube-face {
+    animation: none !important;
+    box-shadow:
+        inset 0 0 3px rgba(0, 255, 170, 0.6),
+        0 0 3px rgba(0, 255, 170, 0.6),
+        inset 0 0 8px rgba(0, 255, 170, 0.5),
+        0 0 8px rgba(0, 255, 170, 0.5),
+        inset 0 0 14px rgba(0, 255, 170, 0.4),
+        0 0 14px rgba(0, 255, 170, 0.4),
+        inset 0 0 28px rgba(0, 255, 170, 0.3),
+        0 0 28px rgba(0, 255, 170, 0.3);
+}
+
+.cube-scene.cube-logo-static-glow.cube-logo-glow.cube-logo-dark-bg .cube-face,
+.cube-scene.cube-logo-static-glow.cube-logo-glow.cube-logo-light .cube-face {
+    animation: none !important;
+    box-shadow:
+        inset 0 0 3px rgba(255, 255, 255, 0.8),
+        0 0 3px rgba(255, 255, 255, 0.8),
+        inset 0 0 8px rgba(255, 255, 255, 0.6),
+        0 0 8px rgba(255, 255, 255, 0.6),
+        inset 0 0 14px rgba(255, 255, 255, 0.4),
+        0 0 14px rgba(255, 255, 255, 0.4),
+        inset 0 0 28px rgba(0, 255, 170, 0.4),
+        0 0 28px rgba(0, 255, 170, 0.4),
+        inset 0 0 60px rgba(0, 255, 170, 0.25),
+        0 0 60px rgba(0, 255, 170, 0.25);
+}
+
+/* --- Login hero panel --- */
+.login-hero-panel {
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Ensure the oblique diagonal extends full height without clipping */
+.page-header .oblique {
+    border-bottom-left-radius: 0;
+    height: 100% !important;
+}
+
+.page-header .oblique .oblique-image {
+    height: 100% !important;
+}
+
+.login-hero-panel .login-hero-title {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+    .cube-scene .cube.animate {
+        animation: none !important;
+    }
+}
+
+/* --- Toggle switch color mood --- */
+/* Match form-switch checked bg to the active color mood */
+body[data-color="primary"] .form-switch .form-check-input:checked {
+    background-color: #cb0c9f !important;
+    border-color: #cb0c9f !important;
+    background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%) !important;
+}
+
+body[data-color="dark"] .form-switch .form-check-input:checked {
+    background-color: #344767 !important;
+    border-color: #344767 !important;
+    background-image: linear-gradient(310deg, #141727 0%, #3A416F 100%) !important;
+}
+
+body[data-color="info"] .form-switch .form-check-input:checked {
+    background-color: #17c1e8 !important;
+    border-color: #17c1e8 !important;
+    background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%) !important;
+}
+
+body[data-color="success"] .form-switch .form-check-input:checked {
+    background-color: #82d616 !important;
+    border-color: #82d616 !important;
+    background-image: linear-gradient(310deg, #17ad37 0%, #98ec2d 100%) !important;
+}
+
+body[data-color="warning"] .form-switch .form-check-input:checked {
+    background-color: #f53939 !important;
+    border-color: #f53939 !important;
+    background-image: linear-gradient(310deg, #f53939 0%, #fbcf33 100%) !important;
+}
+
+body[data-color="danger"] .form-switch .form-check-input:checked {
+    background-color: #ea0606 !important;
+    border-color: #ea0606 !important;
+    background-image: linear-gradient(310deg, #ea0606 0%, #ff667c 100%) !important;
+}
+
+/* --- Footer link color mood --- */
+body[data-color="primary"] footer a,
+body[data-color="primary"] footer .fa-heart { color: #cb0c9f !important; }
+body[data-color="dark"] footer a,
+body[data-color="dark"] footer .fa-heart { color: #344767 !important; }
+body[data-color="info"] footer a,
+body[data-color="info"] footer .fa-heart { color: #17c1e8 !important; }
+body[data-color="success"] footer a,
+body[data-color="success"] footer .fa-heart { color: #82d616 !important; }
+body[data-color="warning"] footer a,
+body[data-color="warning"] footer .fa-heart { color: #f53939 !important; }
+body[data-color="danger"] footer a,
+body[data-color="danger"] footer .fa-heart { color: #ea0606 !important; }
+
+/* Lighter variants for dark mode readability */
+body.dark-mode[data-color="dark"] footer a,
+body.dark-mode[data-color="dark"] footer .fa-heart { color: #7b8eb5 !important; }
+
+/* --- Override bg-gradient-dark to pure black --- */
+.bg-gradient-dark {
+    background-image: linear-gradient(310deg, #111111 0%, #333333 100%) !important;
+}
+
+.btn.bg-gradient-dark:hover {
+    background-color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+}
+
+.btn.bg-gradient-dark:not(:disabled):not(.disabled).active,
+.btn.bg-gradient-dark:not(:disabled):not(.disabled):active,
+.show>.btn.bg-gradient-dark.dropdown-toggle {
+    background-color: #1a1a1a !important;
+}
+
+/* --- Neutral form control focus --- */
+.form-control:focus {
+    border-color: #444444 !important;
+    box-shadow: 0 0 0 2px rgba(68, 68, 68, 0.25) !important;
+}
+
+/* --- Neutralize text-gradient.text-primary from purple to dark grey --- */
+.text-gradient.text-primary {
+    background-image: linear-gradient(310deg, #000000, #666666) !important;
+}
+
+.text-gradient.text-dark {
+    background-image: linear-gradient(310deg, #111111, #333333) !important;
+}
+
+.input-group .form-control:focus {
+    border-left: 1px solid #444444 !important;
+    border-right: 1px solid #444444 !important;
+}
+
+/* --- Login page dark mode toggle button --- */
+.login-dark-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    color: #344767;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-dark-toggle:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode .login-dark-toggle {
+    background: #1c1c1c;
+    color: #ffffff;
+    border-color: #2a2a2a;
+}

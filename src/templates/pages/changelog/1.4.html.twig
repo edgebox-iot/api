@@ -1,0 +1,317 @@
+	{% extends 'base_security.html.twig' %}
+
+	{% block title %}Changelog - Edgebox
+	{% endblock %}
+	{% block content %}
+		<section class="min-vh-100 mb-8">
+			<div class="page-header align-items-start min-vh-30 pt-5 pb-11 m-3 border-radius-lg" style="background-color: #000000; position: relative; overflow: hidden;">
+				<!-- Background cube — absolutely positioned, centered, behind content -->
+				<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; opacity: 0.6; pointer-events: none;">
+					{% include 'components/_logo_cube.html.twig' with { size: 'xl', glow: true, darkBg: true, animate: true, staticGlow: true } %}
+				</div>
+				<div class="container" style="position: relative; z-index: 2;">
+					<div class="row justify-content-center">
+						<div class="container-fluid py-4">
+							<div class="row">
+								<div class="col-12 text-center">
+									<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
+										{% include 'components/_logo_cube.html.twig' with { size: 'lg', light: true } %}
+										<span class="text-white font-weight-bold" style="font-size: 1.5rem;">Edgebox</span>
+									</div>
+									<h3 class="mt-5 text-white">The Changelog 🚚</h3>
+									<h5 class="font-weight-normal text-white" style="opacity: 0.8;"><b>A new update ({{ target_version }}) just landed!</b> <br>Here's the fixes and improvements we've been working on:</h5>
+
+									<div class="multisteps-form mb-5">
+
+										<div class="row">
+											<div class="col-12 col-lg-12 mx-auto my-5">
+												<div class="onboarding-progress">
+													<button class="onboarding-btn btn btn-secondary js-active" data-step="1" type="button" title="New Look">
+														<span>A New Look</span>
+													</button>
+													<button class="onboarding-btn btn btn-secondary" data-step="2" type="button" title="Dark Mode">
+														<span>Dark Mode</span>
+													</button>
+													<button class="onboarding-btn btn btn-secondary" data-step="3" type="button" title="Polish">
+														<span>Polish &amp; Improvements</span>
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="onboarding-cards" style="margin-top: -300px;">
+					<div class="row onboarding-card" id="onboarding-card-1">
+						<div class="card col-12 col-lg-12 m-auto">
+							<div class="card-body">
+								<div class="row mt-5">
+									<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+										<h3 class="text-gradient text-primary changelog-title">
+											A Fresh Identity
+										</h3>
+										<h4 class="mb-4 changelog-subtitle">
+											Edgebox gets a makeover ✨
+										</h4>
+										<p class="lead pe-5 me-5"></p>
+										<p>
+											<b>🎨 We've rebranded Edgebox with a new visual identity!</b>
+											<br>
+											<ul>
+												<li>
+													<b>New logo</b> - a fully animated logo and identity that aligns with the future. Our products glow, spin, and adapt to your mood. We feel a strong identity is key to building a memorable brand and product, and this is just the beginning of our design evolution.
+												</li>
+												<li>
+													<b>Neutralized color palette</b> - most old design color language is gone. All primary colors, buttons, and gradients now use a sleek, neutral dark-to-grey palette that feels more professional, we refined states on all inputs now use neutral grey borders instead of the old pink/purple highlights.
+												</li>
+												<li>
+													<b>Updated login page</b> - the sign-in screen now features a bold black hero panel with a large glowing logo, a cleaner form layout, and more consistent button styling.
+												</li>
+												<li>
+													<b>Footer rebrand</b> - the copyright footer now links to <a href="https://meall.tech" target="_blank">MeAll Technologies UG</a>, the creators and maintainers of Edgebox.
+												</li>
+											</ul>
+										</p>
+										<p>We believe our new logo and visual identity brings more of our vision and passion into this product — one that's uniquely Edgebox, open and for all. 🚀</p>
+
+										<br>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col col-lg-2">
+										
+									</div>
+									<div class="col col-lg-8">
+									</div>
+									<div class="col col-lg-2 d-flex justify-content-end">
+										<button class="btn btn-primary" onclick="navigateStep(1)">Next</button>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+					<div class="row onboarding-card" id="onboarding-card-2">
+						<div class="card col-12 col-lg-12 m-auto">
+							
+							<div class="card-body">
+								<div class="row mt-5">
+									<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+										<h3 class="text-gradient text-primary changelog-title">
+											Hello, Dark Side
+										</h3>
+										<h4 class="mb-4 changelog-subtitle">
+											Dark mode is here 🌙
+										</h4>
+										<p class="lead pe-5 me-5"></p>
+										<p>
+											<b>🖤 A full dark mode experience has been added to the entire dashboard!</b>
+											<br>
+											<ul>
+												<li>
+													<b>Pure black &amp; grey palette</b> - clean blacks, dark greys, and crisp white text throughout. The dream of any technologist.
+												</li>
+												<li>
+													<b>Everything adapts</b> - cards, sidebar, navbar, modals, forms, tables, dropdowns, alerts, timelines, accordions, badges, progress bars, scrollbars, and more. Every element has been individually tuned for dark mode.
+												</li>
+												<li>
+													<b>Toggle it from Settings</b> — find the new "Display Mode" option right below "Color Mood" in your dashboard settings. Switch between Light and Dark with a single tap.
+												</li>
+												<li>
+													<b>Login page toggle</b> — a small button in the bottom-right corner of the login screen lets you switch modes even before starting your Edgebox experience.
+												</li>
+												<li>
+													<b>Smart sync</b> — When logged in, your dashboard setting syncs automatically, so dark mode follows you everywhere.
+												</li>
+											</ul>
+										</p>
+										<p>We've been polishing this to make it feel just right. Similar Edgebox, fresh identity. Let us know what you think! 🌟</p>
+										<br>
+										
+									</div>
+								</div>
+
+								<div class="row mt-5">
+									<div class="col col-lg-2">
+										<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+									</div>
+									<div class="col col-lg-8">
+									</div>
+									<div class="col col-lg-2 d-flex justify-content-end">
+										<button class="btn btn-primary" onclick="navigateStep(1)">Next</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row onboarding-card" id="onboarding-card-3">
+						<div class="card col-12 col-lg-12 m-auto">
+							<div class="card-body">
+								<div class="row mt-5">
+									<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
+										<h3 class="text-gradient text-primary changelog-title">
+											Polish &amp; Improvements
+										</h3>
+										<h4 class="mb-4 changelog-subtitle">
+											All the little things that matter 💎
+										</h4>
+										<p class="lead pe-5 me-5"></p>
+										<p>
+											<b>This update is packed with refinements across the entire interface!</b>
+											<p>We've been methodically going through every UI element to ensure consistency and quality. Here's what changed:</p>
+											<br>
+											<br>
+											<b>🎨 Color mood goes further:</b>
+											<ul>
+												<li>
+													<b>Toggle switches</b> now use your chosen color mood globally — not just in specific places.
+												</li>
+												<li>
+													<b>Footer heart icon and link</b> both adopt the mood color, making the whole interface feel more cohesive.
+												</li>
+											</ul>
+											<b>🧩 UI consistency improvements:</b>
+											<ul>
+												<li>
+													Sidebar style option renamed from "White" to "Solid" for clarity.
+												</li>
+												<li>
+													Login navbar and buttons now use consistent border-radius matching the main dashboard.
+												</li>
+												<li>
+													Changelog page buttons properly adapt to light and dark modes.
+												</li>
+												<li>
+													HR elements, timeline steps, collapse toggles, and alert components all refined for both dark and light modes.
+												</li>
+											</ul>
+											<b>⚙️ Under the hood:</b>
+											<ul>
+												<li>
+													Cache-busting on CSS files on the dashboard via timestamps ensures you always see the latest styles after an Edgebox update.
+												</li>
+											</ul>
+										</p>
+										<br>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col col-lg-2">
+										<button class="btn btn-secondary" onclick="navigateStep(-1)">Back</button>
+									</div>
+									<div class="col col-lg-7">
+									</div>
+									<div class="col col-lg-3 d-flex justify-content-end">
+										<button onclick="finishOnboarding()" class="btn btn-primary">Finish</button>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<style>
+				.onboarding-card {
+					display: none;
+				}
+
+				.onboarding-card.active {
+					display: block;
+				}
+
+				.onboarding-btn.js-active {
+					background-color: #fff;
+					color: #000;
+				}
+
+				@media (max-width: 768px) {
+					.changelog-title {
+						font-size: 1.25rem;
+					}
+					.changelog-subtitle {
+						font-size: 1.1rem;
+					}
+				}
+				</style>
+				<script>
+					let currentStep = 1;
+					const totalSteps = 3;
+
+					function navigateStep(direction) {
+						const newStep = currentStep + direction;
+						if (newStep >= 1 && newStep <= totalSteps) {
+							// Hide current card
+							document.getElementById(`onboarding-card-${currentStep}`).classList.remove('active');
+							
+							// Show new card
+							document.getElementById(`onboarding-card-${newStep}`).classList.add('active');
+							
+							// Update progress buttons
+							updateProgressButtons(newStep);
+							
+							// Update navigation buttons
+							currentStep = newStep;
+							updateNavigationButtons();
+
+							// Scroll the user up to the top of the page
+							window.scrollTo(0, 0);
+						}
+					}
+
+					function updateProgressButtons(step) {
+						document.querySelectorAll('.onboarding-btn').forEach(btn => {
+							btn.classList.remove('js-active', 'btn-white');
+							btn.classList.add('btn-secondary');
+						});
+						
+						const activeBtn = document.querySelector(`.onboarding-btn[data-step="${step}"]`);
+						activeBtn.classList.remove('btn-secondary');
+						activeBtn.classList.add('js-active', 'btn-white');
+					}
+
+					function updateNavigationButtons() {
+						// document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
+						// document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Finish' : 'Next';
+					}
+
+					// Allow clicking on progress buttons
+					document.querySelectorAll('.onboarding-btn').forEach(btn => {
+						btn.addEventListener('click', () => {
+							const targetStep = parseInt(btn.dataset.step);
+							const direction = targetStep - currentStep;
+							navigateStep(direction);
+						});
+					});
+
+					navigateStep(0);
+				</script>
+			</div>
+			<br>
+			<hr>
+			<div class="row align-items-center justify-content-center px-3">
+				<div class="col-lg-6 mb-lg-0 mb-4">
+					<div class="copyright text-center text-muted">
+					© <script>
+						document.write(new Date().getFullYear())
+					</script>,
+					made with ❤️ for a more private web by <a href="https://meall.tech" target="_blank">MeAll Technologies UG</a>.
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<script>
+			function finishOnboarding() {
+				window.location.href = '/';
+			}
+		</script>
+
+	{% endblock content %}

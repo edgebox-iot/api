@@ -60,6 +60,7 @@ class DashboardHelper
         $block_default_apps_public_access_value = $this->getOptionValue('DASHBOARD_BLOCK_DEFAULT_APPS_PUBLIC_ACCESS') ?? 'no';
         $show_purpose_label_on_quick_access_icons = $this->getOptionValue('DASHBOARD_SHOW_PURPOSE_LABEL_ON_QUICK_ACCESS_ICONS') ?? 'yes';
         $browser_dev_env_status = $this->getOptionValue('BROWSERDEV_STATUS') ?? 'not_running';
+        $dark_mode_value = $this->getOptionValue('DASHBOARD_DARK_MODE') ?? 'no';
 
         $data = [
             'color_mood' => $color_mood_value,
@@ -70,6 +71,7 @@ class DashboardHelper
             'show_me_when_it_twerks' => $show_me_when_it_twerks_value,
             'block_default_apps_public_access' => $block_default_apps_public_access_value,
             'show_purpose_label_on_quick_access_icons' => $show_purpose_label_on_quick_access_icons,
+            'dark_mode' => $dark_mode_value,
         ];
 
         return $data;
@@ -103,6 +105,10 @@ class DashboardHelper
 
         if (!empty($data['show_purpose_label_on_quick_access_icons'])) {
             $this->setOptionValue('DASHBOARD_SHOW_PURPOSE_LABEL_ON_QUICK_ACCESS_ICONS', $data['show_purpose_label_on_quick_access_icons']);
+        }
+
+        if (!empty($data['dark_mode'])) {
+            $this->setOptionValue('DASHBOARD_DARK_MODE', $data['dark_mode']);
         }
 
         return $data;

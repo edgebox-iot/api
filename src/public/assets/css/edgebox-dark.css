@@ -1,0 +1,714 @@
+/* Edgebox Dark Mode
+ * Overrides Soft UI Dashboard colors when body has .dark-mode class.
+ * Loaded after soft-ui-dashboard.css and edgebox-logo.css.
+ */
+
+/* ===================================================================
+   1. ROOT / BODY / PAGE BACKGROUND
+   =================================================================== */
+
+body.dark-mode {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode.bg-gray-100 {
+    background-color: #111111 !important;
+}
+
+/* ===================================================================
+   2. CARDS
+   =================================================================== */
+
+body.dark-mode .card {
+    background-color: #1c1c1c !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.4) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .card .card-header {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .card .card-body {
+    color: #ffffff !important;
+}
+
+body.dark-mode .card .card-footer {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .card.card-plain {
+    background-color: transparent !important;
+}
+
+/* ===================================================================
+   3. SIDEBAR / SIDENAV
+   =================================================================== */
+
+body.dark-mode .sidenav {
+    background-color: #1c1c1c !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .sidenav.bg-white {
+    background-color: #1c1c1c !important;
+}
+
+body.dark-mode .sidenav.bg-transparent {
+    background-color: transparent !important;
+}
+
+body.dark-mode .sidenav .navbar-brand span {
+    color: #ffffff !important;
+}
+
+body.dark-mode .sidenav .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.dark-mode .sidenav .nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* Active sidenav item: dark bg with white text for strong contrast */
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item .nav-link.active {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item .nav-link.active .nav-link-text {
+    color: #ffffff !important;
+}
+
+/* Keep inactive icon SVG fills light so they're visible on dark/transparent sidebar */
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item > .nav-link .icon svg .color-background {
+    fill: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item > .nav-link .icon svg .color-foreground {
+    fill: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Non-active icon background should stay neutral */
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item > .nav-link:not(.active) .icon {
+    background-image: linear-gradient(310deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+}
+
+/* Active icons keep their theme gradient + white fills (unchanged from light mode) */
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item > .nav-link.active .icon svg .color-background,
+body.dark-mode .navbar-vertical .navbar-nav > .nav-item > .nav-link.active .icon svg .color-foreground {
+    fill: #fff !important;
+}
+
+/* Font-icon based sidenav icons (e.g. Backups ni-box-2) */
+.sidenav-icon {
+    color: #344767 !important;
+    font-size: 0.875rem;
+}
+
+.nav-link.active .sidenav-icon {
+    color: #fff !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .sidenav-icon {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.dark-mode .nav-link.active .sidenav-icon {
+    color: #fff !important;
+}
+
+body.dark-mode .sidenav hr.horizontal.dark {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0)) !important;
+}
+
+body.dark-mode .sidenav .sidenav-footer {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ===================================================================
+   4. NAVBAR / TOPBAR
+   =================================================================== */
+
+body.dark-mode .navbar {
+    color: #ffffff !important;
+}
+
+body.dark-mode .navbar-main {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .navbar-main.fixed-top {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .navbar-blur {
+    background-color: transparent !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+body.dark-mode .navbar .nav-link {
+    color: #ffffff !important;
+}
+
+body.dark-mode .navbar .breadcrumb-item,
+body.dark-mode .navbar .breadcrumb-item a,
+body.dark-mode .navbar .breadcrumb-item.active {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-mode .navbar .breadcrumb-item + .breadcrumb-item::before {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-mode .navbar-vertical.navbar-expand-xs.fixed-left + .main-content {
+    /* Keep main content color consistent */
+}
+
+/* ===================================================================
+   5. TEXT COLORS
+   =================================================================== */
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+body.dark-mode .h1, body.dark-mode .h2, body.dark-mode .h3,
+body.dark-mode .h4, body.dark-mode .h5, body.dark-mode .h6 {
+    color: #ffffff !important;
+}
+
+body.dark-mode p,
+body.dark-mode span:not(.badge):not(.nav-link-text),
+body.dark-mode label {
+    color: #ffffff;
+}
+
+body.dark-mode .text-dark {
+    color: #ffffff !important;
+}
+
+body.dark-mode .text-secondary {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-mode .text-body {
+    color: #ffffff !important;
+}
+
+body.dark-mode .opacity-8,
+body.dark-mode .opacity-7,
+body.dark-mode .opacity-6 {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .text-sm,
+body.dark-mode .text-xs {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Keep gradient text colors untouched, but make them white in dark mode */
+body.dark-mode .text-gradient {
+    background-image: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   6. FORM CONTROLS / INPUTS
+   =================================================================== */
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #111111 !important;
+    border-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background-color: #111111 !important;
+    border-color: #cb0c9f !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #555555 !important;
+}
+
+body.dark-mode .input-group {
+    background-color: #111111;
+    border-color: #2a2a2a;
+}
+
+body.dark-mode .input-group .input-group-text {
+    background-color: transparent;
+    border-color: #2a2a2a;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .form-check-input {
+    background-color: #2a2a2a;
+    border-color: #3a3a3a;
+}
+
+body.dark-mode .form-check-input:checked {
+    background-color: #cb0c9f;
+    border-color: #cb0c9f;
+}
+
+/* ===================================================================
+   7. TABLES
+   =================================================================== */
+
+body.dark-mode .table {
+    color: #ffffff !important;
+    --bs-table-striped-color: #ffffff;
+    --bs-table-active-color: #ffffff;
+    --bs-table-hover-color: #ffffff;
+}
+
+body.dark-mode .table > :not(caption) > * > * {
+    background-color: transparent;
+    border-bottom-color: #2a2a2a !important;
+    color: #ffffff;
+}
+
+body.dark-mode .table > thead {
+    border-bottom-color: #2a2a2a;
+}
+
+body.dark-mode .table > thead > tr > th {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.dark-mode .table-hover > tbody > tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ===================================================================
+   8. DROPDOWNS
+   =================================================================== */
+
+body.dark-mode .dropdown-menu {
+    background-color: #1c1c1c !important;
+    border-color: #2a2a2a !important;
+    box-shadow: 0 8px 26px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .dropdown-item {
+    color: #ffffff !important;
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .dropdown-header {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* ===================================================================
+   9. ALERTS
+   =================================================================== */
+
+body.dark-mode .alert {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .alert-info {
+    background-image: linear-gradient(310deg, #2a2a2a 0%, #444444 100%) !important;
+    background-color: #333333 !important;
+    border-color: #444444 !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   10. BADGES (keep colored badges, handle neutral ones)
+   =================================================================== */
+
+body.dark-mode .badge.bg-white {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   11. MODALS
+   =================================================================== */
+
+body.dark-mode .modal-content {
+    background-color: #1c1c1c !important;
+    color: #ffffff !important;
+    border-color: #2a2a2a !important;
+}
+
+body.dark-mode .modal-header {
+    border-bottom-color: #2a2a2a !important;
+}
+
+body.dark-mode .modal-footer {
+    border-top-color: #2a2a2a !important;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* ===================================================================
+   12. UTILITY BACKGROUND OVERRIDES
+   =================================================================== */
+
+body.dark-mode .bg-white {
+    background-color: #1c1c1c !important;
+}
+
+/* Keep sidenav footer "Need help?" card icon unchanged */
+body.dark-mode .sidenav-footer .icon.bg-white {
+    background-color: #fff !important;
+}
+
+body.dark-mode .bg-gray-100 {
+    background-color: #111111 !important;
+}
+
+body.dark-mode .bg-gray-200 {
+    background-color: #1e1e1e !important;
+}
+
+body.dark-mode .bg-gray-300 {
+    background-color: #222222 !important;
+}
+
+/* ===================================================================
+   13. BORDERS
+   =================================================================== */
+
+body.dark-mode .border,
+body.dark-mode .border-top,
+body.dark-mode .border-bottom,
+body.dark-mode .border-start,
+body.dark-mode .border-end {
+    border-color: #2a2a2a !important;
+}
+
+body.dark-mode hr {
+    border-color: #1a1a1a;
+    opacity: 0.5;
+    color: #4f4f4f;
+}
+
+body.dark-mode hr.horizontal.dark {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)) !important;
+}
+
+/* ===================================================================
+   14. PROGRESS BARS / MISC
+   =================================================================== */
+
+body.dark-mode .progress {
+    background-color: #2a2a2a;
+}
+
+/* ===================================================================
+   15. SCROLL / MISC
+   =================================================================== */
+
+body.dark-mode ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #111111;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #4a4a4a;
+}
+
+/* ===================================================================
+   16. COLLAPSE CARDS / ACCORDION
+   =================================================================== */
+
+body.dark-mode .collapse-card .card-header,
+body.dark-mode .accordion-item {
+    background-color: #1c1c1c !important;
+    border-color: #2a2a2a !important;
+}
+
+body.dark-mode .accordion-button {
+    background-color: #1c1c1c !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .accordion-button:not(.collapsed) {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   17. NAV PILLS / TABS
+   =================================================================== */
+
+body.dark-mode .nav-pills .nav-link {
+    color: #ffffff !important;
+}
+
+body.dark-mode .nav-pills .nav-link.active {
+    background-color: #fff !important;
+    color: #344767 !important;
+}
+
+/* ===================================================================
+   17b. TIMELINE
+   =================================================================== */
+
+body.dark-mode .timeline:before {
+    border-right-color: #333333 !important;
+}
+
+body.dark-mode .timeline-step {
+    background: #333333 !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   18. LINKS
+   =================================================================== */
+
+body.dark-mode a:not(.btn):not(.nav-link):not(.badge):not(.dropdown-item) {
+    color: #ffffff;
+}
+
+body.dark-mode a:not(.btn):not(.nav-link):not(.badge):not(.dropdown-item):hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Collapse toggle links */
+body.dark-mode a[data-bs-toggle="collapse"] {
+    color: #ffffff !important;
+}
+
+body.dark-mode a[data-bs-toggle="collapse"]:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ===================================================================
+   19. TOOLTIP / POPOVER
+   =================================================================== */
+
+body.dark-mode .tooltip-inner {
+    background-color: #1c1c1c;
+    color: #ffffff;
+}
+
+body.dark-mode .popover {
+    background-color: #1c1c1c;
+    border-color: #2a2a2a;
+}
+
+body.dark-mode .popover-body {
+    color: #ffffff;
+}
+
+/* ===================================================================
+   20. CUBE LOGO DARK MODE ADAPTATION
+   =================================================================== */
+
+/* In dark mode, default cube edges should be white/light (not #344767) */
+body.dark-mode .cube-scene:not(.cube-logo-light):not(.cube-logo-dark-bg) .cube-face {
+    border-color: #c8c8d4 !important;
+}
+
+body.dark-mode .cube-scene:not(.cube-logo-light):not(.cube-logo-dark-bg) .cube-face.bottom {
+    border-color: #c8c8d4 !important;
+}
+
+/* Glow default: use the dark-bg (white) glow in dark mode */
+body.dark-mode .cube-scene.cube-logo-glow:not(.cube-logo-dark-bg) .cube-face {
+    border-color: #c8c8d4 !important;
+    animation: cubeGlowPulsateDark 1.5s infinite alternate !important;
+}
+
+/* ===================================================================
+   21. BUTTONS (keep gradient buttons, handle outline variants)
+   =================================================================== */
+
+body.dark-mode .btn-outline-secondary {
+    border-color: #3a3a3a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-outline-light {
+    border-color: #3a3a3a !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Invert dark outline buttons to light in dark mode */
+body.dark-mode .btn-outline-dark {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-outline-dark:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Invert solid dark gradient buttons to light in dark mode */
+body.dark-mode .btn.bg-gradient-dark {
+    background-image: linear-gradient(310deg, #e0e0e0 0%, #ffffff 100%) !important;
+    color: #111111 !important;
+}
+
+body.dark-mode .btn.bg-gradient-dark:hover {
+    background-image: linear-gradient(310deg, #d0d0d0 0%, #f0f0f0 100%) !important;
+    color: #111111 !important;
+}
+
+/* Neutralize btn-primary (purple → dark neutral) */
+.btn-primary,
+.btn.bg-gradient-primary {
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+    background-image: linear-gradient(310deg, #111111 0%, #333333 100%) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn.bg-gradient-primary:hover {
+    background-color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+    background-image: linear-gradient(310deg, #0a0a0a 0%, #2a2a2a 100%) !important;
+}
+
+.btn-primary:focus,
+.btn.bg-gradient-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(50, 50, 50, 0.5) !important;
+}
+
+/* btn-primary inverted in dark mode */
+body.dark-mode .btn-primary,
+body.dark-mode .btn.bg-gradient-primary {
+    background-image: linear-gradient(310deg, #e0e0e0 0%, #ffffff 100%) !important;
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    color: #111111 !important;
+}
+
+body.dark-mode .btn-primary:hover,
+body.dark-mode .btn.bg-gradient-primary:hover {
+    background-image: linear-gradient(310deg, #d0d0d0 0%, #f0f0f0 100%) !important;
+    color: #111111 !important;
+}
+
+/* Changelog onboarding buttons in dark mode */
+body.dark-mode .btn-secondary {
+    background-color: #2a2a2a !important;
+    border-color: #2a2a2a !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #3a3a3a !important;
+    border-color: #3a3a3a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .onboarding-btn.js-active,
+body.dark-mode .onboarding-btn.btn-white {
+    color: #111111 !important;
+}
+
+body.dark-mode .onboarding-btn.js-active span,
+body.dark-mode .onboarding-btn.btn-white span {
+    color: #111111 !important;
+    background: transparent !important;
+}
+
+/* ===================================================================
+   22. LIST GROUPS
+   =================================================================== */
+
+body.dark-mode .list-group-item {
+    background-color: #1c1c1c !important;
+    border-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   23. PAGE HEADER
+   =================================================================== */
+
+body.dark-mode .page-header {
+    /* Keep hero/page-header dark-friendly */
+}
+
+/* ===================================================================
+   24. FOOTER
+   =================================================================== */
+
+body.dark-mode footer,
+body.dark-mode footer .text-secondary,
+body.dark-mode footer .copyright {
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   25. LOGIN PAGE
+   =================================================================== */
+
+body.dark-mode .blur {
+    background-color: rgba(28, 28, 28, 0.8) !important;
+}
+
+body.dark-mode .blur .navbar-brand,
+body.dark-mode .blur .navbar-brand span {
+    color: #ffffff !important;
+}
+
+/* ===================================================================
+   25. FORM CONTROLS (dark mode)
+   =================================================================== */
+
+body.dark-mode .form-control:focus {
+    border-color: #aaaaaa !important;
+    box-shadow: 0 0 0 2px rgba(170, 170, 170, 0.25) !important;
+}
+
+body.dark-mode .input-group .form-control:focus {
+    border-left: 1px solid #aaaaaa !important;
+    border-right: 1px solid #aaaaaa !important;
+}
+
+/* ===================================================================
+   26. TRANSITION for smooth dark/light switch
+   =================================================================== */
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card, .sidenav, .navbar, .dropdown-menu, .modal-content,
+.form-control, .form-select, .list-group-item {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}

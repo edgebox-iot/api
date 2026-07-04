@@ -1,0 +1,29 @@
+{#
+  Edgebox Open Cube Logo (pure CSS 3D)
+  
+  Usage:
+    {% include 'components/_logo_cube.html.twig' %}                          → small (sidebar/navbar default)
+    {% include 'components/_logo_cube.html.twig' with { size: 'md' } %}     → medium
+    {% include 'components/_logo_cube.html.twig' with { size: 'lg' } %}     → large (hero)
+    {% include 'components/_logo_cube.html.twig' with { size: 'xl' } %}     → extra large (splash/login)
+    {% include 'components/_logo_cube.html.twig' with { light: true } %}    → white edges for dark backgrounds
+    {% include 'components/_logo_cube.html.twig' with { glow: true } %}     → green neon glow (dark edges on light bg)
+    {% include 'components/_logo_cube.html.twig' with { glow: true, darkBg: true } %} → green glow with white edges (for dark bg)
+    {% include 'components/_logo_cube.html.twig' with { animate: true } %}  → with hover animation
+    {% include 'components/_logo_cube.html.twig' with { glow: true, staticGlow: true } %} → static glow (no pulsate animation, better perf)
+#}
+{% set size       = size       | default('sm') %}
+{% set light      = light      | default(false) %}
+{% set glow       = glow       | default(false) %}
+{% set darkBg     = darkBg     | default(false) %}
+{% set animate    = animate    | default(false) %}
+{% set staticGlow = staticGlow | default(false) %}
+<div class="cube-scene cube-logo-{{ size }}{% if light %} cube-logo-light{% endif %}{% if glow %} cube-logo-glow{% endif %}{% if staticGlow %} cube-logo-static-glow{% endif %}{% if darkBg %} cube-logo-dark-bg{% endif %}">
+    <div class="cube{% if animate %} animate{% endif %}">
+        <div class="cube-face front"></div>
+        <div class="cube-face back"></div>
+        <div class="cube-face left"></div>
+        <div class="cube-face right"></div>
+        <div class="cube-face bottom"></div>
+    </div>
+</div>
