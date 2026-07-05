@@ -46,6 +46,9 @@ class SettingsController extends BaseController
         'enable_public_dashboard' => 'Enabling Online Access',
         'disable_public_dashboard' => 'Disabling Online Access',
         'update_system' => 'Updating System',
+        'generate_ssh_key' => 'Generating SSH Key',
+        'get_ssh_key' => 'Getting SSH Key',
+        'revoke_ssh_key' => 'Revoking SSH Key',
     ];
 
     /**
@@ -55,6 +58,9 @@ class SettingsController extends BaseController
         'enable_public_dashboard' => 'createEnablePublicDashboardTask',
         'disable_public_dashboard' => 'createDisablePublicDashboardTask',
         'update_system' => 'createApplyUpdatesTask',
+        'generate_ssh_key' => 'createGenerateSshKeyTask',
+        'get_ssh_key' => 'createGetSshKeyTask',
+        'revoke_ssh_key' => 'createRevokeSshKeyTask',
     ];
 
     public function __construct(
@@ -317,6 +323,9 @@ class SettingsController extends BaseController
 
         $browserdev_status = $this->browserDevHelper->getBrowserDevStatus(true);
 
+        $ssh_public_key = $this->optionRepository->findOneBy(['name' => 'SSH_PUBLIC_KEY']) ?? new Option();
+        $ssh_fingerprint = $this->optionRepository->findOneBy(['name' => 'SSH_KEY_FINGERPRINT']) ?? new Option();
+
         return $this->render('pages/settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
@@ -340,6 +349,8 @@ class SettingsController extends BaseController
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'updates_status' => $updates_status,
             'browserdev_status' => $browserdev_status,
+            'ssh_public_key' => $ssh_public_key->getValue(),
+            'ssh_fingerprint' => $ssh_fingerprint->getValue(),
         ]);
     }
 
@@ -354,6 +365,25 @@ class SettingsController extends BaseController
         $this->entityManager->flush();
 
         return $this->redirectToRoute('settings');
+    }
+
+    #[Route('/settings/download/private_key', name: 'settings_download_private_key')]
+    public function downloadPrivateKey(): Response
+    {
+        $privateKey = $this->optionRepository->findOneBy(['name' => 'SSH_PRIVATE_KEY']);
+
+        if (null === $privateKey || empty($privateKey->getValue())) {
+            // No private key available. Redirect to settings with an alert.
+            return $this->redirectToRoute('settings');
+        }
+
+        $keyContent = $privateKey->getValue();
+        $response = new Response($keyContent);
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment; filename="id_ed25519"');
+        $response->headers->set('Content-Length', (string) strlen($keyContent));
+
+        return $response;
     }
 
     #[Route('/settings/{action}', name: 'settings_action')]

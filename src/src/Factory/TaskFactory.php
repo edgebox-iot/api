@@ -35,6 +35,9 @@ class TaskFactory
     public const APPLY_UPDATES = 'apply_updates';
     public const ENABLE_BROWSERDEV = 'activate_browserdev';
     public const DISABLE_BROWSERDEV = 'deactivate_browserdev';
+    public const GENERATE_SSH_KEY = 'generate_ssh_key';
+    public const GET_SSH_KEY = 'get_ssh_key';
+    public const REVOKE_SSH_KEY = 'revoke_ssh_key';
     public const SET_BROWSERDEV_PASSWORD = 'set_browserdev_password';
 
     private OptionRepository $optionRepository;
@@ -296,6 +299,30 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::SET_BROWSERDEV_PASSWORD);
         $task->setArgs(json_encode(['password' => $password]));
+
+        return $task;
+    }
+
+    public function createGenerateSshKeyTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::GENERATE_SSH_KEY);
+
+        return $task;
+    }
+
+    public function createGetSshKeyTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::GET_SSH_KEY);
+
+        return $task;
+    }
+
+    public function createRevokeSshKeyTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::REVOKE_SSH_KEY);
 
         return $task;
     }

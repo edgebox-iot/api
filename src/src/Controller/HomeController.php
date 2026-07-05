@@ -259,6 +259,24 @@ class HomeController extends BaseController
                 Task::STATUS_FINISHED => 'Set Browser Dev Environment password',
                 Task::STATUS_ERROR => 'Failed to set Browser Dev Environment password',
             ],
+            'generate_ssh_key' => [
+                Task::STATUS_CREATED => 'Waiting to generate SSH key pair',
+                Task::STATUS_EXECUTING => 'Generating SSH key pair',
+                Task::STATUS_FINISHED => 'Generated SSH key pair',
+                Task::STATUS_ERROR => 'Failed to generate SSH key pair',
+            ],
+            'revoke_ssh_key' => [
+                Task::STATUS_CREATED => 'Waiting to revoke SSH key pair',
+                Task::STATUS_EXECUTING => 'Revoking SSH key pair',
+                Task::STATUS_FINISHED => 'Revoked SSH key pair',
+                Task::STATUS_ERROR => 'Failed to revoke SSH key pair',
+            ],
+            'get_ssh_key' => [
+                Task::STATUS_CREATED => 'Waiting to read SSH key pair',
+                Task::STATUS_EXECUTING => 'Reading SSH key pair',
+                Task::STATUS_FINISHED => 'Downloaded SSH private key',
+                Task::STATUS_ERROR => 'Failed to read SSH key pair',
+            ],
         ];
 
         $unknown_action_descriptions = [
@@ -281,6 +299,9 @@ class HomeController extends BaseController
             'disable_public_dashboard' => 'ui-04',
             'activate_browserdev' => 'button-play',
             'deactivate_browserdev' => 'button-pause',
+            'generate_ssh_key' => 'key-25',
+            'revoke_ssh_key' => 'key-25',
+            'get_ssh_key' => 'key-25',
             'unknown_action' => 'ui-04',
         ];
 

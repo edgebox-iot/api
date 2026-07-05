@@ -35,6 +35,15 @@
                                 {% if action == "update_system" %}
                                     <h2>Updating Edgebox</h2><p>This can take a minute...</p>
                                 {% endif %}
+                                {% if action == "generate_ssh_key" %}
+                                    <h2>Generating SSH Key Pair</h2><p>Generating a new ED25519 key pair...</p>
+                                {% endif %}
+                                {% if action == "revoke_ssh_key" %}
+                                    <h2>Revoking SSH Key Pair</h2><p>Removing the SSH key pair from this Edgebox...</p>
+                                {% endif %}
+                                {% if action == "get_ssh_key" %}
+                                    <h2>Fetching SSH Key</h2><p>Reading the SSH key pair...</p>
+                                {% endif %}
                             </b></p>
 
                         <script>
