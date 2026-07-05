@@ -477,6 +477,119 @@
                             {% endblock %}
                         {% endembed %}
                         {% embed 'blocks/_collapse_card.html.twig' with { 
+                            'title': 'SSH Key Access',
+                            'collapse_id': 'collapseSshKeyOptions',
+                            'is_collapsed': not ssh_public_key or app.request.query.get('option_changed') != 'ssh_key', 
+                        } %}
+                            {% block card_header %}
+                                <p class="text-sm opacity-8">
+                                    <b>Connect to this Edgebox via SSH and manage your instance from a terminal.</b> Generate an ED25519 key pair, download the private key, and use any SSH client to log in as root. Ideal for advanced administration, debugging, and scripting that goes beyond what the web dashboard offers.
+                                </p>
+                            {% endblock %}
+                            {% block card_content %}
+                                {% if ssh_public_key %}
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h6 class="text-sm text-uppercase text-muted mb-2">Step 1 &mdash; Download your private key</h6>
+                                            <p class="text-sm opacity-8 mb-3">Click below to download the private key file <code>id_ed25519</code>. You will use it to authenticate your SSH connections to this Edgebox.</p>
+                                            <a href="{{ path('settings_download_private_key') }}" class="btn btn-sm btn-outline-dark"><i class="fa fa-download mr-2"></i>Download Private Key</a>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h6 class="text-sm text-uppercase text-muted mb-2">Step 2 &mdash; Connect from your computer</h6>
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-sm btn-primary ssh-tab-btn active" id="ssh-tab-mac-btn" onclick="showSshTab('mac');">macOS / Linux</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary ssh-tab-btn" id="ssh-tab-win-btn" onclick="showSshTab('win');">Windows</button>
+                                            </div>
+                                            <div id="ssh-tab-mac-content">
+                                                <ol class="text-sm opacity-8 pl-3">
+                                                    <li>Open <b>Terminal</b> and place the downloaded key:
+                                                        <pre class="mt-1 mb-0"><code>mv ~/Downloads/id_ed25519 ~/.ssh/id_ed25519
+chmod 600 ~/.ssh/id_ed25519</code></pre></li>
+                                                    <li>Connect to your Edgebox:
+                                                        <pre class="mt-1 mb-0"><code>ssh -i ~/.ssh/id_ed25519 root@{{ ip_address }}</code></pre></li>
+                                                    <li>Accept the host fingerprint prompt if this is your first connection.</li>
+                                                </ol>
+                                            </div>
+                                            <div id="ssh-tab-win-content" style="display:none;">
+                                                <ol class="text-sm opacity-8 pl-3">
+                                                    <li>If <b>OpenSSH</b> is not installed, run this in PowerShell as Administrator:
+                                                        <pre class="mt-1 mb-0"><code>Add-WindowsCapability -Online -Name OpenSSH.Client*</code></pre></li>
+                                                    <li>Save the downloaded <code>id_ed25519</code> file to your <code>.ssh</code> folder (create it if needed). Then connect from PowerShell:
+                                                        <pre class="mt-1 mb-0"><code>ssh -i %USERPROFILE%\.ssh\id_ed25519 root@{{ ip_address }}</code></pre></li>
+                                                    <li>Accept the host fingerprint prompt if this is your first connection.</li>
+                                                </ol>
+                                                <p class="text-xs opacity-8 mt-2"><i class="fa fa-info-circle mr-1"></i>Alternatively use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>: convert the private key with <b>PuTTYgen</b> (Conversions &rarr; Import, save as <code>.ppk</code>), then load it in <b>Pageant</b> or the <b>Auth</b> section of PuTTY's session settings.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4">
+                                    <h6 class="text-xs text-uppercase text-muted mb-3">Advanced</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Public Key</label>
+                                                <div class="input-group">
+                                                    <textarea class="form-control" id="ssh-pub-key" rows="3" readonly>{{ ssh_public_key }}</textarea>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('ssh-pub-key').value); this.textContent='Copied!';">Copy</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% if ssh_fingerprint %}
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Fingerprint</label>
+                                                    <p class="text-sm"><code>{{ ssh_fingerprint }}</code></p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label">Connection Command</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="ssh-command" value="ssh -i ~/.ssh/id_ed25519 root@{{ ip_address }}" readonly>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('ssh-command').value); this.textContent='Copied!';">Copy</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <a href="{{ path('settings_action', {'action': 'generate_ssh_key'}) }}" class="btn btn-sm btn-outline-warning mr-2" onclick="return confirm('Regenerating keys will overwrite the existing pair. Any clients using the current private key will need to download the new one. Continue?');"><i class="fa fa-refresh mr-2"></i>Regenerate</a>
+                                                <a href="{{ path('settings_action', {'action': 'revoke_ssh_key'}) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Revoking the SSH key pair permanently deletes it. You will not be able to SSH into this Edgebox with the old keys. Continue?');"><i class="fa fa-trash mr-2"></i>Revoke</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info" role="alert">
+                                        <span class="alert-icon"><i class="ni ni-notification-70 text-white"></i></span>
+                                        <span class="alert-text text-xs text-white"><b>No SSH key pair exists yet.</b> Generate one below to enable direct SSH access to this Edgebox.</span>
+                                    </div>
+                                    <a href="{{ path('settings_action', {'action': 'generate_ssh_key'}) }}" class="btn btn-outline-dark">Generate SSH Key</a>
+                                {% endif %}
+                            {% endblock %}
+                        {% endembed %}
+                        <script>
+                        function showSshTab(which) {
+                            var mac = document.getElementById('ssh-tab-mac-content');
+                            var win = document.getElementById('ssh-tab-win-content');
+                            var macBtn = document.getElementById('ssh-tab-mac-btn');
+                            var winBtn = document.getElementById('ssh-tab-win-btn');
+                            if (which === 'win') {
+                                win.style.display = 'block';
+                                mac.style.display = 'none';
+                                winBtn.className = 'btn btn-sm btn-primary ssh-tab-btn active';
+                                macBtn.className = 'btn btn-sm btn-outline-secondary ssh-tab-btn';
+                            } else {
+                                mac.style.display = 'block';
+                                win.style.display = 'none';
+                                macBtn.className = 'btn btn-sm btn-primary ssh-tab-btn active';
+                                winBtn.className = 'btn btn-sm btn-outline-secondary ssh-tab-btn';
+                            }
+                        }
+                        </script>
+
+                        {% embed 'blocks/_collapse_card.html.twig' with { 
                             'title': 'Browser Dev Environment',
                             'collapse_id': 'collapseBrowserDevOptions',
                             'is_collapsed': app.request.query.get('option_changed') != 'browserdev', 
@@ -602,3 +715,4 @@
 
 
 {% endblock content %}
+
