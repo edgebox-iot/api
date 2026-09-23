@@ -77,6 +77,17 @@ class SystemHelper
         return $ip;
     }
 
+    public function getSSHConnectionDetails(): array
+    {
+        $cluster = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
+        $port = $this->optionRepository->findOneBy(['name' => 'CLUSTER_SSH_PORT']);
+
+        return [
+            'host' => null !== $cluster && !empty($cluster->getValue()) ? $cluster->getValue() : $this->getIP(),
+            'port' => null !== $port && ctype_digit((string) $port->getValue()) ? (int) $port->getValue() : 22,
+        ];
+    }
+
     public function isDashboardPublic(): bool
     {
         $result = false;

@@ -259,6 +259,18 @@ class HomeController extends BaseController
                 Task::STATUS_FINISHED => 'Set Browser Dev Environment password',
                 Task::STATUS_ERROR => 'Failed to set Browser Dev Environment password',
             ],
+            'enable_ssh_access' => [
+                Task::STATUS_CREATED => 'Waiting to install an SSH public key',
+                Task::STATUS_EXECUTING => 'Installing an SSH public key',
+                Task::STATUS_FINISHED => 'Enabled dashboard-managed SSH access',
+                Task::STATUS_ERROR => 'Failed to enable dashboard-managed SSH access',
+            ],
+            'disable_ssh_access' => [
+                Task::STATUS_CREATED => 'Waiting to remove the managed SSH public key',
+                Task::STATUS_EXECUTING => 'Removing the managed SSH public key',
+                Task::STATUS_FINISHED => 'Disabled dashboard-managed SSH access',
+                Task::STATUS_ERROR => 'Failed to disable dashboard-managed SSH access',
+            ],
         ];
 
         $unknown_action_descriptions = [
@@ -281,6 +293,8 @@ class HomeController extends BaseController
             'disable_public_dashboard' => 'ui-04',
             'activate_browserdev' => 'button-play',
             'deactivate_browserdev' => 'button-pause',
+            'enable_ssh_access' => 'key-25',
+            'disable_ssh_access' => 'key-25',
             'unknown_action' => 'ui-04',
         ];
 

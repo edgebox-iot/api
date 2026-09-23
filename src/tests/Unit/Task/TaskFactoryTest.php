@@ -184,4 +184,31 @@ class TaskFactoryTest extends TestCase
         self::assertEquals(json_encode(['id' => 'test']), $task->getArgs());
         self::assertEquals($task::STATUS_CREATED, $task->getStatus());
     }
+
+    public function testCreateEnableSshAccessTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+        $system_helper_mock = $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock, $system_helper_mock);
+        $task = $factory->createEnableSshAccessTask('ssh-ed25519 AAAA test');
+
+        self::assertEquals($factory::ENABLE_SSH_ACCESS, $task->getTask());
+        self::assertEquals(json_encode(['public_key' => 'ssh-ed25519 AAAA test']), $task->getArgs());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
+
+    public function testCreateDisableSshAccessTask(): void
+    {
+        $option_repository_mock = $this->getMockBuilder(OptionRepository::class)->disableOriginalConstructor()->getMock();
+        $edge_apps_helper_mock = $this->getMockBuilder(EdgeAppsHelper::class)->disableOriginalConstructor()->getMock();
+        $system_helper_mock = $this->getMockBuilder(SystemHelper::class)->disableOriginalConstructor()->getMock();
+
+        $factory = new TaskFactory($option_repository_mock, $edge_apps_helper_mock, $system_helper_mock);
+        $task = $factory->createDisableSshAccessTask();
+
+        self::assertEquals($factory::DISABLE_SSH_ACCESS, $task->getTask());
+        self::assertEquals($task::STATUS_CREATED, $task->getStatus());
+    }
 }

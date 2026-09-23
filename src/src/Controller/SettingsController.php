@@ -317,6 +317,10 @@ class SettingsController extends BaseController
 
         $browserdev_status = $this->browserDevHelper->getBrowserDevStatus(true);
 
+        $ssh_access_enabled = $this->optionRepository->findOneBy(['name' => 'SSH_ACCESS_ENABLED']) ?? new Option();
+        $ssh_public_key = $this->optionRepository->findOneBy(['name' => 'SSH_PUBLIC_KEY']) ?? new Option();
+        $ssh_fingerprint = $this->optionRepository->findOneBy(['name' => 'SSH_KEY_FINGERPRINT']) ?? new Option();
+
         return $this->render('pages/settings/index.html.twig', [
             'controller_title' => 'Settings',
             'controller_subtitle' => 'Features & Security',
@@ -340,7 +344,47 @@ class SettingsController extends BaseController
             'dashboard_settings' => $this->dashboardHelper->getSettings(),
             'updates_status' => $updates_status,
             'browserdev_status' => $browserdev_status,
+            'ssh_access_enabled' => 'true' === $ssh_access_enabled->getValue(),
+            'ssh_public_key' => $ssh_public_key->getValue(),
+            'ssh_fingerprint' => $ssh_fingerprint->getValue(),
+            'ssh_connection' => $this->systemHelper->getSSHConnectionDetails(),
         ]);
+    }
+
+    #[Route('/settings/ssh/enable', name: 'settings_ssh_enable', methods: ['POST'])]
+    public function enableSSHAccess(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('ssh_enable', (string) $request->request->get('_token'))) {
+            return $this->redirectToRoute('settings', ['alert' => 'ssh_invalid_request', 'type' => 'danger']);
+        }
+
+        $publicKey = trim((string) $request->request->get('public_key'));
+        $validKey = strlen($publicKey) <= 1000
+            && 1 === preg_match('/^ssh-ed25519 [A-Za-z0-9+\/]+={0,3}(?: [^\s]+)?$/', $publicKey)
+            && false === stripos($publicKey, 'PRIVATE KEY');
+        if (!$validKey) {
+            return $this->redirectToRoute('settings', ['alert' => 'ssh_invalid_public_key', 'type' => 'danger', 'option_changed' => 'ssh_key']);
+        }
+
+        $task = $this->taskFactory->createEnableSshAccessTask($publicKey);
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('settings', ['alert' => 'ssh_access_queued', 'type' => 'success', 'option_changed' => 'ssh_key']);
+    }
+
+    #[Route('/settings/ssh/disable', name: 'settings_ssh_disable', methods: ['POST'])]
+    public function disableSSHAccess(Request $request): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('ssh_disable', (string) $request->request->get('_token'))) {
+            return $this->redirectToRoute('settings', ['alert' => 'ssh_invalid_request', 'type' => 'danger']);
+        }
+
+        $task = $this->taskFactory->createDisableSshAccessTask();
+        $this->entityManager->persist($task);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('settings', ['alert' => 'ssh_disable_queued', 'type' => 'success', 'option_changed' => 'ssh_key']);
     }
 
     #[Route('/settings/logout', name: 'settings_logout')]
