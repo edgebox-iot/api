@@ -32,8 +32,8 @@
 													<button class="onboarding-btn btn btn-secondary" data-step="2" type="button" title="Dark Mode">
 														<span>Dark Mode</span>
 													</button>
-													<button class="onboarding-btn btn btn-secondary" data-step="3" type="button" title="Polish">
-														<span>Polish &amp; Improvements</span>
+							<button class="onboarding-btn btn btn-secondary" data-step="3" type="button" title="Apps and Access">
+								<span>Apps &amp; Access</span>
 													</button>
 												</div>
 											</div>
@@ -157,15 +157,15 @@
 								<div class="row mt-5">
 									<div class="col-lg-12 col-md-12 d-flex justify-content-center flex-column">
 										<h3 class="text-gradient text-primary changelog-title">
-											Polish &amp; Improvements
+										Apps &amp; Secure Access
 										</h3>
 										<h4 class="mb-4 changelog-subtitle">
-											All the little things that matter 💎
+										More apps, safer administration 💎
 										</h4>
 										<p class="lead pe-5 me-5"></p>
 										<p>
-											<b>This update is packed with refinements across the entire interface!</b>
-											<p>We've been methodically going through every UI element to ensure consistency and quality. Here's what changed:</p>
+										<b>This update expands the app catalog and adds secure SSH key management.</b>
+										<p>Administrative SSH access now uses a public key generated on your own computer. Edgebox never receives, stores, or displays your private key.</p>
 											<br>
 											<br>
 											<b>🎨 Color mood goes further:</b>
@@ -192,10 +192,19 @@
 													HR elements, timeline steps, collapse toggles, and alert components all refined for both dark and light modes.
 												</li>
 											</ul>
-											<b>⚙️ Under the hood:</b>
-											<ul>
-												<li>
-													Cache-busting on CSS files on the dashboard via timestamps ensures you always see the latest styles after an Edgebox update.
+										<b>⚙️ Under the hood:</b>
+										<ul>
+											<li>
+												<b>Dashboard-managed SSH access</b> installs one clearly marked root public key and can remove it without touching provider, operator, or recovery keys.
+											</li>
+											<li>
+												<b>Seven new EdgeApps</b> are available: Campfire, Collabora, Fizzy, Hello, Memos, Rocket.Chat, and Writebook.
+											</li>
+											<li>
+												<b>Immich, Vaultwarden, and Campfire</b> received compatibility, security, and reverse-proxy updates.
+											</li>
+											<li>
+												Cache-busting on CSS files on the dashboard via timestamps ensures you always see the latest styles after an Edgebox update.
 												</li>
 											</ul>
 										</p>

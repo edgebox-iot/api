@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0] - 23-09-2026
+
+* Added a new Edgebox visual identity and full dashboard dark mode.
+* Added secure, public-key-only management for dashboard-managed SSH access.
+* Added support for the new 1.4 EdgeApps catalog and refreshed application images.
+* Improved reverse-proxy, session cookie, and forwarded-protocol handling.
+
 ## [1.3.2] - 08-12-2024
 
 * Bug fixes to Browser Development Mode settings:
@@ -26,4 +33,3 @@
 ### Missing Past Releases
 
 Release notes for past versions are not available in this file. Please refer to the [GitHub releases](https://hithub.com/edgebox-iot/api/releases) for more information. Feel free to contribute to this file by adding missing release notes.
-

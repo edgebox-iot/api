@@ -488,6 +488,57 @@
                                 </p>
                             {% endblock %}
                         {% endembed %}
+                        {% embed 'blocks/_collapse_card.html.twig' with {
+                            'title': 'SSH Key Access',
+                            'collapse_id': 'collapseSshKeyOptions',
+                            'is_collapsed': app.request.query.get('option_changed') != 'ssh_key',
+                        } %}
+                            {% block card_header %}
+                                <p class="text-sm opacity-8">
+                                    <b>Connect to this Edgebox using your own SSH key.</b> Only the public key is sent to Edgebox. Your private key must remain on your computer.
+                                </p>
+                            {% endblock %}
+                            {% block card_content %}
+                                {% if ssh_access_enabled %}
+                                    <div class="alert alert-success" role="alert">
+                                        <span class="alert-text text-xs text-white"><b>Dashboard-managed root key access is enabled.</b> Other administrator or recovery keys are not affected.</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Authorized public-key fingerprint</label>
+                                        <p class="text-sm"><code>{{ ssh_fingerprint }}</code></p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label">Connection command</label>
+                                        <pre><code>ssh{% if ssh_connection.port != 22 %} -p {{ ssh_connection.port }}{% endif %} -i ~/.ssh/edgebox {{ 'root@' ~ ssh_connection.host }}</code></pre>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info" role="alert">
+                                        <span class="alert-text text-xs text-white"><b>No dashboard-managed SSH key is installed.</b></span>
+                                    </div>
+                                {% endif %}
+
+                                <h6 class="text-sm text-uppercase text-muted mb-2">1. Generate a key on your computer</h6>
+                                <pre><code>ssh-keygen -t ed25519 -f ~/.ssh/edgebox</code></pre>
+                                <p class="text-xs opacity-8">Keep <code>~/.ssh/edgebox</code> private. Paste only the contents of <code>~/.ssh/edgebox.pub</code> below.</p>
+
+                                <h6 class="text-sm text-uppercase text-muted mb-2">2. Install the public key</h6>
+                                <form method="post" action="{{ path('settings_ssh_enable') }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('ssh_enable') }}">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="public_key" rows="3" maxlength="1000" required placeholder="ssh-ed25519 AAAA... user@computer">{{ ssh_public_key }}</textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-dark">{% if ssh_access_enabled %}Replace Managed Key{% else %}Enable SSH Key Access{% endif %}</button>
+                                </form>
+
+                                {% if ssh_access_enabled %}
+                                    <hr class="my-4">
+                                    <form method="post" action="{{ path('settings_ssh_disable') }}" onsubmit="return confirm('Remove the dashboard-managed SSH key? Other administrator and recovery keys will remain unchanged.');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('ssh_disable') }}">
+                                        <button type="submit" class="btn btn-outline-danger">Disable Managed Key Access</button>
+                                    </form>
+                                {% endif %}
+                            {% endblock %}
+                        {% endembed %}
                         {% embed 'blocks/_collapse_card.html.twig' with { 
                             'title': 'Browser Dev Environment',
                             'collapse_id': 'collapseBrowserDevOptions',

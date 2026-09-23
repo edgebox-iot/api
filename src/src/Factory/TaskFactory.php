@@ -36,6 +36,8 @@ class TaskFactory
     public const ENABLE_BROWSERDEV = 'activate_browserdev';
     public const DISABLE_BROWSERDEV = 'deactivate_browserdev';
     public const SET_BROWSERDEV_PASSWORD = 'set_browserdev_password';
+    public const ENABLE_SSH_ACCESS = 'enable_ssh_access';
+    public const DISABLE_SSH_ACCESS = 'disable_ssh_access';
 
     private OptionRepository $optionRepository;
     private EdgeAppsHelper $edgeAppsHelper;
@@ -296,6 +298,23 @@ class TaskFactory
         $task = new Task();
         $task->setTask(self::SET_BROWSERDEV_PASSWORD);
         $task->setArgs(json_encode(['password' => $password]));
+
+        return $task;
+    }
+
+    public function createEnableSshAccessTask(string $publicKey): Task
+    {
+        $task = new Task();
+        $task->setTask(self::ENABLE_SSH_ACCESS);
+        $task->setArgs(json_encode(['public_key' => $publicKey]));
+
+        return $task;
+    }
+
+    public function createDisableSshAccessTask(): Task
+    {
+        $task = new Task();
+        $task->setTask(self::DISABLE_SSH_ACCESS);
 
         return $task;
     }
