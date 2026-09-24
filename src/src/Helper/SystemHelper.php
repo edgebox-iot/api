@@ -80,10 +80,26 @@ class SystemHelper
     public function getSSHConnectionDetails(): array
     {
         $cluster = $this->optionRepository->findOneBy(['name' => 'CLUSTER']);
+        $username = $this->optionRepository->findOneBy(['name' => 'USERNAME']);
         $port = $this->optionRepository->findOneBy(['name' => 'CLUSTER_SSH_PORT']);
 
+        $clusterValue = null !== $cluster ? trim((string) $cluster->getValue()) : '';
+        $usernameValue = null !== $username ? trim((string) $username->getValue()) : '';
+
+        // On cluster-managed instances the CLUSTER option holds the parent
+        // domain (e.g. edgebox.io) while USERNAME holds the instance name
+        // (e.g. jpt), so the reachable host is username.cluster. When CLUSTER
+        // already contains a full hostname it is used as-is.
+        $host = $this->getIP();
+        if ('' !== $clusterValue) {
+            $host = $clusterValue;
+            if ('' !== $usernameValue && $clusterValue !== $usernameValue && !str_starts_with($clusterValue, $usernameValue.'.')) {
+                $host = $usernameValue.'.'.$clusterValue;
+            }
+        }
+
         return [
-            'host' => null !== $cluster && !empty($cluster->getValue()) ? $cluster->getValue() : $this->getIP(),
+            'host' => $host,
             'port' => null !== $port && ctype_digit((string) $port->getValue()) ? (int) $port->getValue() : 22,
         ];
     }
