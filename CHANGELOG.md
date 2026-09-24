@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1] - 24-09-2026
+
+* Fixed SSH connection details on cluster-managed instances: the dashboard
+  now composes the reachable host from USERNAME and CLUSTER
+  (e.g. jpt + edgebox.io) instead of showing the parent domain.
+
 ## [1.4.0] - 23-09-2026
 
 * Added a new Edgebox visual identity and full dashboard dark mode.
