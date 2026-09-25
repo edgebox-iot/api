@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.2] - 25-09-2026
+
+* Added missing dashboard icons for Campfire, Collabora, Fizzy, and
+  Writebook (475px, matching existing Edgeapp artwork).
+
 ## [1.4.1] - 24-09-2026
 
 * Fixed SSH connection details on cluster-managed instances: the dashboard
