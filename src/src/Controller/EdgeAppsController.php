@@ -140,9 +140,8 @@ class EdgeAppsController extends BaseController
             // $this->edgeAppsHelper->saveEdgeAppConfig($edgeapp, $request->request->all());
             // We read each field from the form and issue a task to update the config
             //            $task = $this->taskFactory->createUpdateEdgeappConfigTask($edgeapp, $request->request->all());
-        } else {
-            // Do nothing?
         }
+        // Do nothing?
 
         $logs = [];
 

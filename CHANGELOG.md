@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.3] - 23-10-2026
+
+* Security: upgraded the API runtime from PHP 8.1 (end-of-life, vulnerable
+  to PHP2Shell CVE-2026-109618 / CVE-2026-109619) to PHP 8.3.36, which
+  contains the official emergency fix. The API serves requests through
+  Apache mod_php, one of the explicitly affected SAPIs. Existing Edgeboxes
+  must rebuild the API image after checkout (see updater migration).
+* Upgraded all Symfony components from 6.3 (end of life) to 6.4 LTS,
+  resolving 25 known security advisories in Symfony packages.
+* Refreshed dev toolchain (phpunit/phpstan/php-cs-fixer) to PHP 8.3
+  compatible releases.
+
 ## [1.4.2] - 25-09-2026
 
 * Added missing dashboard icons for Campfire, Collabora, Fizzy, and

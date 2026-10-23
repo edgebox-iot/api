@@ -44,9 +44,8 @@ class BackupsHelper
         $backups_last_run_option = $this->optionRepository->findOneBy(['name' => 'BACKUP_LAST_RUN']) ?? new Option();
         if (null === $backups_last_run_option->getValue() || 'null' === $backups_last_run_option->getValue()) {
             return 'Never';
-        } else {
-            $last_run = $backups_last_run_option->getValue();
         }
+        $last_run = $backups_last_run_option->getValue();
 
         $total_seconds = time() - (int) $last_run;
 
@@ -219,12 +218,12 @@ class BackupsHelper
                 'status' => 'error',
                 'message' => $backups_status_error->getValue(),
             ];
-        } else {
-            return [
-                'status' => 'error',
-                'message' => 'An error occured with the backups system',
-            ];
         }
+
+        return [
+            'status' => 'error',
+            'message' => 'An error occured with the backups system',
+        ];
 
         return json_decode($val, true);
     }
