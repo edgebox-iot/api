@@ -158,6 +158,28 @@
                             <h6 class="mb-0">External Access</h6>
                             <p class="text-sm opacity-8">Click any of the titles below to see its option details.</p>
 
+                            {% if (alert is not empty and alert.alert in ['ssh_access_queued', 'ssh_disable_queued', 'ssh_invalid_public_key', 'ssh_invalid_request']) %}
+
+                                <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
+                                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                                    <span class="alert-text"><strong>
+                                        {% if alert.alert == 'ssh_access_queued' %}
+                                            SSH key queued for installation. It becomes active within a minute; this page will show the key fingerprint once installed.
+                                        {% elseif alert.alert == 'ssh_disable_queued' %}
+                                            SSH access disable queued. The managed key is removed within a minute.
+                                        {% elseif alert.alert == 'ssh_invalid_public_key' %}
+                                            That does not look like a valid ssh-ed25519 public key. Generate one with <code>ssh-keygen -t ed25519</code> and paste the contents of the <code>.pub</code> file.
+                                        {% else %}
+                                            Invalid request. Please reload the page and try again.
+                                        {% endif %}
+                                    </strong></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                </div>
+
+                            {% endif %}
+
                             {% if (alert is not empty and alert.alert == 'remove_custom_domain') %}
 
                                 <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert" style="color: white;">
